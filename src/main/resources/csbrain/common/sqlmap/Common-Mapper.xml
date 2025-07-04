@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Common">
+
+	<insert id="insert_mb_usedlog" parameterType="HashMap">
+		insert into mb_usedlog (idx, userid, usedbutton, usepgid, insert_date, insert_userid) values (0, #{userId},'EXCEL', #{menuId}, now(), #{userId})
+	</insert>
+
+	<select id="select_mb_etccd_list" parameterType="HashMap" resultType="MbEtcCdVO">
+		select KDCD, CDBS, CDNM, SORTNO, UNUSEYN, DESC1, DESC2, DESC3, MODIFYUSID, MODIFYDATE
+		  from mb_etccd
+		  where KDCD=#{KDCD}
+		<!--    <if test="unuseyn !=null and unuseyn != '' " #{UNUSEYN}>-->
+		 	AND UNUSEYN= 'N'
+		 	 ORDER BY SORTNO
+		 <!-- </if>
+		  <choose>
+			  <when test="orderby !=null and orderby != '' ">
+			 	${orderby}
+			  </when>
+			  <otherwise>
+				  order by SORTNO
+			  </otherwise>
+		  </choose>
+		  -->
+	</select>
+
+	<select id="select_mb_mmse_list" parameterType="String" resultType="MbMmseVO">
+		/* select_mb_mmse_list	*/
+		<![CDATA[
+		SELECT s.name as SUBJECT_NM, a.idx EXAM_IDX, OBJECT_IDX, SUBJECT_IDX, a.mmse_num EXAM_NUM
+			 , DATE_FORMAT(TEST_DAY, '%Y-%m-%d') AS TESTDAY
+		   , CONCAT(a.TOTAL) AS TOTAL
+			 , CASE a.MMSE_KIND WHEN 1 THEN '0101' WHEN 2 THEN '0102' WHEN 3 THEN '0103' ELSE '기타' END EXAM_ID
+		   , CASE a.mmse_kind WHEN '1' THEN 'MMSE-DS' WHEN '2' THEN 'K-MMSE' WHEN '3' THEN 'MMSE-KC' ELSE a.mmse_kind END EXAM_NM
+			 , ROUND(CASE WHEN (a.TOTAL - ifnull(X.MEAN,a.TOTAL))/ifnull(X.SD,1) > 0 THEN FLOOR((a.TOTAL - ifnull(X.MEAN,a.TOTAL))/ifnull(X.SD,1)*100)/100
+						  ELSE CEIL((a.TOTAL - ifnull(X.MEAN,a.TOTAL))/ifnull(X.SD,1)*100)/100 END,2) AS STANDARD
+		  FROM (
+			  SELECT o.name as object_name, a.idx,a.object_idx, a.subject_idx, o.GENDER, o.EDU
+					, a.mmse_kind, a.mmse_num, a.test_day, a.total
+					, (YEAR(a.TEST_DAY)-YEAR(CONCAT(BIRTH1,LPAD(BIRTH2,2,'0'),CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END))
+				   - (RIGHT(DATE_FORMAT(a.TEST_DAY,'%Y%m%d'),4)<RIGHT(CONCAT(BIRTH1,LPAD(BIRTH2,2,'0'),CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END),4))) AGE
+				   , birth1, birth2, birth3
+				FROM mb_mmse a
+				JOIN mb_object o ON o.idx = a.object_idx
+			   WHERE a.flag = 'U'
+				 AND a.OBJECT_IDX = #{objectIdx}
+				) a
+		  LEFT JOIN mb_subject s ON s.idx = a.subject_idx
+		  LEFT JOIN mb_mmse_nor X
+				  ON X.MMSE_KIND = a.MMSE_KIND
+				 aND X.GENDER = CaSE WHEN a.MMSE_KIND IN ('1','3') aND a.GENDER = '1' THEN 'M'
+									 WHEN a.MMSE_KIND IN ('1','3') aND a.GENDER = '2' THEN 'F'  ELSE X.GENDER END
+				 aND a.EDU BETWEEN X.EDU_MIN aND X.EDU_MaX
+				 aND CASE WHEN a.MMSE_KIND = '2' aND a.aGE < 45 THEN 45
+						  WHEN a.MMSE_KIND IN ('1','3') AND a.AGE  < 60 THEN 60
+						  ELSE a.AGE END BETWEEN X.AGE_MIN aND X.AGE_MAX
+		 ORDER BY EXAM_NUM
+		]]>
+	</select>
+
+
+
+	<select id="select_sunbyul_list" parameterType="String" resultType="MbSJVO">
+		/* select_sunbyul_list	*/
+  SELECT A.IDX EXAM_IDX, A.SUBJECT_IDX, A.OBJECT_IDX
+	   , A.SELECTION_NUM AS EXAM_NUM, DATE_FORMAT(TEST_DAY, '%Y-%m-%d') AS TEST_DAY, A.TOTAL
+	   , E.CDNM AS EXAM_NM, EXAM_ID
+	   , B.NAME SUBJECT_NM
+	   , E.SORTNO
+  		FROM(
+			SELECT '0001' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_dm t on t.OBJECT_IDX=o.IDX
+ where o.IDX= #{objectIdx}
+			UNION ALL 
+			SELECT '0004' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_mh t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0006' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_dg t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0007' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(GDS_TOTAL) AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_gds t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0008' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(KDSQ_TOTAL) AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_kdsq t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0009' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(KDSQV_TOTAL) AS TOTAL 
+			FROM mb_object o LEFT JOIN mb_kdsqv t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0010' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(KIADL_TOTAL,'/',KIADL_KSCORE) AS TOTAL 
+			FROM mb_object o LEFT JOIN mb_kiadl t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0013' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(SMCQ_TOTAL) AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_smcq t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0014' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_fmh t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0015' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_ic t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0016' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_sm t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0017' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_dr t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0018' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_pha t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0019' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_sp t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0020' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_eq t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0021' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_pe t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0104' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(KMS_ALL_SCORE) AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_kmmse2 t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0201' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_c1 t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx}
+			UNION ALL 
+			SELECT '0202' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.C2_L_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx} AND t.C2_L_TEST_DAY IS NOT NULL
+			UNION ALL 
+			SELECT '0203' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.C2_P_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX 
+ where o.IDX=#{objectIdx} AND t.C2_P_TEST_DAY IS NOT NULL
+			UNION ALL 
+			SELECT '0204' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.C2_C_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx} AND t.C2_C_TEST_DAY IS NOT NULL
+			UNION ALL 
+			SELECT '0205' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.C2_AD_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx} AND t.C2_AD_TEST_DAY IS NOT NULL
+			UNION ALL 
+			SELECT '0206' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.C2_S_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX 
+ where o.IDX=#{objectIdx} AND t.C2_S_TEST_DAY IS NOT NULL
+			UNION ALL 
+			SELECT '0207' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.C2_Z_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX
+ where o.IDX=#{objectIdx} AND t.C2_Z_TEST_DAY IS NOT NULL
+			UNION ALL 
+			SELECT '0208' AS EXAM_ID, case when t.IDX is null then '0000' else t.IDX end AS IDX, case when t.SELECTION_NUM is null then 1 else t.SELECTION_NUM end as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  
+			FROM mb_object o LEFT JOIN mb_c3 t on t.OBJECT_IDX=o.IDX 
+ where o.IDX=#{objectIdx}
+			) A
+		LEFT JOIN mb_subject B ON A.SUBJECT_IDX = B.IDX
+		JOIN mb_etccd E ON E.KDCD = 'B001' AND E.CDBS = A.EXAM_ID
+		ORDER BY E.SORTNO, EXAM_NUM DESC
+		
+	</select>
+
+	<select id="select_load_selTablist" parameterType="HashMap" resultType="MbSJVO">
+		  SELECT EXAM_ID,A.IDX EXAM_IDX, A.SUBJECT_IDX,A.SELECTION_NUM AS EXAM_NUM,DATE_FORMAT(A.TEST_DAY, '%Y%m%d') AS TEST_DAY
+
+  	FROM(
+		SELECT '0001' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX,IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL,FLAG  
+		FROM mb_object o LEFT JOIN mb_dm t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0004' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL,FLAG     
+		FROM mb_object o LEFT JOIN mb_mh t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0006' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL,FLAG     
+		FROM mb_object o LEFT JOIN mb_dg t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0007' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(GDS_TOTAL) AS TOTAL,FLAG    
+		FROM mb_object o LEFT JOIN mb_gds t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0008' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(KDSQ_TOTAL) AS TOTAL,FLAG    
+		FROM mb_object o LEFT JOIN mb_kdsq t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0009' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(KDSQV_TOTAL) AS TOTAL,FLAG  
+		FROM mb_object o LEFT JOIN mb_kdsqv t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0010' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(KIADL_TOTAL,'/',KIADL_KSCORE) AS TOTAL ,FLAG 
+		FROM mb_object o LEFT JOIN mb_kiadl t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0013' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,CONCAT(SMCQ_TOTAL) AS TOTAL ,FLAG  
+		FROM mb_object o LEFT JOIN mb_smcq t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0014' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL,FLAG  
+		FROM mb_object o LEFT JOIN mb_fmh t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0015' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL,FLAG    
+		FROM mb_object o LEFT JOIN mb_ic t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0016' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL,FLAG    
+		FROM mb_object o LEFT JOIN mb_sm t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0017' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL ,FLAG  
+		FROM mb_object o LEFT JOIN mb_dr t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0018' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL ,FLAG 
+		FROM mb_object o LEFT JOIN mb_pha t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0019' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL ,FLAG   
+		FROM mb_object o LEFT JOIN mb_sp t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0020' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  ,FLAG  
+		FROM mb_object o LEFT JOIN mb_eq t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0021' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL ,FLAG  
+		FROM mb_object o LEFT JOIN mb_pe t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0104' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL ,FLAG  
+		FROM mb_object o LEFT JOIN mb_kmmse2 t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0201' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL ,FLAG   
+		FROM mb_object o LEFT JOIN mb_c1 t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0202' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.C2_L_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  ,FLAG  
+		FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0203' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.C2_P_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL,FLAG    
+		FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0204' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.C2_C_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL ,FLAG  
+		FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0205' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.C2_AD_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL ,FLAG   
+		FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0206' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.C2_S_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL ,FLAG 
+		FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0207' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.C2_Z_TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL ,FLAG  
+		FROM mb_object o LEFT JOIN mb_c2 t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		UNION ALL 
+		SELECT '0208' AS EXAM_ID, IFNULL(t.IDX,'0000') AS IDX, IFNULL(t.SELECTION_NUM,1) as SELECTION_NUM, t.TEST_DAY as TEST_DAY, t.SUBJECT_IDX, o.IDX as OBJECT_IDX,'' AS TOTAL  ,FLAG 
+		FROM mb_object o LEFT JOIN mb_c3 t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+		) A
+	LEFT JOIN mb_subject B ON A.SUBJECT_IDX = B.IDX
+	JOIN mb_etccd E ON E.KDCD = 'B001' AND E.CDBS = A.EXAM_ID
+	WHERE
+	<if test ="examId != ''">
+	 EXAM_ID =#{examId} 
+	</if>
+	<if test ="examId == ''">
+	 EXAM_ID =#{cdbs} 
+	</if>
+	AND A.object_idx = #{objectIdx} AND A.FLAG ="U"
+	
+	ORDER BY SELECTION_NUM DESC 
+	limit 1
+	</select>
+
+
+
+<!--
+	<select id="select_jungmil_list" parameterType="String" resultType="MbSJVO">
+		/* select_jungmil_list	*/
+		SELECT A.IDX EXAM_IDX, A.SUBJECT_IDX, A.OBJECT_IDX
+		    ,  A.SELECTION_NUM AS EXAM_NUM, DATE_FORMAT(TEST_DAY, '%Y-%m-%d') AS TESTDAY, A.TOTAL
+		    ,  E.CDNM AS EXAM_NM,E.DESC2 EXAM_ID
+		    ,  B.NAME SUBJECT_NM
+			,  E.SORTNO
+		  FROM(
+					        SELECT IDX, SELECTION_NUM, TEST_DAY, SUBJECT_IDX, OBJECT_IDX,'0201' AS EXAM_ID, '' AS TOTAL FROM mb_c1			WHERE OBJECT_IDX = #{objectIdx} AND FLAG = 'U'
+		    UNION ALL SELECT IDX, SELECTION_NUM, TEST_DAY, SUBJECT_IDX, OBJECT_IDX,'0202' AS EXAM_ID, '' AS TOTAL FROM mb_c2			WHERE OBJECT_IDX = #{objectIdx} AND FLAG = 'U'
+		    UNION ALL SELECT IDX, SELECTION_NUM, TEST_DAY, SUBJECT_IDX, OBJECT_IDX,'0203' AS EXAM_ID, '' AS TOTAL FROM mb_c3			WHERE OBJECT_IDX = #{objectIdx} AND FLAG = 'U'
+		    UNION ALL SELECT IDX, SELECTION_NUM, TEST_DAY, SUBJECT_IDX, OBJECT_IDX,'0204' AS EXAM_ID, '' AS TOTAL FROM mb_hrsd		WHERE OBJECT_IDX = #{objectIdx} AND FLAG = 'U'
+		    UNION ALL SELECT IDX, SELECTION_NUM, TEST_DAY, SUBJECT_IDX, OBJECT_IDX,'0205' AS EXAM_ID, CONCAT(CDR_M+CDR_O+CDR_J+CDR_S+CDR_H+CDR_P+CDR_STEP)  AS TOTAL FROM mb_cdr WHERE OBJECT_IDX = #{objectIdx} AND FLAG = 'U'
+		    UNION ALL SELECT IDX, SELECTION_NUM, TEST_DAY, SUBJECT_IDX, OBJECT_IDX,'0206' AS EXAM_ID, '' AS TOTAL FROM mb_lab			WHERE OBJECT_IDX = #{objectIdx} AND FLAG = 'U'
+		    UNION ALL SELECT IDX, SELECTION_NUM, TEST_DAY, SUBJECT_IDX, OBJECT_IDX,'0207' AS EXAM_ID, CONCAT(DIA_01) AS TOTAL FROM mb_dia WHERE OBJECT_IDX = #{objectIdx} AND FLAG = 'U'
+		    UNION ALL SELECT IDX, SELECTION_NUM, TEST_DAY, SUBJECT_IDX, OBJECT_IDX,'0208' AS EXAM_ID, '' AS TOTAL FROM mb_memo		WHERE OBJECT_IDX = #{objectIdx} AND FLAG = 'U'
+			 ) A
+		  LEFT JOIN mb_subject B ON A.SUBJECT_IDX = B.IDX
+		  JOIN mb_etccd E ON E.KDCD = 'B001' AND E.CDBS = A.EXAM_ID
+		 ORDER BY EXAM_ID, EXAM_NUM
+	</select>
+-->
+	<select id="select_etc_list" parameterType="String" resultType="MbSJVO">
+		/* select_etc_list	*/
+		    SELECT A.IDX EXAM_IDX, A.SUBJECT_IDX, A.OBJECT_IDX
+			,  CONCAT(SUBSTR(TESTDATE,1,4),'-',SUBSTR(TESTDATE,5,2),'-',SUBSTR(TESTDATE,7,2)) AS TESTDAY
+			,  E.CDNM AS EXAM_NM, EXAM_ID
+			,  IFNULL(B.NAME, A.SUBJECT_IDX) SUBJECT_NM
+		  FROM(
+			  SELECT  case when t.IDX is null then '0000' else t.IDX end AS IDX, t.TESTDATE, t.MODIFYUSID AS SUBJECT_IDX,  o.IDX as OBJECT_IDX,'0301' AS EXAM_ID  FROM mb_object o LEFT JOIN mb_testblod t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+			  UNION ALL SELECT case when t.IDX is null then '0000' else t.IDX end AS IDX, REPLACE(t.TEST_DAY,'-','') TESTDATE, t.SUBJECT_IDX,  o.IDX as OBJECT_IDX,'0302' AS EXAM_ID FROM mb_object o LEFT JOIN  mb_mri1 t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx} and t.FLAG = 'U'
+			  UNION ALL SELECT case when t.IDX is null then '0000' else t.IDX end AS IDX, REPLACE(t.TEST_DAY,'-','') TESTDATE, t.SUBJECT_IDX,  o.IDX as OBJECT_IDX,'0303' AS EXAM_ID FROM mb_object o LEFT JOIN  mb_rctu t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx} and t.FLAG = 'U'
+			  UNION ALL SELECT case when t.IDX is null then '0000' else t.IDX end AS IDX, REPLACE(t.specdate,'-','') TEST_DATE, t.damdang, t.OBJECT_IDX,'0304' AS EXAM_ID FROM mb_object o LEFT JOIN mb_csfhd t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+			  UNION ALL SELECT case when t.IDX is null then '0000' else t.IDX end AS IDX, REPLACE(t.specdate,'-','') TEST_DATE, t.damdang, t.OBJECT_IDX,'0305' AS EXAM_ID FROM mb_object o LEFT JOIN mb_specimhd t on t.OBJECT_IDX=o.IDX where o.IDX= #{objectIdx}
+			 ) A
+		  LEFT JOIN mb_subject B ON A.SUBJECT_IDX = B.IDX
+		  JOIN mb_etccd E ON E.KDCD = 'B001' AND E.CDBS = A.EXAM_ID
+		 ORDER BY E.SORTNO,TESTDAY DESC;
+		<!--  
+		SELECT A.IDX EXAM_IDX, A.SUBJECT_IDX, A.OBJECT_IDX
+			,  CONCAT(SUBSTR(TESTDATE,1,4),'-',SUBSTR(TESTDATE,5,2),'-',SUBSTR(TESTDATE,7,2)) AS TESTDAY
+			,  E.CDNM AS EXAM_NM, EXAM_ID
+			,  IFNULL(B.NAME, A.SUBJECT_IDX) SUBJECT_NM
+			, 99999 EXAM_NUM
+		  FROM(
+			  SELECT 0 IDX, TESTDATE, MODIFYUSID AS SUBJECT_IDX, OBJECT_IDX,'0301' AS EXAM_ID FROM mb_testblod WHERE OBJECT_IDX = #{objectIdx}
+			  UNION ALL SELECT IDX, REPLACE(TEST_DAY,'-','') TESTDATE, SUBJECT_IDX, OBJECT_IDX,'0302' AS EXAM_ID FROM mb_mri1 WHERE OBJECT_IDX = #{objectIdx} AND FLAG = 'U'
+			  UNION ALL SELECT IDX, REPLACE(TEST_DAY,'-','') TESTDATE, SUBJECT_IDX, OBJECT_IDX,'0303' AS EXAM_ID FROM mb_rctu WHERE OBJECT_IDX = #{objectIdx} AND FLAG = 'U'
+			  UNION ALL SELECT 0 IDX, specdate, damdang, OBJECT_IDX,'0304' AS EXAM_ID FROM mb_csfhd WHERE OBJECT_IDX = #{objectIdx}
+			  UNION ALL SELECT 0 IDX, specdate, damdang, OBJECT_IDX,'0305' AS EXAM_ID FROM mb_specimhd WHERE OBJECT_IDX = #{objectIdx}
+			 ) A
+		  LEFT JOIN mb_subject B ON A.SUBJECT_IDX = B.IDX
+		  JOIN mb_etccd E ON E.KDCD = 'B001' AND E.CDBS = A.EXAM_ID
+		 ORDER BY TESTDAY
+		 -->
+	</select>
+
+	<select id="select_snsb_list" parameterType="String" resultType="CommonVO">
+		/* select_snsb_list	*/
+		SELECT D.OBJECT_IDX
+					,  D.SELECTION_NUM
+					, DATE_FORMAT(D.SNSB_DATE, '%Y-%m-%d') AS TEST_DAY
+					, S.NAME AS SUBJECT_NM
+					, D.SNSB_REMARK AS REMARK
+					, D.PDF_PATH
+				  FROM mb_snsb D
+				  LEFT join mb_subject S ON S.IDX = D.SUBJECT_IDX
+				 where 1=1
+				   AND D.FLAG = 'U'
+				   AND D.object_idx = #{objectIdx}
+				 ORDER BY D.SELECTION_NUM
+	</select>
+
+	<select id="select_mri_list" parameterType="String" resultType="CommonVO">
+		/* select_mri_list	*/
+		SELECT D.OBJECT_IDX
+					, D.SELECTION_NUM
+					, DATE_FORMAT(D.MRI_DATE, '%Y-%m-%d') AS TEST_DAY
+					, S.NAME AS SUBJECT_NM
+					, D.MRI_REMARK AS REMARK
+					, O.NAME
+                    , CASE O.gender WHEN 1 THEN '남' WHEN 2 THEN '여' END AS gender
+                    , O.jumin1
+				  FROM mb_mri1 D
+				  LEFT JOIN mb_subject S ON S.IDX = D.SUBJECT_IDX
+				  LEFT JOIN mb_object O ON O.IDX = D.object_idx
+				  WHERE 1=1
+				  AND D.FLAG = 'U'
+				  AND D.OBJECT_IDX = #{objectIdx}
+				  ORDER BY D.SELECTION_NUM
+	</select>
+	
+	<select id="select_nii_list" parameterType="HashMap" resultType="CommonVO">
+				/* select_mri nii_path */
+				SELECT D.OBJECT_IDX
+					, D.SELECTION_NUM
+                    , RD.MEDIC_ID
+                    , RD.SERIES_ID
+                    , CASE WHEN RD.PATH IS NOT NULL THEN 'Y' 
+                          WHEN IFNULL(RD.PATH,'') = '' THEN 'N'
+                      END NILL_PATH
+                    , RD.NII_PATH     
+				  FROM csbrain2.mb_mri1 D
+				  LEFT JOIN nrcd.RD_DICOMGRP_MST RD 
+                  ON RD.OBJECT_ID = D.OBJECT_IDX
+                  WHERE 1=1
+				  AND D.FLAG = 'U'
+				  AND DATE_FORMAT(RD.REFERENCE_DATE, '%Y-%m-%d') = #{testDay}
+				  AND D.OBJECT_IDX = #{objectIdx}
+                  AND D.selection_num = #{selectionNum}
+	</select>
+
+	<select id="select_pet_list" parameterType="String" resultType="CommonVO">
+		/* select_pet_list	*/
+		SELECT C.OBJECT_IDX
+					, C.SELECTION_NUM
+					, DATE_FORMAT(C.resedate, '%Y-%m-%d') AS TEST_DAY
+					, C.DAMDANG1 AS SUBJECT_NM
+					, C.REMARK AS REMARK
+				  FROM mb_resepet C
+				  ##JOIN mb_csfhd D ON D.object_idx = C.object_idx AND D.specdate = C.resedate
+				  ##LEFT join mb_subject S ON S.IDX = D.SUBJECT_IDX
+				 WHERE 1=1
+				   ##AND D.FLAG = 'U'
+				   AND C.OBJECT_IDX = #{objectIdx}
+				 ORDER BY C.SELECTION_NUM
+	</select>
+
+	<select id="select_csf_list" parameterType="String" resultType="CommonVO">
+		/* select_csf_list	*/
+		SELECT C.OBJECT_IDX
+					, C.SELECTION_NUM
+					, DATE_FORMAT(D.specdate, '%Y-%m-%d') AS TEST_DAY
+					, D.DAMDANG AS SUBJECT_NM
+					, D.REMARK AS REMARK
+				  FROM mb_resecsf C
+				  JOIN mb_csfhd D ON D.object_idx = C.object_idx AND D.specdate = C.resedate
+				  ##LEFT join mb_subject S ON S.IDX = D.SUBJECT_IDX
+				 WHERE 1=1
+				   ##AND D.FLAG = 'U'
+				   AND C.OBJECT_IDX = #{objectIdx}
+				 ORDER BY C.SELECTION_NUM
+	</select>
+	
+	<select id="select_blood_list" parameterType="String" resultType="CommonVO">
+				/* select_blood_list	*/
+				SELECT C.OBJECT_IDX
+					, DATE_FORMAT(C.specdate, '%Y-%m-%d') AS TEST_DAY
+					, C.bloodid AS BLOOD_ID
+                    , C.damdang AS DAMDANG
+                    , C.remark AS REMARK
+				 FROM mb_specimhd C
+				 ##JOIN mb_csfhd D ON D.object_idx = C.object_idx AND D.specdate = C.resedate
+				 ##LEFT join mb_subject S ON S.IDX = D.SUBJECT_IDX
+				 WHERE 1=1
+				 ##AND D.FLAG = 'U'
+				 AND C.OBJECT_IDX = #{objectIdx}
+				 ORDER BY C.specdate DESC
+	</select>
+
+	<select id="select_apoe_list" parameterType="String" resultType="CommonVO">
+				/* select_apoe_list	*/
+				SELECT 
+						ap.object_id as object_idx, 
+				        ifo.name as name,
+				        ifo.DIAG_DATE as DIAG_DATE,
+				        ifo.APOE_CD AS APOE_CD
+				FROM nrcd.RD_APOE ap
+				left join nrcd.RD_INTEGRATION_INFO ifo
+				on ifo.OBJECT_ID = ap.OBJECT_ID
+				where ifo.object_id = #{objectIdx}
+				order by ifo.DIAG_DATE desc
+	</select>
+
+	<delete id="truncateTable" parameterType="String">
+		<!-- truncate table ${value} -->
+	</delete>
+
+	<select id="select_mb_c1_list" parameterType="HashMap" resultType="CamelCaseMap">
+		select subject_idx, test_day, insert_date, insert_userid
+		  from mb_c1 where object_idx = #{objectIdx} and selection_num = #{selectionNum} and flag='U'
+	</select>
+
+	<select id="select_idx_list" parameterType="HashMap" resultType="CamelCaseMap">
+		select idx from ${tablename} where object_idx = #{objectIdx} and selection_num = #{selectionNum} and flag='U'
+	</select>
+
+	<insert id="insert_mb_c2_song" parameterType="HashMap">
+		insert into mb_c2_song values ('',#{subjectIdx}, ${rLine}, #{testDay}, 'U', #{insertDate}, #{insertUserid}, NULL, NULL)
+	</insert>
+
+	<select id="select_max_idx" parameterType="String" resultType="int">
+		select max(idx) from ${value}
+	</select>
+
+	<select id="select_mb_c2_list" resultType="CamelCaseMap">
+		select * from mb_c2 where flag='U' order by idx
+	</select>
+
+	<select id="select_count" parameterType="HashMap" resultType="int">
+		select count(*) from ${tablename} where object_idx = #{objectIdx} and selection_num = #{selectionNum} and flag='U'
+	</select>
+
+	<delete id="delete_table" parameterType="HashMap" >
+		delete from ${tablename} where object_idx = #{objectIdx} and selection_num = #{selectionNum} and flag='U' and 1=1
+	</delete>
+
+	<update id="update_mb_c2_temp2" parameterType="int">
+		update mb_c2_temp2 set idx = idx + #{value}
+	</update>
+	<insert id="insert_mb_c2_song_select_mb_c2_temp2">
+		insert into mb_c2_song select * from mb_c2_temp2 order by idx
+	</insert>
+</mapper>
+

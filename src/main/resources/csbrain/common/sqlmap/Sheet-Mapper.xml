@@ -1,0 +1,3507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Sheet">
+	<select id="select_mb_mmseds_list" parameterType="HashMap" resultType="MbMmseVO">
+		SELECT 'S' AUD
+		, CASE WHEN Q01		 = '1' THEN '●' ELSE '' END AS XQ01
+		, CASE WHEN Q02		 = '1' THEN '●' ELSE '' END AS XQ02
+		, CASE WHEN Q03		 = '1' THEN '●' ELSE '' END AS XQ03
+		, CASE WHEN Q04		 = '1' THEN '●' ELSE '' END AS XQ04
+		, CASE WHEN Q05		 = '1' THEN '●' ELSE '' END AS XQ05
+		, CASE WHEN Q06		 = '1' THEN '●' ELSE '' END AS XQ06
+		, CASE WHEN Q07		 = '1' THEN '●' ELSE '' END AS XQ07
+		, CASE WHEN Q08		 = '1' THEN '●' ELSE '' END AS XQ08
+		, CASE WHEN Q09		 = '1' THEN '●' ELSE '' END AS XQ09
+		, CASE WHEN Q10		 = '1' THEN '●' ELSE '' END AS XQ10
+		, CASE WHEN Q11_1	 = '1' THEN '●' ELSE '' END AS XQ11_1
+		, CASE WHEN Q11_2	 = '1' THEN '●' ELSE '' END AS XQ11_2
+		, CASE WHEN Q11_3	 = '1' THEN '●' ELSE '' END AS XQ11_3
+		, CASE WHEN Q12_1	 = '1' THEN '●' ELSE '' END AS XQ12_1
+		, CASE WHEN Q12_2	 = '1' THEN '●' ELSE '' END AS XQ12_2
+		, CASE WHEN Q12_3	 = '1' THEN '●' ELSE '' END AS XQ12_3
+		, CASE WHEN Q12_4	 = '1' THEN '●' ELSE '' END AS XQ12_4
+		, CASE WHEN Q12_5	 = '1' THEN '●' ELSE '' END AS XQ12_5
+		, CASE WHEN Q13_1	 = '1' THEN '●' ELSE '' END AS XQ13_1
+		, CASE WHEN Q13_2	 = '1' THEN '●' ELSE '' END AS XQ13_2
+		, CASE WHEN Q13_3	 = '1' THEN '●' ELSE '' END AS XQ13_3
+		, CASE WHEN Q14_1	 = '1' THEN '●' ELSE '' END AS XQ14_1
+		, CASE WHEN Q14_2	 = '1' THEN '●' ELSE '' END AS XQ14_2
+		, CASE WHEN Q15		 = '1' THEN '●' ELSE '' END AS XQ15
+		, CASE WHEN Q16_1	 = '1' THEN '●' ELSE '' END AS XQ16_1
+		, CASE WHEN Q16_2	 = '1' THEN '●' ELSE '' END AS XQ16_2
+		, CASE WHEN Q16_3	 = '1' THEN '●' ELSE '' END AS XQ16_3
+		, CASE WHEN Q17		 = '1' THEN '●' ELSE '' END AS XQ17
+		, CASE WHEN Q18		 = '1' THEN '●' ELSE '' END AS XQ18
+		, CASE WHEN Q19 	 = '1' THEN '●' ELSE '' END AS XQ19
+		, CASE WHEN Q01		 = '2' THEN '●' ELSE '' END AS OQ01
+		, CASE WHEN Q02		 = '2' THEN '●' ELSE '' END AS OQ02
+		, CASE WHEN Q03		 = '2' THEN '●' ELSE '' END AS OQ03
+		, CASE WHEN Q04		 = '2' THEN '●' ELSE '' END AS OQ04
+		, CASE WHEN Q05		 = '2' THEN '●' ELSE '' END AS OQ05
+		, CASE WHEN Q06		 = '2' THEN '●' ELSE '' END AS OQ06
+		, CASE WHEN Q07		 = '2' THEN '●' ELSE '' END AS OQ07
+		, CASE WHEN Q08		 = '2' THEN '●' ELSE '' END AS OQ08
+		, CASE WHEN Q09		 = '2' THEN '●' ELSE '' END AS OQ09
+		, CASE WHEN Q10		 = '2' THEN '●' ELSE '' END AS OQ10
+		, CASE WHEN Q11_1	 = '2' THEN '●' ELSE '' END AS OQ11_1
+		, CASE WHEN Q11_2	 = '2' THEN '●' ELSE '' END AS OQ11_2
+		, CASE WHEN Q11_3	 = '2' THEN '●' ELSE '' END AS OQ11_3
+		, CASE WHEN Q12_1	 = '2' THEN '●' ELSE '' END AS OQ12_1
+		, CASE WHEN Q12_2	 = '2' THEN '●' ELSE '' END AS OQ12_2
+		, CASE WHEN Q12_3	 = '2' THEN '●' ELSE '' END AS OQ12_3
+		, CASE WHEN Q12_4	 = '2' THEN '●' ELSE '' END AS OQ12_4
+		, CASE WHEN Q12_5	 = '2' THEN '●' ELSE '' END AS OQ12_5
+		, CASE WHEN Q13_1	 = '2' THEN '●' ELSE '' END AS OQ13_1
+		, CASE WHEN Q13_2	 = '2' THEN '●' ELSE '' END AS OQ13_2
+		, CASE WHEN Q13_3	 = '2' THEN '●' ELSE '' END AS OQ13_3
+		, CASE WHEN Q14_1	 = '2' THEN '●' ELSE '' END AS OQ14_1
+		, CASE WHEN Q14_2	 = '2' THEN '●' ELSE '' END AS OQ14_2
+		, CASE WHEN Q15		 = '2' THEN '●' ELSE '' END AS OQ15
+		, CASE WHEN Q16_1	 = '2' THEN '●' ELSE '' END AS OQ16_1
+		, CASE WHEN Q16_2	 = '2' THEN '●' ELSE '' END AS OQ16_2
+		, CASE WHEN Q16_3	 = '2' THEN '●' ELSE '' END AS OQ16_3
+		, CASE WHEN Q17		 = '2' THEN '●' ELSE '' END AS OQ17
+		, CASE WHEN Q18		 = '2' THEN '●' ELSE '' END AS OQ18
+		, CASE WHEN Q19 	 = '2' THEN '●' ELSE '' END AS OQ19
+		, Q12_1, Q12_2, Q12_3, Q12_4, Q12_5, Q12_TOTAL
+		  FROM mb_mmse
+		  WHERE object_idx = #{objectIdx}
+		   AND mmse_num = #{examNum}
+		   AND mmse_kind = 1
+		   AND flag = 'U'
+	</select>
+
+	<select id="select_mb_kmmse_list" parameterType="HashMap" resultType="MbMmseVO">
+		SELECT 'S' AUD
+		, CASE WHEN Q01		 = '1' THEN '●' ELSE '' END AS XQ01
+		, CASE WHEN Q02		 = '1' THEN '●' ELSE '' END AS XQ02
+		, CASE WHEN Q03		 = '1' THEN '●' ELSE '' END AS XQ03
+		, CASE WHEN Q04		 = '1' THEN '●' ELSE '' END AS XQ04
+		, CASE WHEN Q05		 = '1' THEN '●' ELSE '' END AS XQ05
+		, CASE WHEN Q06		 = '1' THEN '●' ELSE '' END AS XQ06
+		, CASE WHEN Q07		 = '1' THEN '●' ELSE '' END AS XQ07
+		, CASE WHEN Q08		 = '1' THEN '●' ELSE '' END AS XQ08
+		, CASE WHEN Q09		 = '1' THEN '●' ELSE '' END AS XQ09
+		, CASE WHEN Q10		 = '1' THEN '●' ELSE '' END AS XQ10
+		, CASE WHEN Q11_1	 = '1' THEN '●' ELSE '' END AS XQ11_1
+		, CASE WHEN Q11_2	 = '1' THEN '●' ELSE '' END AS XQ11_2
+		, CASE WHEN Q11_3	 = '1' THEN '●' ELSE '' END AS XQ11_3
+		, CASE WHEN Q12_1	 = '1' THEN '●' ELSE '' END AS XQ12_1
+		, CASE WHEN Q12_2	 = '1' THEN '●' ELSE '' END AS XQ12_2
+		, CASE WHEN Q12_3	 = '1' THEN '●' ELSE '' END AS XQ12_3
+		, CASE WHEN Q12_4	 = '1' THEN '●' ELSE '' END AS XQ12_4
+		, CASE WHEN Q12_5	 = '1' THEN '●' ELSE '' END AS XQ12_5
+		, CASE WHEN Q13_1	 = '1' THEN '●' ELSE '' END AS XQ13_1
+		, CASE WHEN Q13_2	 = '1' THEN '●' ELSE '' END AS XQ13_2
+		, CASE WHEN Q13_3	 = '1' THEN '●' ELSE '' END AS XQ13_3
+		, CASE WHEN Q14_1	 = '1' THEN '●' ELSE '' END AS XQ14_1
+		, CASE WHEN Q14_2	 = '1' THEN '●' ELSE '' END AS XQ14_2
+		, CASE WHEN Q15		 = '1' THEN '●' ELSE '' END AS XQ15
+		, CASE WHEN Q16_1	 = '1' THEN '●' ELSE '' END AS XQ16_1
+		, CASE WHEN Q16_2	 = '1' THEN '●' ELSE '' END AS XQ16_2
+		, CASE WHEN Q16_3	 = '1' THEN '●' ELSE '' END AS XQ16_3
+		, CASE WHEN Q17		 = '1' THEN '●' ELSE '' END AS XQ17
+		, CASE WHEN Q18		 = '1' THEN '●' ELSE '' END AS XQ18
+		, CASE WHEN Q19 	 = '1' THEN '●' ELSE '' END AS XQ19
+		, CASE WHEN Q01		 = '2' THEN '●' ELSE '' END AS OQ01
+		, CASE WHEN Q02		 = '2' THEN '●' ELSE '' END AS OQ02
+		, CASE WHEN Q03		 = '2' THEN '●' ELSE '' END AS OQ03
+		, CASE WHEN Q04		 = '2' THEN '●' ELSE '' END AS OQ04
+		, CASE WHEN Q05		 = '2' THEN '●' ELSE '' END AS OQ05
+		, CASE WHEN Q06		 = '2' THEN '●' ELSE '' END AS OQ06
+		, CASE WHEN Q07		 = '2' THEN '●' ELSE '' END AS OQ07
+		, CASE WHEN Q08		 = '2' THEN '●' ELSE '' END AS OQ08
+		, CASE WHEN Q09		 = '2' THEN '●' ELSE '' END AS OQ09
+		, CASE WHEN Q10		 = '2' THEN '●' ELSE '' END AS OQ10
+		, CASE WHEN Q11_1	 = '2' THEN '●' ELSE '' END AS OQ11_1
+		, CASE WHEN Q11_2	 = '2' THEN '●' ELSE '' END AS OQ11_2
+		, CASE WHEN Q11_3	 = '2' THEN '●' ELSE '' END AS OQ11_3
+		, CASE WHEN Q12_1	 = '2' THEN '●' ELSE '' END AS OQ12_1
+		, CASE WHEN Q12_2	 = '2' THEN '●' ELSE '' END AS OQ12_2
+		, CASE WHEN Q12_3	 = '2' THEN '●' ELSE '' END AS OQ12_3
+		, CASE WHEN Q12_4	 = '2' THEN '●' ELSE '' END AS OQ12_4
+		, CASE WHEN Q12_5	 = '2' THEN '●' ELSE '' END AS OQ12_5
+		, CASE WHEN Q13_1	 = '2' THEN '●' ELSE '' END AS OQ13_1
+		, CASE WHEN Q13_2	 = '2' THEN '●' ELSE '' END AS OQ13_2
+		, CASE WHEN Q13_3	 = '2' THEN '●' ELSE '' END AS OQ13_3
+		, CASE WHEN Q14_1	 = '2' THEN '●' ELSE '' END AS OQ14_1
+		, CASE WHEN Q14_2	 = '2' THEN '●' ELSE '' END AS OQ14_2
+		, CASE WHEN Q15		 = '2' THEN '●' ELSE '' END AS OQ15
+		, CASE WHEN Q16_1	 = '2' THEN '●' ELSE '' END AS OQ16_1
+		, CASE WHEN Q16_2	 = '2' THEN '●' ELSE '' END AS OQ16_2
+		, CASE WHEN Q16_3	 = '2' THEN '●' ELSE '' END AS OQ16_3
+		, CASE WHEN Q17		 = '2' THEN '●' ELSE '' END AS OQ17
+		, CASE WHEN Q18		 = '2' THEN '●' ELSE '' END AS OQ18
+		, CASE WHEN Q19 	 = '2' THEN '●' ELSE '' END AS OQ19
+		, Q12_1, Q12_2, Q12_3, Q12_4, Q12_5, Q12_TOTAL
+		  FROM mb_mmse
+		 WHERE object_idx = #{objectIdx}
+		   AND mmse_num = #{examNum}
+		   AND mmse_kind = 2
+		   AND flag = 'U'
+	</select>
+
+	<select id="select_mb_mmsekc_list" parameterType="HashMap" resultType="MbMmseVO">
+		SELECT 'S' AUD
+		, CASE WHEN Q01		 = '1' THEN '●' ELSE '' END AS XQ01
+		, CASE WHEN Q02		 = '1' THEN '●' ELSE '' END AS XQ02
+		, CASE WHEN Q03		 = '1' THEN '●' ELSE '' END AS XQ03
+		, CASE WHEN Q04		 = '1' THEN '●' ELSE '' END AS XQ04
+		, CASE WHEN Q05		 = '1' THEN '●' ELSE '' END AS XQ05
+		, CASE WHEN Q06		 = '1' THEN '●' ELSE '' END AS XQ06
+		, CASE WHEN Q07		 = '1' THEN '●' ELSE '' END AS XQ07
+		, CASE WHEN Q08		 = '1' THEN '●' ELSE '' END AS XQ08
+		, CASE WHEN Q09		 = '1' THEN '●' ELSE '' END AS XQ09
+		, CASE WHEN Q10		 = '1' THEN '●' ELSE '' END AS XQ10
+		, CASE WHEN Q11_1	 = '1' THEN '●' ELSE '' END AS XQ11_1
+		, CASE WHEN Q11_2	 = '1' THEN '●' ELSE '' END AS XQ11_2
+		, CASE WHEN Q11_3	 = '1' THEN '●' ELSE '' END AS XQ11_3
+		, CASE WHEN Q12_1	 = '1' THEN '●' ELSE '' END AS XQ12_1
+		, CASE WHEN Q12_2	 = '1' THEN '●' ELSE '' END AS XQ12_2
+		, CASE WHEN Q12_3	 = '1' THEN '●' ELSE '' END AS XQ12_3
+		, CASE WHEN Q12_4	 = '1' THEN '●' ELSE '' END AS XQ12_4
+		, CASE WHEN Q12_5	 = '1' THEN '●' ELSE '' END AS XQ12_5
+		, CASE WHEN Q13_1	 = '1' THEN '●' ELSE '' END AS XQ13_1
+		, CASE WHEN Q13_2	 = '1' THEN '●' ELSE '' END AS XQ13_2
+		, CASE WHEN Q13_3	 = '1' THEN '●' ELSE '' END AS XQ13_3
+		, CASE WHEN Q14_1	 = '1' THEN '●' ELSE '' END AS XQ14_1
+		, CASE WHEN Q14_2	 = '1' THEN '●' ELSE '' END AS XQ14_2
+		, CASE WHEN Q15		 = '1' THEN '●' ELSE '' END AS XQ15
+		, CASE WHEN Q16_1	 = '1' THEN '●' ELSE '' END AS XQ16_1
+		, CASE WHEN Q16_2	 = '1' THEN '●' ELSE '' END AS XQ16_2
+		, CASE WHEN Q16_3	 = '1' THEN '●' ELSE '' END AS XQ16_3
+		, CASE WHEN Q17		 = '1' THEN '●' ELSE '' END AS XQ17
+		, CASE WHEN Q18		 = '1' THEN '●' ELSE '' END AS XQ18
+		, CASE WHEN Q19 	 = '1' THEN '●' ELSE '' END AS XQ19
+		, CASE WHEN Q01		 = '2' THEN '●' ELSE '' END AS OQ01
+		, CASE WHEN Q02		 = '2' THEN '●' ELSE '' END AS OQ02
+		, CASE WHEN Q03		 = '2' THEN '●' ELSE '' END AS OQ03
+		, CASE WHEN Q04		 = '2' THEN '●' ELSE '' END AS OQ04
+		, CASE WHEN Q05		 = '2' THEN '●' ELSE '' END AS OQ05
+		, CASE WHEN Q06		 = '2' THEN '●' ELSE '' END AS OQ06
+		, CASE WHEN Q07		 = '2' THEN '●' ELSE '' END AS OQ07
+		, CASE WHEN Q08		 = '2' THEN '●' ELSE '' END AS OQ08
+		, CASE WHEN Q09		 = '2' THEN '●' ELSE '' END AS OQ09
+		, CASE WHEN Q10		 = '2' THEN '●' ELSE '' END AS OQ10
+		, CASE WHEN Q11_1	 = '2' THEN '●' ELSE '' END AS OQ11_1
+		, CASE WHEN Q11_2	 = '2' THEN '●' ELSE '' END AS OQ11_2
+		, CASE WHEN Q11_3	 = '2' THEN '●' ELSE '' END AS OQ11_3
+		, CASE WHEN Q12_1	 = '2' THEN '●' ELSE '' END AS OQ12_1
+		, CASE WHEN Q12_2	 = '2' THEN '●' ELSE '' END AS OQ12_2
+		, CASE WHEN Q12_3	 = '2' THEN '●' ELSE '' END AS OQ12_3
+		, CASE WHEN Q12_4	 = '2' THEN '●' ELSE '' END AS OQ12_4
+		, CASE WHEN Q12_5	 = '2' THEN '●' ELSE '' END AS OQ12_5
+		, CASE WHEN Q13_1	 = '2' THEN '●' ELSE '' END AS OQ13_1
+		, CASE WHEN Q13_2	 = '2' THEN '●' ELSE '' END AS OQ13_2
+		, CASE WHEN Q13_3	 = '2' THEN '●' ELSE '' END AS OQ13_3
+		, CASE WHEN Q14_1	 = '2' THEN '●' ELSE '' END AS OQ14_1
+		, CASE WHEN Q14_2	 = '2' THEN '●' ELSE '' END AS OQ14_2
+		, CASE WHEN Q15		 = '2' THEN '●' ELSE '' END AS OQ15
+		, CASE WHEN Q16_1	 = '2' THEN '●' ELSE '' END AS OQ16_1
+		, CASE WHEN Q16_2	 = '2' THEN '●' ELSE '' END AS OQ16_2
+		, CASE WHEN Q16_3	 = '2' THEN '●' ELSE '' END AS OQ16_3
+		, CASE WHEN Q17		 = '2' THEN '●' ELSE '' END AS OQ17
+		, CASE WHEN Q18		 = '2' THEN '●' ELSE '' END AS OQ18
+		, CASE WHEN Q19 	 = '2' THEN '●' ELSE '' END AS OQ19
+		, Q12_1, Q12_2, Q12_3, Q12_4, Q12_5, Q12_TOTAL
+		  FROM mb_mmse
+		  WHERE object_idx = #{objectIdx}
+		   AND mmse_num = #{examNum}
+		   AND mmse_kind = 3
+		   AND flag = 'U'
+	</select>
+
+	<select id="select_mb_kmmse2_list" parameterType="HashMap" resultType="MbKmmse2VO">
+
+		SELECT OBJECT_IDX,SELECTION_NUM,
+		DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY
+				,KMS_01       
+				,KMS_02       
+				,KMS_03       
+				,KMS_04       
+				,KMS_05       
+				,KMS_06_A     
+				,KMS_06_B     
+				,KMS_06_C     
+				,KMS_06_D     
+				,KMS_06_E     
+				,KMS_06_SCORE 
+				,KMS_07       
+				,KMS_ALL_SCORE
+		FROM mb_kmmse2
+		WHERE OBJECT_IDX = #{objectIdx}
+		 AND SELECTION_NUM = #{examNum}
+		 AND FLAG = 'U'	
+	
+
+	</select>
+
+<insert id="update_mb_kmmse2_newlist" parameterType="HashMap">
+		
+		INSERT INTO mb_kmmse2(
+			OBJECT_IDX,
+			SUBJECT_IDX,
+			SELECTION_NUM,
+			TEST_DAY,
+			KMS_01,
+			KMS_02,
+			KMS_03,
+			KMS_04,
+			KMS_05,
+			KMS_06_A,
+			KMS_06_B,
+			KMS_06_C,
+			KMS_06_D,
+			KMS_06_E,
+			KMS_06_SCORE,
+			KMS_07,
+			KMS_ALL_SCORE,
+			FLAG,
+			INSERT_DATE,
+			INSERT_USERID,
+			UPDATE_DATE,
+			UPDATE_USERID
+			) VALUES
+			(
+			#{objectIdx , jdbcType=NUMERIC},               				                
+			#{subjectIdx , jdbcType=NUMERIC},                                      
+			#{examNum ,jdbcType=NUMERIC},                                          
+			#{testDay},
+			#{kms01 ,jdbcType = VARCHAR},     
+			#{kms02 ,jdbcType = VARCHAR},     
+			#{kms03 ,jdbcType = VARCHAR},     
+			#{kms04 ,jdbcType = VARCHAR},     
+			#{kms05 ,jdbcType = VARCHAR},     
+			#{kms06a ,jdbcType = VARCHAR},     
+			#{kms06b ,jdbcType = VARCHAR},     
+			#{kms06c ,jdbcType = VARCHAR},     
+			#{kms06d ,jdbcType = VARCHAR},     
+			#{kms06e ,jdbcType = VARCHAR},     
+			#{kms06score ,jdbcType = VARCHAR}, 
+			#{kms07 ,jdbcType = VARCHAR},      
+			#{kmsAllscore ,jdbcType = VARCHAR},   		
+		  'U',                                                                          
+		  now(),                                                                              
+		  #{insertUserid ,jdbcType=NUMERIC},                                                 
+			now(),                                                                              
+			#{updateUserid ,jdbcType=NUMERIC}                                                 
+			)                                                  
+
+	</insert>
+
+	<update id="update_mb_kmmse2_editlist" parameterType="HashMap">
+		UPDATE 
+			mb_kmmse2
+		SET
+			SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+			SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 
+     	KMS_01 = #{kms01 ,jdbcType = VARCHAR},      
+		  KMS_02 = #{kms02 ,jdbcType = VARCHAR},      
+		  KMS_03 = #{kms03 ,jdbcType = VARCHAR},      
+		  KMS_04 = #{kms04 ,jdbcType = VARCHAR},      
+		  KMS_05 = #{kms05 ,jdbcType = VARCHAR},      
+		  KMS_06_A = #{kms06a ,jdbcType = VARCHAR},     
+		  KMS_06_B = #{kms06b ,jdbcType = VARCHAR},     
+		  KMS_06_C = #{kms06c ,jdbcType = VARCHAR},     
+		  KMS_06_D = #{kms06d ,jdbcType = VARCHAR},     
+		  KMS_06_E = #{kms06e ,jdbcType = VARCHAR},     
+		  KMS_06_SCORE = #{kms06score ,jdbcType = VARCHAR}, 
+		  KMS_07 = #{kms07 ,jdbcType = VARCHAR},      
+		  KMS_ALL_SCORE = #{kmsAllscore ,jdbcType = VARCHAR},
+			TEST_DAY =  #{testDay},
+     	UPDATE_DATE = now(),                                                                                   
+     	UPDATE_USERID =#{updateUserid ,jdbcType=NUMERIC}               
+    WHERE                                        
+     	OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+     	AND FLAG = 'U'                               
+    <if test="examIdx != '' ">                     
+     	AND IDX = #{examIdx,jdbcType=NUMERIC}        
+    </if>    	           
+		
+
+	</update>
+
+
+      <insert id="update_mb_eq_newlist" parameterType="HashMap">
+		
+			INSERT INTO mb_eq(
+			OBJECT_IDX,
+			SUBJECT_IDX,
+			SELECTION_NUM,
+			TEST_DAY,    
+			EQ_01,
+			EQ_02,
+			EQ_03,
+			EQ_04,
+			EQ_05,  
+			FLAG,                    			   
+			INSERT_DATE,             
+			INSERT_USERID,           
+			UPDATE_DATE,             
+			UPDATE_USERID            
+			) VALUES                 
+			(
+			#{objectIdx , jdbcType=NUMERIC},     
+			#{subjectIdx , jdbcType=NUMERIC},    
+			#{examNum ,jdbcType=NUMERIC},        
+			#{testDay},                          
+			#{eq01, jdbcType=VARCHAR},                       
+	      	#{eq02, jdbcType=VARCHAR},
+	      	#{eq03, jdbcType=VARCHAR},
+	      	#{eq04, jdbcType=VARCHAR},
+	      	#{eq05, jdbcType=VARCHAR},    
+  			'U',                                            
+  			now(),                                    
+  			#{insertUserid ,jdbcType=NUMERIC},        
+			now(),                                    
+			#{updateUserid ,jdbcType=NUMERIC}         
+			)
+	</insert>
+
+
+	<update id="update_mb_eq_editlist" parameterType="HashMap">
+					UPDATE 
+						mb_eq
+					SET
+						SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+						SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 			    
+						EQ_01 = #{eq01, jdbcType=VARCHAR},                                    
+			            EQ_02 = #{eq02, jdbcType=VARCHAR},
+			            EQ_03 = #{eq03, jdbcType=VARCHAR},
+			            EQ_04 = #{eq04, jdbcType=VARCHAR},
+			            EQ_05 = #{eq05, jdbcType=VARCHAR},
+	          			TEST_DAY =  #{testDay},
+	    			 	UPDATE_DATE = now(),                                                                                   
+	    			 	UPDATE_USERID =#{updateUserid ,jdbcType=NUMERIC}               
+	    			WHERE                                        
+	    			 	OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+	    			 	AND FLAG = 'U'                               
+	    			<if test="examIdx != '' ">                     
+	    			 	AND IDX = #{examIdx,jdbcType=NUMERIC}        
+	    			</if>
+    
+    </update>			
+    			
+	<select id="select_mb_eq_list" parameterType="HashMap" resultType="MbEqVO">
+
+		SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,   
+				EQ_01,
+				EQ_02,
+				EQ_03,
+				EQ_04,
+				EQ_05    
+		FROM mb_eq
+			   WHERE OBJECT_IDX = #{objectIdx}
+				 AND SELECTION_NUM = #{examNum}
+				 AND FLAG = 'U'
+				 
+  </select>
+
+  <select id="select_mb_pe_list" parameterType="HashMap" resultType="MbPeVO">
+
+		SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,
+				PE_METHOD,      
+				PE_HEIGHT,      
+				PE_DWHEIGHT,    
+				PE_HEIGHTCNT_01,
+				PE_HEIGHTCNT_02,
+				PE_HEIGHTCNT_03,
+				PE_HEIGHTCNT_04,
+				PE_WEIGHT,      
+				PE_BMI,         
+				PE_WSTCIRIN,    
+				PE_BUTTOMCIRIN, 
+				PE_VSMETHOD,    
+				PE_BPARM,       
+				PE_SMOKE,       
+				PE_COFFEE,      
+				PE_BPSYS,       
+				PE_BPSYS1,      
+				PE_BPDIA,       
+				PE_BPDIA1,      
+				PE_BPSYSAVG,    
+				PE_BPDIAAVG,    
+				PE_PULSE       
+		FROM mb_pe
+			   WHERE OBJECT_IDX = #{objectIdx}
+				 AND SELECTION_NUM = #{examNum}
+				 AND FLAG = 'U'
+				 
+  </select>
+
+<insert id="update_mb_pe_newlist" parameterType="HashMap">
+		
+		INSERT INTO mb_pe(
+			OBJECT_IDX,
+			SUBJECT_IDX,
+			SELECTION_NUM,
+			TEST_DAY,
+			PE_METHOD,
+			PE_HEIGHT,
+			PE_DWHEIGHT,
+			PE_HEIGHTCNT_01,
+			PE_HEIGHTCNT_02,
+			PE_HEIGHTCNT_03,
+			PE_HEIGHTCNT_04,
+			PE_WEIGHT,
+			PE_BMI,
+			PE_WSTCIRIN,
+			PE_BUTTOMCIRIN,
+			PE_VSMETHOD,
+			PE_BPARM,
+			PE_SMOKE,
+			PE_COFFEE,
+			PE_BPSYS,
+			PE_BPSYS1,
+			PE_BPDIA,
+			PE_BPDIA1,
+			PE_BPSYSAVG,
+			PE_BPDIAAVG,
+			PE_PULSE,
+			FLAG,
+			INSERT_DATE,
+			INSERT_USERID,
+			UPDATE_DATE,
+			UPDATE_USERID
+			) VALUES
+			(
+			#{objectIdx , jdbcType=NUMERIC},               				                
+			#{subjectIdx , jdbcType=NUMERIC},                                      
+			#{examNum ,jdbcType=NUMERIC},                                          
+			#{testDay},
+			#{peMethod,jdbcType=VARCHAR},       
+			#{peHeight,jdbcType=VARCHAR},       
+			#{peDwheight,jdbcType=VARCHAR},     
+			#{peHeightcnt01,jdbcType=VARCHAR},  
+			#{peHeightcnt02,jdbcType=VARCHAR},  
+			#{peHeightcnt03,jdbcType=VARCHAR},  
+			#{peHeightcnt04,jdbcType=VARCHAR},  
+			#{peWeight,jdbcType=VARCHAR},       
+			#{peBmi,jdbcType=VARCHAR},          
+			#{peWstcirin,jdbcType=VARCHAR},     
+			#{peButtomcirin,jdbcType=VARCHAR},  
+			#{peVsmethod,jdbcType=VARCHAR},     
+			#{peBparm,jdbcType=VARCHAR},        
+			#{peSmoke,jdbcType=VARCHAR},        
+			#{peCoffee,jdbcType=VARCHAR},       
+			#{peBpsys,jdbcType=VARCHAR},        
+			#{peBpdia,jdbcType=VARCHAR},        
+			#{peBpsys1,jdbcType=VARCHAR},       
+			#{peBpdia1,jdbcType=VARCHAR},       
+			#{peBpsysavg,jdbcType=VARCHAR},     
+			#{peBpdiaavg,jdbcType=VARCHAR},     
+			#{pePulse,jdbcType=VARCHAR},      	
+		  'U',                                                                          
+		  now(),                                                                              
+		  #{insertUserid ,jdbcType=NUMERIC},                                                 
+			now(),                                                                              
+			#{updateUserid ,jdbcType=NUMERIC}                                                 
+			)                                                  
+
+	</insert>
+
+	<update id="update_mb_pe_editlist" parameterType="HashMap">
+		UPDATE 
+			mb_pe
+		SET
+			SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+			SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 
+     	PE_METHOD = #{peMethod,jdbcType=VARCHAR},     
+		  PE_HEIGHT = #{peHeight,jdbcType=VARCHAR},     
+		  PE_DWHEIGHT = #{peDwheight,jdbcType=VARCHAR},   
+		  PE_HEIGHTCNT_01 = #{peHeightcnt01,jdbcType=VARCHAR},
+		  PE_HEIGHTCNT_02 = #{peHeightcnt02,jdbcType=VARCHAR},
+		  PE_HEIGHTCNT_03 = #{peHeightcnt03,jdbcType=VARCHAR},
+		  PE_HEIGHTCNT_04 = #{peHeightcnt04,jdbcType=VARCHAR},
+		  PE_WEIGHT = #{peWeight,jdbcType=VARCHAR},     
+		  PE_BMI = #{peBmi,jdbcType=VARCHAR},        
+		  PE_WSTCIRIN = #{peWstcirin,jdbcType=VARCHAR},   
+		  PE_BUTTOMCIRIN = #{peButtomcirin,jdbcType=VARCHAR},
+		  PE_VSMETHOD = #{peVsmethod,jdbcType=VARCHAR},   
+		  PE_BPARM = #{peBparm,jdbcType=VARCHAR},      
+		  PE_SMOKE = #{peSmoke,jdbcType=VARCHAR},      
+		  PE_COFFEE = #{peCoffee,jdbcType=VARCHAR},     
+		  PE_BPSYS = #{peBpsys,jdbcType=VARCHAR},      
+		  PE_BPSYS1 = #{peBpdia,jdbcType=VARCHAR},      
+		  PE_BPDIA = #{peBpsys1,jdbcType=VARCHAR},     
+		  PE_BPDIA1 = #{peBpdia1,jdbcType=VARCHAR},     
+		  PE_BPSYSAVG = #{peBpsysavg,jdbcType=VARCHAR},   
+		  PE_BPDIAAVG = #{peBpdiaavg,jdbcType=VARCHAR},   
+		  PE_PULSE = #{pePulse,jdbcType=VARCHAR},      
+			TEST_DAY =  #{testDay},
+     	UPDATE_DATE = now(),                                                                                   
+     	UPDATE_USERID =#{updateUserid ,jdbcType=NUMERIC}               
+    WHERE                                        
+     	OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+     	AND FLAG = 'U'                               
+    <if test="examIdx != '' ">                     
+     	AND IDX = #{examIdx,jdbcType=NUMERIC}        
+    </if>    	           
+		
+
+	</update>
+
+
+
+	<select id="select_mb_ic_list" parameterType="HashMap" resultType="MbIcVO">
+		SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,IC_FDROP_DATE,IC_F_COPY,IC_FSMP_COPY,IC_FSMPDNT_COPY
+		FROM mb_ic
+	   WHERE OBJECT_IDX = #{objectIdx}
+		 AND SELECTION_NUM = #{examNum}
+		 AND FLAG = 'U'
+	</select>
+
+	<insert id="insert_mb_ic_list" parameterType="HashMap">
+		INSERT INTO mb_ic(OBJECT_IDX,SUBJECT_IDX,SELECTION_NUM,IC_FSMP_COPY,IC_FSMPDNT_COPY,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,IC_FDROP_DATE,
+						  FLAG,INSERT_DAY,INSERT_USERID,UPDATE_DATE,UPDATE_USERID) VALUES
+						  (#{objectIdx},#{subjectIdx},#{selectionNum},#{icFCopy},#{icFsmCopy},#{icFsmpdntCopy},
+						  #{testDay},#{icFdropDate},'U',now(),#{userId},now(),#{userId})
+	</insert>
+
+	<insert id="update_mb_ic_newlist" parameterType="HashMap">
+		
+		INSERT INTO  mb_ic(
+			OBJECT_IDX,
+			SUBJECT_IDX,
+			SELECTION_NUM,
+			TEST_DAY,
+			IC_F_COPY,
+			IC_FSMP_COPY,
+			IC_FSMPDNT_COPY,
+			<if test= "icFdropDate != ''">
+			IC_FDROP_DATE,
+			</if>
+			FLAG,
+			INSERT_DATE,
+			INSERT_USERID,
+			UPDATE_DATE,
+			UPDATE_USERID
+			) VALUES
+			(
+			#{objectIdx , jdbcType=NUMERIC},               				                
+			#{subjectIdx , jdbcType=NUMERIC},                                      
+			#{examNum ,jdbcType=NUMERIC},                                          
+			#{testDay},
+   			#{icFCopy ,jdbcType=VARCHAR},
+	        #{icFsmpCopy ,jdbcType=VARCHAR},
+	        #{icFsmpdntCopy ,jdbcType=VARCHAR},     			             			
+			<if test= "icFdropDate != ''">
+			#{icFdropDate},
+			</if>
+		    'U',                                                                          
+		     now(),                                                                              
+		     #{insertUserid ,jdbcType=NUMERIC},                                                 
+			 now(),                                                                              
+			 #{updateUserid ,jdbcType=NUMERIC}                                                 
+			)                                                  
+
+	</insert>
+
+	<update id="update_mb_ic_editlist" parameterType="HashMap">
+		UPDATE 
+			mb_ic 
+		SET
+			SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+			SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 
+			IC_F_COPY = #{icFCopy ,jdbcType = VARCHAR},
+			IC_FSMP_COPY = #{icFsmpCopy ,jdbcType = VARCHAR},
+			IC_FSMPDNT_COPY =  #{icFsmpdntCopy ,jdbcType = VARCHAR},
+			TEST_DAY =  #{testDay},
+			<if test= "icFdropDate != ''">
+			IC_FDROP_DATE =#{icFdropDate},
+     		</if>
+     		UPDATE_DATE = now(),                                                                                   
+     		UPDATE_USERID =#{updateUserid ,jdbcType=NUMERIC}               
+     		WHERE                                        
+     		 		OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+     		   AND FLAG = 'U'                               
+     		<if test="examIdx != '' ">                     
+     		   AND IDX = #{examIdx,jdbcType=NUMERIC}        
+     		</if>    	           
+		
+
+	</update>
+
+
+
+	<select id="select_mb_dm_list" parameterType="HashMap" resultType="MbDmVO">
+		SELECT  A.IDX IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY, DATE_FORMAT(DM_01,'%Y%m%d') DM_01
+			,DM_04
+			,DM_06
+			,DM_07
+			,DM_07_R
+			,DM_07_A
+			,DM_07_B
+			,CASE WHEN  DM_07_C IS NULL AND  SUBSTRING_INDEX(DM_07, '-', -1) > 0 THEN CONCAT(DM_07,'-00')
+			ELSE DATE_FORMAT(DM_07_C,'%Y-%m-%d') END DM_07_C
+			,DM_08
+			,DM_09
+			,DM_10
+			,A.DM_11 DM_11,C.CDNM DM_11NM
+			,DM_12
+			,IFNULL(REPLACE(GROUP_CONCAT(CONCAT(O.MOBILE1,'-'),CONCAT(O.MOBILE2,'-'),O.MOBILE3),'--',''),'') MOBILE
+            ,IFNULL(REPLACE(GROUP_CONCAT(CONCAT(O.TEL1,'-'),CONCAT(O.TEL2,'-'),O.TEL3),'--',''),'') TELNO
+			,DM_15,DM_16,DM_17,DM_18
+			,DM_19,DM_20
+			,DM_21
+			,DM_22
+			,DM_22_A
+			,DM_22_B
+			,DM_22_C
+			,DM_22_D
+			,DM_22_E
+			,DM_22_F
+			,DM_22_G
+			,DM_22_H
+			,DM_23
+			,DM_26
+			,DM_28
+			,DM_29
+			,DM_30
+			,DM_31
+			,DM_32
+			,DM_33
+			,DM_33_A
+			,DM_34
+			,DM_34_A
+			,DM_35
+			,DM_36
+			,DM_37
+			,DM_38
+			,DM_39
+			,DM_40
+			,DM_41		
+			,DM_42
+		FROM mb_dm A
+		LEFT JOIN mb_etccd C ON C.KDCD = 'A008' AND C.CDBS = A.DM_11
+		LEFT JOIN mb_etccd D ON D.KDCD = 'A011' AND D.CDBS = A.DM_12
+		LEFT JOIN mb_etccd G ON G.KDCD = 'A015' AND G.CDBS = A.DM_26
+		LEFT JOIN mb_etccd H ON H.KDCD = 'A013' AND H.CDBS = A.DM_27
+		LEFT JOIN mb_etccd I ON I.KDCD = 'A014' AND I.CDBS = A.DM_28
+		LEFT JOIN mb_etccd J ON J.KDCD = 'A017' AND J.CDBS = A.DM_23
+	 	LEFT JOIN mb_object O ON  O.IDX  = A.OBJECT_IDX
+	   WHERE A.OBJECT_IDX = #{objectIdx}
+		 AND A.SELECTION_NUM = #{examNum}
+		 AND A.FLAG = 'U'
+
+	</select>
+
+<insert id="update_mb_dm_newlist" parameterType="HashMap">
+		
+		INSERT INTO mb_dm(	                                                  
+					OBJECT_IDX,                                                          
+					SUBJECT_IDX,                                                          
+					SELECTION_NUM,                                                          
+					TEST_DAY,                                                          
+					  DM_04,                                                        
+					  DM_06,                                                        
+					  DM_07_R,                                                        
+					  DM_07_A,                                                        
+					  DM_07_B,                                                        
+					 <if test= "dm07C != ''">
+					  DM_07_C,                                                        
+					 </if>
+					  DM_08,                                                         
+					  DM_09,                                                         
+					  DM_10,                                                         
+					  DM_11, 
+					  DM_12,
+					  DM_13, 
+					  DM_14,                                                                                                                 
+					  DM_15,                                                         
+					  DM_16,                                                         
+					  DM_17,                                                         
+					  DM_18,                                                         
+					  DM_21,                                                         
+					  DM_22,                                                         
+					  DM_22_A,                                                         
+					  DM_22_B,                                                         
+					  DM_22_C,                                                         
+					  DM_22_D,                                                         
+					  DM_22_E,                                                         
+					  DM_22_F,                                                         
+					  DM_22_G,                                                         
+					  DM_22_H,                                                         
+					  DM_23,                                                         
+					  DM_26,                                                         
+					  DM_28,                                                         
+					  DM_29,                                                         
+					  DM_30,                                                         
+					  DM_31,                                                         
+					  DM_32,                                                         
+					  DM_33,                                                         
+					  DM_33_A,                                                         
+					  DM_34,                                                         
+					  DM_34_A,                                                         
+					  DM_35,                                                         
+					  DM_36,                                                         
+					  DM_37,                                                         
+					  DM_38,                                                         
+					  DM_39,                                                         
+					  DM_40,                                                         
+					  DM_41,                                                         
+					  DM_42,                                                         
+					  FLAG,
+					  INSERT_DATE,                                                         
+			          INSERT_USERID,                                                         
+			          UPDATE_DATE,                                                         
+			          UPDATE_USERID                                                    
+	         ) VALUES                                                                 
+	         (	                                                                      
+				#{objectIdx , jdbcType=NUMERIC},               				                
+				#{subjectIdx , jdbcType=NUMERIC},                                      
+				#{examNum ,jdbcType=NUMERIC},                                          
+				#{testDay},                                                            
+				#{dm04, jdbcType=VARCHAR},                                       
+		        #{dm06, jdbcType=VARCHAR},                                      
+		        #{dm07R, jdbcType=VARCHAR},                     
+		        #{dm07A, jdbcType=VARCHAR},                                       
+		        #{dm07B, jdbcType=VARCHAR},                                       
+		        #{dm07C},                                                        
+		        #{dm08, jdbcType=VARCHAR},                                   
+			      #{dm09, jdbcType=VARCHAR},                                   
+			      #{dm10, jdbcType=VARCHAR},                                   
+			      #{dm11, jdbcType=VARCHAR},                                   
+			      #{dm12, jdbcType=VARCHAR},
+			      #{dm13, jdbcType=VARCHAR},                                     
+			      #{dm14, jdbcType=VARCHAR},  
+			      #{dm15, jdbcType=VARCHAR},                                   
+			      #{dm16, jdbcType=VARCHAR},                
+			      #{dm17, jdbcType=VARCHAR},                                   
+			      #{dm18, jdbcType=VARCHAR},                                   
+			      #{dm21, jdbcType=VARCHAR},                                   
+			      #{dm22, jdbcType=VARCHAR},                                   
+			      #{dm22A, jdbcType=VARCHAR},                                         
+			      #{dm22B, jdbcType=VARCHAR},                                         
+			      #{dm22C, jdbcType=VARCHAR},                                         
+			      #{dm22D, jdbcType=VARCHAR},                                         
+			      #{dm22E, jdbcType=VARCHAR},                                         
+			      #{dm22F, jdbcType=VARCHAR},                                         
+			      #{dm22G, jdbcType=VARCHAR},                                         
+			      #{dm22H, jdbcType=VARCHAR},                                         
+			      #{dm23, jdbcType=VARCHAR},                                   
+			      #{dm26, jdbcType=VARCHAR},                                   
+			      #{dm28, jdbcType=VARCHAR},                                   
+			      #{dm29, jdbcType=VARCHAR},                                   
+			      #{dm30, jdbcType=VARCHAR},                                   
+			      #{dm31, jdbcType=VARCHAR},                                   
+			      #{dm32, jdbcType=VARCHAR},                                   
+			      #{dm33, jdbcType=VARCHAR},                                   
+			      #{dm33A, jdbcType=VARCHAR},                   	                      
+			      #{dm34, jdbcType=VARCHAR},                                   
+			      #{dm34A, jdbcType=VARCHAR},                                          
+			      #{dm35, jdbcType=VARCHAR},                                   
+			      #{dm36, jdbcType=VARCHAR},                                   
+			      #{dm37, jdbcType=VARCHAR},                                   
+			      #{dm38, jdbcType=VARCHAR},                                   
+			      #{dm39, jdbcType=VARCHAR},                                   
+			      #{dm40, jdbcType=VARCHAR},                                   
+			      #{dm41, jdbcType=VARCHAR},                                   
+			      #{dm42, jdbcType=VARCHAR},                                   
+		       	'U',                                                                          
+				now(),                                                                              
+				#{insertUserid ,jdbcType=NUMERIC},                                                 
+				now(),                                                                              
+				#{updateUserid ,jdbcType=NUMERIC}                                                 
+					)                                                                       
+					                                                                        
+					
+	</insert>				
+
+
+	<update id="update_mb_dm_editlist" parameterType="HashMap">
+	
+			UPDATE 
+			mb_dm 
+		SET
+			 SUBJECT_IDX = #{subjectIdx ,jdbcType=NUMERIC}
+			,SELECTION_NUM =#{examNum ,jdbcType=NUMERIC} 
+			,TEST_DAY =  #{testDay}
+			,DM_04 = #{dm04 , jdbcType=VARCHAR }             
+		  ,DM_06 = #{dm06 , jdbcType=VARCHAR }             
+		  ,DM_07_R = #{dm07R , jdbcType=VARCHAR }             
+		  ,DM_07_A = #{dm07A , jdbcType=VARCHAR }             
+		  ,DM_07_B = #{dm07B , jdbcType=VARCHAR }             
+		 <if test= "dm07C != ''">
+		  ,DM_07_C = #{dm07C}    
+		  </if>                           
+		  ,DM_08 = #{dm08 , jdbcType=VARCHAR }             
+		  ,DM_09 = #{dm09 , jdbcType=VARCHAR }             
+		  ,DM_10 = #{dm10 , jdbcType=VARCHAR }             
+		  ,DM_11 = #{dm11 , jdbcType=VARCHAR }             
+		  ,DM_12 = #{dm12 , jdbcType=VARCHAR }
+		  ,DM_13 = #{dm13 , jdbcType=VARCHAR }             
+		  ,DM_14 = #{dm14 , jdbcType=VARCHAR }             
+		  ,DM_15 = #{dm15 , jdbcType=VARCHAR }             
+		  ,DM_16 = #{dm16 , jdbcType=VARCHAR }             
+		  ,DM_17 = #{dm17 , jdbcType=VARCHAR }             
+		  ,DM_18 = #{dm18 , jdbcType=VARCHAR }             
+		  ,DM_21 = #{dm21 , jdbcType=VARCHAR }             
+		  ,DM_22 = #{dm22 , jdbcType=VARCHAR }             
+		  ,DM_22_A = #{dm22A, jdbcType=VARCHAR }             
+		  ,DM_22_B = #{dm22B, jdbcType=VARCHAR }             
+		  ,DM_22_C = #{dm22C, jdbcType=VARCHAR }             
+		  ,DM_22_D = #{dm22D, jdbcType=VARCHAR }             
+		  ,DM_22_E = #{dm22E, jdbcType=VARCHAR }             
+		  ,DM_22_F = #{dm22F, jdbcType=VARCHAR }             
+		  ,DM_22_G = #{dm22G, jdbcType=VARCHAR }             
+		  ,DM_22_H = #{dm22H, jdbcType=VARCHAR }             
+		  ,DM_23 = #{dm23 , jdbcType=VARCHAR }             
+		  ,DM_26 = #{dm26 , jdbcType=VARCHAR }             
+		  ,DM_28 = #{dm28 , jdbcType=VARCHAR }             
+		  ,DM_29 = #{dm29 , jdbcType=VARCHAR }             
+		  ,DM_30 = #{dm30 , jdbcType=VARCHAR }             
+		  ,DM_31 = #{dm31 , jdbcType=VARCHAR }             
+		  ,DM_32 = #{dm32 , jdbcType=VARCHAR }             
+		  ,DM_33 = #{dm33 , jdbcType=VARCHAR }             
+		  ,DM_33_A = #{dm33A, jdbcType=VARCHAR }             
+		  ,DM_34 = #{dm34  , jdbcType=VARCHAR }             
+		  ,DM_34_A = #{dm34A, jdbcType=VARCHAR }             
+		  ,DM_35 = #{dm35 , jdbcType=VARCHAR }             
+		  ,DM_36 = #{dm36 , jdbcType=VARCHAR }             
+		  ,DM_37 = #{dm37 , jdbcType=VARCHAR }             
+		  ,DM_38 = #{dm38 , jdbcType=VARCHAR }             
+		  ,DM_39 = #{dm39 , jdbcType=VARCHAR }             
+		  ,DM_40 = #{dm40 , jdbcType=VARCHAR }             
+		  ,DM_41 = #{dm41 , jdbcType=VARCHAR }             
+		  ,DM_42 = #{dm42 , jdbcType=VARCHAR }
+		WHERE                                                           
+				OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}
+				AND FLAG = 'U'                             
+				AND IDX = #{examIdx,jdbcType=NUMERIC}      
+	</update>
+
+
+	<select id="select_mb_sm_list" parameterType="HashMap" resultType="MbSmVO">
+		SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,SM_01,SM_02,SM_03,SM_03_A,SM_03_B,SM_03_C,SM_03_D1,SM_03_D2
+		,SM_03_E,SM_03_F1,SM_03_F2,SM_04 
+		 FROM mb_sm
+		 WHERE OBJECT_IDX = #{objectIdx}
+		 AND SELECTION_NUM = #{examNum}
+		 AND FLAG = 'U'
+	</select>
+
+
+	
+	<insert id="update_mb_sm_newlist" parameterType="HashMap">
+			INSERT INTO mb_sm(
+				OBJECT_IDX,
+				SUBJECT_IDX, 
+				SELECTION_NUM,
+				TEST_DAY,
+				SM_01,
+				SM_02,
+				SM_03,
+				SM_03_A,
+				SM_03_B,
+				SM_03_C,
+				SM_03_D1,
+				SM_03_D2,
+				SM_03_E,
+				SM_03_F1,
+				SM_03_F2,
+				SM_04,
+				FLAG,
+				INSERT_DATE,
+				INSERT_USERID,
+				UPDATE_DATE,
+				UPDATE_USERID
+				) VALUES
+				(					  
+				#{objectIdx , jdbcType=NUMERIC},
+				#{subjectIdx , jdbcType=NUMERIC},
+				#{examNum ,jdbcType=NUMERIC},
+				#{testDay},
+				#{r1 ,jdbcType=VARCHAR},          
+				#{t3age ,jdbcType=VARCHAR},          
+				#{r2 ,jdbcType=VARCHAR},          
+				#{t3a ,jdbcType=VARCHAR},         
+				#{t3b ,jdbcType=VARCHAR},         
+				#{t3c ,jdbcType=VARCHAR},				  
+				#{t3d1 ,jdbcType=VARCHAR},        
+				#{t3d2 ,jdbcType=VARCHAR},        
+				#{t3e ,jdbcType=VARCHAR},         
+				#{t3f1 ,jdbcType=VARCHAR},        
+				#{t3f2 ,jdbcType=VARCHAR},        
+				#{forwardt ,jdbcType=VARCHAR},          
+				'U',
+				now(),
+				#{insertUserid ,jdbcType=NUMERIC},
+				now(),
+				#{updateUserid ,jdbcType=NUMERIC}
+				)
+			
+</insert>
+
+<update id="update_mb_sm_editlist" parameterType="HashMap">
+		UPDATE 
+			mb_sm 
+		SET
+			 SUBJECT_IDX = #{subjectIdx ,jdbcType=NUMERIC}
+			, SELECTION_NUM =#{examNum ,jdbcType=NUMERIC} 
+			, TEST_DAY =  #{testDay}
+			, SM_01 = #{r1 ,jdbcType=VARCHAR}             
+			, SM_02 = #{t3age ,jdbcType=VARCHAR}             
+			, SM_03 = #{r2 ,jdbcType=VARCHAR}         
+			, SM_03_A = #{t3a ,jdbcType=VARCHAR}           
+			, SM_03_B = #{t3b ,jdbcType=VARCHAR}           
+			, SM_03_C = #{t3c ,jdbcType=VARCHAR}			    
+			, SM_03_D1 = #{t3d1 ,jdbcType=VARCHAR}            
+			, SM_03_D2 = #{t3d2 ,jdbcType=VARCHAR}            
+			, SM_03_E = #{t3e ,jdbcType=VARCHAR}            
+			, SM_03_F1 = #{t3f1 ,jdbcType=VARCHAR}           
+			, SM_03_F2 = #{t3f2 ,jdbcType=VARCHAR}           
+			, SM_04 = #{forwardt , jdbcType=VARCHAR}        
+		    , UPDATE_DATE = now()
+		    , UPDATE_USERID =#{updateUserid}
+     		WHERE                                        
+     		  OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+     		   AND FLAG = 'U'                               
+     		<if test="examIdx != '' ">                     
+     		   AND IDX = #{examIdx,jdbcType=NUMERIC}        
+     		</if>    	     
+		
+	</update>
+
+
+	<select id="select_mb_dr_list" parameterType="HashMap" resultType="MbDrVO">
+		SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,DR_01,DR_01A,DR_02A,DR_02B,DR_02C,DR_02D,DR_02E,DR_02F
+		,DR_02G,DR_02H,DR_02I,DR_02J
+		 FROM mb_dr
+		 WHERE OBJECT_IDX = #{objectIdx}
+		 AND SELECTION_NUM = #{examNum}
+		 AND FLAG = 'U'
+	</select>
+
+		<insert id="update_mb_dr_newlist" parameterType="HashMap">
+					INSERT INTO mb_dr(
+						OBJECT_IDX,
+						SUBJECT_IDX, 
+						SELECTION_NUM,
+						TEST_DAY,
+						DR_01,
+						DR_01A,
+						DR_02A,
+						DR_02B,
+						DR_02C,
+						DR_02D,
+						DR_02E,
+						DR_02F,
+						DR_02G,
+						DR_02H,
+						DR_02I,
+						DR_02J,
+						FLAG,
+						INSERT_DATE,
+						INSERT_USERID,
+						UPDATE_DATE,
+						UPDATE_USERID
+						) VALUES
+						(					  
+						#{objectIdx , jdbcType=NUMERIC},
+						#{subjectIdx , jdbcType=NUMERIC},
+						#{examNum ,jdbcType=NUMERIC},
+						#{testDay},
+						#{dr01 ,jdbcType=VARCHAR},
+						#{dr01a ,jdbcType=VARCHAR},
+						#{dr02a ,jdbcType=VARCHAR},
+						#{dr02b ,jdbcType=VARCHAR},
+						#{dr02c ,jdbcType=VARCHAR},
+						#{dr02d ,jdbcType=VARCHAR},
+						#{dr02e ,jdbcType=VARCHAR},
+						#{dr02f ,jdbcType=VARCHAR},
+						#{dr02g ,jdbcType=VARCHAR},
+						#{dr02h ,jdbcType=VARCHAR},
+						#{dr02i ,jdbcType=VARCHAR},
+						#{dr02j ,jdbcType=VARCHAR},
+						'U',
+						now(),
+						#{insertUserid ,jdbcType=NUMERIC},
+						now(),
+						#{updateUserid ,jdbcType=NUMERIC}
+						)
+					
+		</insert>
+
+		<update id="update_mb_dr_editlist" parameterType="HashMap">
+				UPDATE 
+					mb_dr
+				SET
+					 SUBJECT_IDX = #{subjectIdx ,jdbcType=NUMERIC}
+					, SELECTION_NUM =#{examNum ,jdbcType=NUMERIC} 
+					, TEST_DAY =  #{testDay}
+					, DR_01 =  #{dr01 ,jdbcType=VARCHAR}           
+					, DR_01A =  #{dr01a ,jdbcType=VARCHAR} 
+					, DR_02A =  #{dr02a ,jdbcType=VARCHAR} 
+					, DR_02B =  #{dr02b ,jdbcType=VARCHAR}
+					, DR_02C =  #{dr02c ,jdbcType=VARCHAR}
+					, DR_02D =  #{dr02d ,jdbcType=VARCHAR} 
+					, DR_02E =  #{dr02e ,jdbcType=VARCHAR}
+					, DR_02F =  #{dr02f ,jdbcType=VARCHAR}
+					, DR_02G =  #{dr02g ,jdbcType=VARCHAR}
+					, DR_02H =  #{dr02h ,jdbcType=VARCHAR}
+					, DR_02I =  #{dr02i ,jdbcType=VARCHAR}
+					, DR_02J =  #{dr02j ,jdbcType=VARCHAR}    
+				    , UPDATE_DATE = now()
+				    , UPDATE_USERID =#{updateUserid}
+				WHERE
+					OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}
+					AND FLAG = 'U'
+					<if test="examIdx != '' ">
+					AND IDX = #{examIdx,jdbcType=NUMERIC}
+					</if>
+			</update>
+
+			<select id="select_mb_pha_list" parameterType="HashMap" resultType="MbPhaVO">
+				SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY
+				,PHA01,PHA01A,PHA01B,PHA01C
+				,PHA01D,PHA01E,PHA01F,PHA01G
+				,PHA02,PHA02A,PHA02B,PHA02C
+				,PHA03,PHA03A,PHA03B,PHA03C
+				,PHA03D,PHA03E,PHA03F,PHA03G
+				,PHA04A,PHA04B
+				,PHA05,PHA05A,PHA05B
+				,PHA06
+				 FROM mb_pha
+				 WHERE OBJECT_IDX = #{objectIdx}
+				 AND SELECTION_NUM = #{examNum}
+				 AND FLAG = 'U'
+			</select>
+
+		<insert id="update_mb_pha_newlist" parameterType="HashMap">
+					INSERT INTO mb_pha(
+						 OBJECT_IDX
+						,SUBJECT_IDX 
+						,SELECTION_NUM
+						,TEST_DAY
+						,PHA01,PHA01A,PHA01B,PHA01C
+						,PHA01D,PHA01E,PHA01F,PHA01G
+						,PHA02,PHA02A,PHA02B,PHA02C
+						,PHA03,PHA03A,PHA03B,PHA03C
+						,PHA03D,PHA03E,PHA03F,PHA03G
+						,PHA04A,PHA04B
+						,PHA05,PHA05A,PHA05B
+						,PHA06
+						,FLAG
+						,INSERT_DATE
+						,INSERT_USERID
+						,UPDATE_DATE
+						,UPDATE_USERID
+						) VALUES
+						(					  
+					   #{objectIdx , jdbcType=NUMERIC},
+					   #{subjectIdx , jdbcType=NUMERIC},
+					   #{examNum ,jdbcType=NUMERIC},
+					   #{testDay},
+					   #{pha01  ,jdbcType=VARCHAR},    
+				       #{t3a ,jdbcType=VARCHAR},       
+				       #{t3b ,jdbcType=VARCHAR},       
+				       #{t3c ,jdbcType=VARCHAR},       
+				       #{pha01d  ,jdbcType=VARCHAR},   
+				       #{t3d ,jdbcType=VARCHAR},       
+				       #{t3e ,jdbcType=VARCHAR},       
+				       #{t3f ,jdbcType=VARCHAR},       
+				       #{pha02  ,jdbcType=VARCHAR},    
+				       #{t3h ,jdbcType=VARCHAR},       
+				       #{t3i ,jdbcType=VARCHAR}, 	    
+				       #{t3j ,jdbcType=VARCHAR},       
+				       #{pha03  ,jdbcType=VARCHAR},    
+				       #{t3k ,jdbcType=VARCHAR},       
+				       #{t3l ,jdbcType=VARCHAR},  	    
+				       #{t3m  ,jdbcType=VARCHAR},      
+				       #{pha03d  ,jdbcType=VARCHAR},   
+				       #{t3n ,jdbcType=VARCHAR},       
+				       #{t3o ,jdbcType=VARCHAR},       
+				       #{t3p ,jdbcType=VARCHAR},   	  
+				       #{t3q ,jdbcType=VARCHAR},       
+				       #{t3r ,jdbcType=VARCHAR},  	    
+				       #{pha05 ,jdbcType=VARCHAR},   	
+				       #{t3s ,jdbcType=VARCHAR},       
+				       #{t3t ,jdbcType=VARCHAR},  	    
+				       #{pha06 ,jdbcType=VARCHAR},     
+						'U',
+						now(),
+						#{insertUserid ,jdbcType=NUMERIC},
+						now(),
+						#{updateUserid ,jdbcType=NUMERIC}
+						)
+					
+		</insert>
+
+		<update id="update_mb_pha_editlist" parameterType="HashMap">
+				UPDATE 
+					mb_pha
+				SET
+					 SUBJECT_IDX = #{subjectIdx ,jdbcType=NUMERIC}
+					, SELECTION_NUM = #{examNum ,jdbcType=NUMERIC} 
+					, TEST_DAY =  #{testDay}
+					, PHA01  =	#{pha01  ,jdbcType=VARCHAR}             
+	    			, PHA01A =	#{t3a ,jdbcType=VARCHAR}  
+	    			, PHA01B =	#{t3b ,jdbcType=VARCHAR}  
+	    			, PHA01C =	#{t3c ,jdbcType=VARCHAR}  
+	    			, PHA01D =	#{pha01d  ,jdbcType=VARCHAR}   
+	    			, PHA01E =	#{t3d ,jdbcType=VARCHAR}  
+	    			, PHA01F =	#{t3e ,jdbcType=VARCHAR}  
+	    			, PHA01G =	#{t3f ,jdbcType=VARCHAR}  
+	    			, PHA02 = 	#{pha02  ,jdbcType=VARCHAR}   
+	    			, PHA02A =	#{t3h ,jdbcType=VARCHAR}  
+	    			, PHA02B =	#{t3i ,jdbcType=VARCHAR} 	 
+	    			, PHA02C =	#{t3j ,jdbcType=VARCHAR} 
+	    			, PHA03 = 	#{pha03  ,jdbcType=VARCHAR}   
+	    			, PHA03A =	#{t3k ,jdbcType=VARCHAR}   
+	    			, PHA03B =	#{t3l ,jdbcType=VARCHAR}  	
+	    			, PHA03C =	#{t3m  ,jdbcType=VARCHAR}  
+	    			, PHA03D =	#{pha03d  ,jdbcType=VARCHAR}
+	    			, PHA03E =	#{t3n ,jdbcType=VARCHAR}   
+	    			, PHA03F =	#{t3o ,jdbcType=VARCHAR}  
+	    			, PHA03G =	#{t3p ,jdbcType=VARCHAR}  
+	    			, PHA04A =	#{t3q ,jdbcType=VARCHAR}  
+	    			, PHA04B =	#{t3r ,jdbcType=VARCHAR} 	
+	    			, PHA05 = 	#{pha05 ,jdbcType=VARCHAR}  	
+	    			, PHA05A =	#{t3s ,jdbcType=VARCHAR}  
+	    			, PHA05B =	#{t3t ,jdbcType=VARCHAR} 	
+	    			, PHA06 = 	#{pha06 ,jdbcType=VARCHAR}
+				    , UPDATE_DATE = now()
+				    , UPDATE_USERID =#{updateUserid}
+				WHERE
+					OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}
+					AND FLAG = 'U'
+					<if test="examIdx != '' ">
+					AND IDX = #{examIdx ,jdbcType=NUMERIC}
+					</if>
+			</update>
+			
+			<select id="select_mb_sp_list" parameterType="HashMap" resultType="MbSpVO">
+				SELECT IDX,OBJECT_IDX,SELECTION_NUM,TEST_DAY
+				, SP01  
+				, SP01A 
+				, SP01B 
+				, SP02A 
+				, SP02B 
+				, SP03  
+				, SP03A 
+				, SP03B 
+				, SP04A 
+				, SP04B 
+				, SP05A 
+				, SP05B 
+				, SP05C 
+				, SP05D 
+				, SP05E 
+				, SP05F 
+				, SP05G 
+				, SP05H 
+				, SP05I 
+				, SP05JA
+				, SP05JB
+				, SP06  
+				, SP07  
+				, SP08  
+				, SP09  
+				, SP10  
+				, SP10A 
+				, SP10B 
+				, SP10C 
+				, SP10D 
+				, SP10E 
+				, SP10E2
+				 FROM mb_sp
+				 WHERE OBJECT_IDX = #{objectIdx}
+				 AND SELECTION_NUM = #{examNum}
+				 AND FLAG = 'U'
+			</select>
+
+		<insert id="update_mb_sp_newlist" parameterType="HashMap">
+					INSERT INTO mb_sp(
+						  OBJECT_IDX
+						, SUBJECT_IDX
+						, SELECTION_NUM
+						, TEST_DAY
+						, SP01  
+						, SP01A 
+						, SP01B 
+						, SP02A 
+						, SP02B 
+						, SP03  
+						, SP03A 
+						, SP03B 
+						, SP04A 
+						, SP04B 
+						, SP05A 
+						, SP05B 
+						, SP05C 
+						, SP05D 
+						, SP05E 
+						, SP05F 
+						, SP05G 
+						, SP05H 
+						, SP05I 
+						, SP05JA
+						, SP05JB
+						, SP06  
+						, SP07  
+						, SP08  
+						, SP09  
+						, SP10  
+						, SP10A 
+						, SP10B 
+						, SP10C 
+						, SP10D 
+						, SP10E 
+						, SP10E2
+						, FLAG
+						, INSERT_DATE
+						, INSERT_USERID
+						, UPDATE_DATE
+						, UPDATE_USERID
+						) VALUES
+						(					  
+						#{objectIdx , jdbcType=NUMERIC},
+						#{subjectIdx , jdbcType=NUMERIC},
+						#{examNum ,jdbcType=NUMERIC},
+						#{testDay},
+					    #{sp01  ,jdbcType=VARCHAR},  
+						#{t3a ,jdbcType=VARCHAR},
+						#{t3b ,jdbcType=VARCHAR},
+						#{t3c ,jdbcType=VARCHAR},
+						#{t3d ,jdbcType=VARCHAR},
+						#{sp03  ,jdbcType=VARCHAR},
+						#{t3e ,jdbcType=VARCHAR},
+						#{t3f ,jdbcType=VARCHAR},
+						#{t3g ,jdbcType=VARCHAR},
+						#{t3h ,jdbcType=VARCHAR},
+						#{sp05a ,jdbcType=VARCHAR},
+						#{sp05b ,jdbcType=VARCHAR},
+						#{sp05c ,jdbcType=VARCHAR},
+						#{sp05d ,jdbcType=VARCHAR},
+						#{sp05e ,jdbcType=VARCHAR},
+						#{sp05f ,jdbcType=VARCHAR},
+						#{sp05g ,jdbcType=VARCHAR},
+						#{sp05h ,jdbcType=VARCHAR},
+						#{sp05i ,jdbcType=VARCHAR},
+						#{t3i ,jdbcType=VARCHAR},
+						#{sp05jb,jdbcType=VARCHAR},
+						#{sp06  ,jdbcType=VARCHAR},
+						#{sp07  ,jdbcType=VARCHAR},
+						#{sp08  ,jdbcType=VARCHAR},
+						#{sp09  ,jdbcType=VARCHAR},
+						#{sp10  ,jdbcType=VARCHAR},
+						#{sp10a ,jdbcType=VARCHAR},
+						#{sp10b ,jdbcType=VARCHAR},
+						#{sp10c ,jdbcType=VARCHAR},
+						#{sp10d ,jdbcType=VARCHAR},
+						#{sp10e ,jdbcType=VARCHAR},
+						#{t3j ,jdbcType=VARCHAR},  	  		
+						'U',
+						now(),
+						#{insertUserid ,jdbcType=NUMERIC},
+						now(),
+						#{updateUserid ,jdbcType=NUMERIC}
+						)
+					
+		</insert>
+
+		<update id="update_mb_sp_editlist" parameterType="HashMap">
+				UPDATE 
+					mb_sp
+				SET
+					 SUBJECT_IDX = #{subjectIdx ,jdbcType=NUMERIC}
+					, SELECTION_NUM =#{examNum ,jdbcType=NUMERIC} 
+					, TEST_DAY =  #{testDay}
+					, SP01   =  #{sp01  ,jdbcType=VARCHAR}               
+					, SP01A  =  #{t3a ,jdbcType=VARCHAR}          
+					, SP01B  =  #{t3b ,jdbcType=VARCHAR}          
+					, SP02A  =  #{t3c ,jdbcType=VARCHAR}          
+					, SP02B  =  #{t3d ,jdbcType=VARCHAR}          
+					, SP03   =  #{sp03  ,jdbcType=VARCHAR}         
+					, SP03A  =  #{t3e ,jdbcType=VARCHAR}          
+					, SP03B  =  #{t3f ,jdbcType=VARCHAR}          
+					, SP04A  =  #{t3g ,jdbcType=VARCHAR}          
+					, SP04B  =  #{t3h ,jdbcType=VARCHAR}          
+					, SP05A  =  #{sp05a ,jdbcType=VARCHAR}         
+					, SP05B  =  #{sp05b ,jdbcType=VARCHAR}         
+					, SP05C  =  #{sp05c ,jdbcType=VARCHAR}         
+					, SP05D  =  #{sp05d ,jdbcType=VARCHAR}         
+					, SP05E  =  #{sp05e ,jdbcType=VARCHAR}         
+					, SP05F  =  #{sp05f ,jdbcType=VARCHAR}         
+					, SP05G  =  #{sp05g ,jdbcType=VARCHAR}         
+					, SP05H  =  #{sp05h ,jdbcType=VARCHAR}         
+					, SP05I  =  #{sp05i ,jdbcType=VARCHAR}         
+					, SP05JA =  #{t3i ,jdbcType=VARCHAR}          
+					, SP05JB =  #{sp05jb,jdbcType=VARCHAR}         
+					, SP06   =  #{sp06  ,jdbcType=VARCHAR}         
+					, SP07   =  #{sp07  ,jdbcType=VARCHAR}         
+					, SP08   =  #{sp08  ,jdbcType=VARCHAR}         
+					, SP09   =  #{sp09  ,jdbcType=VARCHAR}         
+					, SP10   =  #{sp10  ,jdbcType=VARCHAR}         
+					, SP10A  =  #{sp10a ,jdbcType=VARCHAR}         
+					, SP10B  =  #{sp10b ,jdbcType=VARCHAR}         
+					, SP10C  =  #{sp10c ,jdbcType=VARCHAR}         
+					, SP10D  =  #{sp10d ,jdbcType=VARCHAR}         
+					, SP10E  =  #{sp10e ,jdbcType=VARCHAR}         
+					, SP10E2 =  #{t3j ,jdbcType=VARCHAR} 	  		 
+				    , UPDATE_DATE = now()
+				    , UPDATE_USERID =#{updateUserid}
+				WHERE
+					OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}
+					AND FLAG = 'U'
+					<if test="examIdx != '' ">
+					AND IDX = #{examIdx,jdbcType=NUMERIC}
+					</if>
+			</update>
+		<select id="select_mb_mh_list" parameterType="HashMap" resultType="MbMhVO">
+				SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,MH_01_P,MH_01_A_P,MH_01_B_P,MH_01_C_P,MH_01_D_P,MH_01_E_P,MH_06_P,MH_07_P,MH_08_P,MH_09_P,MH_10_P
+				  ,MH_11_P,MH_12_P,MH_13_P,MH_14_P,MH_15_P,MH_16_P,MH_17_P,MH_18_P,MH_19_P,MH_20_P
+				  ,MH_01_N,MH_01_A_N,MH_01_B_N,MH_01_C_N,MH_01_D_N,MH_01_E_N,MH_02_N,MH_03_N,MH_NEW04_A_N,MH_NEW04_B_N,MH_NEW04_C_N,MH_04_N,MH_05_N,MH_06_N,MH_07_N,MH_08_N
+				  ,MH_11_N,MH_12_N,MH_13_N,MH_14_N,MH_15_N,MH_16_N,MH_17_N,MH_18_N,MH_20,MH_21_N
+			  FROM mb_mh
+			 WHERE OBJECT_IDX = #{objectIdx}
+			   AND SELECTION_NUM = #{examNum}
+			   AND FLAG = 'U'
+		</select>					
+	
+	
+	<insert id="update_mb_mh_newlist" parameterType="HashMap">
+	 INSERT INTO mb_mh(
+						  OBJECT_IDX,       
+						  SUBJECT_IDX,
+						  SELECTION_NUM,
+						  TEST_DAY,
+						  MH_01_P,     
+						  MH_01_A_P,
+						  MH_01_B_P,
+						  MH_01_C_P,
+						  MH_01_D_P,
+						  MH_01_E_P,
+						  MH_06_P,
+						  MH_07_P,
+						  MH_08_P,
+						  MH_09_P,
+						  MH_10_P,
+							MH_11_P,
+							MH_12_P,
+							MH_13_P,
+							MH_14_P,
+							MH_15_P,
+							MH_16_P,
+							MH_17_P,
+							MH_18_P,
+							MH_19_P,
+							MH_01_N,
+							MH_01_A_N,
+							MH_01_B_N,
+							MH_01_C_N,
+							MH_01_D_N,
+							MH_01_E_N,
+							MH_02_N,
+							MH_03_N,
+							MH_NEW04_A_N,
+							MH_NEW04_B_N,
+							MH_NEW04_C_N,
+							MH_04_N,
+							MH_05_N,
+							MH_06_N,
+							MH_07_N,
+							MH_08_N,
+							MH_11_N,
+							MH_12_N,
+							MH_13_N,
+							MH_14_N,
+							MH_15_N,
+							MH_16_N,
+							MH_17_N,
+							MH_18_N,
+							MH_21_N,
+							MH_20,
+							FLAG,
+						  INSERT_DATE,
+						  INSERT_USERID,
+						  UPDATE_DATE,
+						  UPDATE_USERID
+						) VALUES
+						(			
+						#{objectIdx , jdbcType=NUMERIC},
+						#{subjectIdx , jdbcType=NUMERIC},
+						#{examNum ,jdbcType=NUMERIC},
+						#{testDay},
+						#{mh01P , jdbcType=VARCHAR},
+						#{mh01AP, jdbcType=VARCHAR},
+						#{mh01BP, jdbcType=VARCHAR},
+						#{mh01CP, jdbcType=VARCHAR},
+						#{mh01DP, jdbcType=VARCHAR},
+						#{mh01EP, jdbcType=VARCHAR},
+						#{mh06P , jdbcType=VARCHAR},
+						#{mh07P , jdbcType=VARCHAR},
+						#{mh08P , jdbcType=VARCHAR},
+						#{mh09P , jdbcType=VARCHAR},
+						#{mh10P , jdbcType=VARCHAR},
+						#{mh11P , jdbcType=VARCHAR},
+						#{mh12P , jdbcType=VARCHAR},
+						#{mh13P , jdbcType=VARCHAR},
+						#{mh14P , jdbcType=VARCHAR},
+						#{mh15P , jdbcType=VARCHAR},
+						#{mh16P , jdbcType=VARCHAR},
+						#{mh17P , jdbcType=VARCHAR},
+						#{mh18P , jdbcType=VARCHAR},
+						#{mh19P , jdbcType=VARCHAR},
+						#{mh01N , jdbcType=VARCHAR},
+						#{mh01AN, jdbcType=VARCHAR},
+						#{mh01BN, jdbcType=VARCHAR},
+						#{mh01CN, jdbcType=VARCHAR},
+						#{mh01DN, jdbcType=VARCHAR},
+						#{mh01EN, jdbcType=VARCHAR},
+						#{mh02N , jdbcType=VARCHAR},
+						#{mh03N , jdbcType=VARCHAR},
+						#{mhNew04AN , jdbcType=VARCHAR},
+						#{mhNew04BN , jdbcType=VARCHAR},
+						#{mhNew04CN , jdbcType=VARCHAR},
+						#{mh04N , jdbcType=VARCHAR},
+						#{mh05N , jdbcType=VARCHAR},
+						#{mh06N , jdbcType=VARCHAR},
+						#{mh07N , jdbcType=VARCHAR},
+						#{mh08N , jdbcType=VARCHAR},
+						#{mh11N , jdbcType=VARCHAR},
+						#{mh12N , jdbcType=VARCHAR},
+						#{mh13N , jdbcType=VARCHAR},
+						#{mh14N , jdbcType=VARCHAR},
+						#{mh15N , jdbcType=VARCHAR},
+						#{mh16N , jdbcType=VARCHAR},
+						#{mh17N , jdbcType=VARCHAR},
+						#{mh18N , jdbcType=VARCHAR},
+						#{mh21N , jdbcType=VARCHAR},
+						#{mh20  , jdbcType=VARCHAR},
+						'U',                                         
+ 						now(),                            
+ 						#{insertUserid ,jdbcType=NUMERIC},
+ 						now(),                            
+ 						#{updateUserid ,jdbcType=NUMERIC} 
+ 						)                                 
+			
+	</insert>
+	
+	<update id="update_mb_mh_editlist" parameterType="HashMap">
+	
+						UPDATE 
+						mb_mh
+					SET
+					 		SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+					    SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 
+					    TEST_DAY =  #{testDay},   
+						  MH_01_P = #{mh01P , jdbcType=VARCHAR},
+						  MH_01_A_P = #{mh01AP, jdbcType=VARCHAR},
+						  MH_01_B_P = #{mh01BP, jdbcType=VARCHAR},
+						  MH_01_C_P = #{mh01CP, jdbcType=VARCHAR},
+						  MH_01_D_P = #{mh01DP, jdbcType=VARCHAR},
+						  MH_01_E_P = #{mh01EP, jdbcType=VARCHAR},
+						  MH_06_P = #{mh06P , jdbcType=VARCHAR},
+						  MH_07_P = #{mh07P , jdbcType=VARCHAR},
+						  MH_08_P = #{mh08P , jdbcType=VARCHAR},
+						  MH_09_P = #{mh09P , jdbcType=VARCHAR},
+						  MH_10_P = #{mh10P , jdbcType=VARCHAR},
+							MH_11_P = #{mh11P , jdbcType=VARCHAR},
+							MH_12_P = #{mh12P , jdbcType=VARCHAR},
+							MH_13_P = #{mh13P , jdbcType=VARCHAR},
+							MH_14_P = #{mh14P , jdbcType=VARCHAR},
+							MH_15_P = #{mh15P , jdbcType=VARCHAR},
+							MH_16_P = #{mh16P , jdbcType=VARCHAR},
+							MH_17_P = #{mh17P , jdbcType=VARCHAR},
+							MH_18_P = #{mh18P , jdbcType=VARCHAR},
+							MH_19_P = #{mh19P , jdbcType=VARCHAR},
+							MH_01_N = #{mh01N , jdbcType=VARCHAR},
+							MH_01_A_N = #{mh01AN, jdbcType=VARCHAR},
+							MH_01_B_N = #{mh01BN, jdbcType=VARCHAR},
+							MH_01_C_N = #{mh01CN, jdbcType=VARCHAR},
+							MH_01_D_N = #{mh01DN, jdbcType=VARCHAR},
+							MH_01_E_N = #{mh01EN, jdbcType=VARCHAR},
+							MH_02_N = #{mh02N , jdbcType=VARCHAR},
+							MH_03_N = #{mh03N , jdbcType=VARCHAR},
+							MH_NEW04_A_N = #{mhNew04AN , jdbcType=VARCHAR},
+						    MH_NEW04_B_N = #{mhNew04BN , jdbcType=VARCHAR},
+							MH_NEW04_C_N = #{mhNew04CN , jdbcType=VARCHAR},
+							MH_04_N = #{mh04N , jdbcType=VARCHAR},
+							MH_05_N = #{mh05N , jdbcType=VARCHAR},
+							MH_06_N = #{mh06N , jdbcType=VARCHAR},
+							MH_07_N = #{mh07N , jdbcType=VARCHAR},
+							MH_08_N = #{mh08N , jdbcType=VARCHAR},
+							MH_11_N = #{mh11N , jdbcType=VARCHAR},
+							MH_12_N = #{mh12N , jdbcType=VARCHAR},
+							MH_13_N = #{mh13N , jdbcType=VARCHAR},
+							MH_14_N = #{mh14N , jdbcType=VARCHAR},
+							MH_15_N = #{mh15N , jdbcType=VARCHAR},
+							MH_16_N = #{mh16N , jdbcType=VARCHAR},
+							MH_17_N = #{mh17N , jdbcType=VARCHAR},
+							MH_18_N = #{mh18N , jdbcType=VARCHAR},
+							MH_21_N = #{mh21N , jdbcType=VARCHAR},
+							MH_20 = #{mh20  , jdbcType=VARCHAR},
+							UPDATE_DATE = now(),                                
+              UPDATE_USERID =#{updateUserid}         
+            WHERE                                        
+              OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}
+              	AND FLAG = 'U'                             
+            <if test="examIdx != '' ">                 
+              	AND IDX = #{examIdx,jdbcType=NUMERIC}      
+            </if>                                      
+
+	</update>
+	
+	
+	<select id="select_mb_dg_list" parameterType="HashMap" resultType="MbDgVO">
+		SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,DG_01,DG_02,DG_03_1,DG_03_2,DG_03_3,DG_03_4,DG_03_5,DG_03_6,DG_03_7
+		  ,DG_03_8,DG_03_9,DG_03_10,DG_03_11,DG_03_12,DG_03_13,DG_03_14,DG_03_15
+		,DG_04
+	  FROM mb_dg
+	 WHERE OBJECT_IDX = #{objectIdx}
+	   AND SELECTION_NUM = #{examNum}
+	   AND FLAG = 'U'
+	</select>
+	
+	<insert id="update_mb_dg_newlist" parameterType="HashMap">
+		INSERT INTO mb_dg(
+			OBJECT_IDX,       
+			SUBJECT_IDX,
+			SELECTION_NUM,
+			TEST_DAY,
+			DG_01,
+			DG_02,
+			DG_03_1,
+			DG_03_2,
+			DG_03_3,
+			DG_03_4,
+			DG_03_5,
+			DG_03_6,
+			DG_03_7,
+			DG_03_8,
+			DG_03_9,
+			DG_03_10,
+			DG_03_11,
+			DG_03_12,
+			DG_03_13,
+			DG_03_14,
+			DG_03_15,
+			DG_04,
+			FLAG,
+			INSERT_DATE,
+			INSERT_USERID,
+			UPDATE_DATE,
+			UPDATE_USERID 
+		) VALUES
+			(
+			#{objectIdx , jdbcType=NUMERIC},
+			#{subjectIdx , jdbcType=NUMERIC},
+			#{examNum ,jdbcType=NUMERIC},
+			#{testDay},
+			#{dg01  , jdbcType=VARCHAR}, 
+			#{dg02  , jdbcType=VARCHAR}, 
+			#{dg031 , jdbcType=VARCHAR}, 
+			#{dg032 , jdbcType=VARCHAR}, 
+			#{dg033 , jdbcType=VARCHAR}, 
+			#{dg034 , jdbcType=VARCHAR}, 
+			#{dg035 , jdbcType=VARCHAR}, 
+			#{dg036 , jdbcType=VARCHAR}, 
+			#{dg037 , jdbcType=VARCHAR}, 
+			#{dg038 , jdbcType=VARCHAR}, 
+			#{dg039 , jdbcType=VARCHAR}, 
+			#{dg0310, jdbcType=VARCHAR}, 
+			#{dg0311, jdbcType=VARCHAR}, 
+			#{dg0312, jdbcType=VARCHAR}, 
+			#{dg0313, jdbcType=VARCHAR}, 
+			#{dg0314, jdbcType=VARCHAR}, 
+			#{dg0315, jdbcType=VARCHAR}, 
+			#{dg04  , jdbcType=VARCHAR}, 
+			'U',                                         
+		 	now(),                            
+		 	#{insertUserid ,jdbcType=NUMERIC},
+		 	now(),                            
+		 	#{updateUserid ,jdbcType=NUMERIC} 
+		 	)
+
+	</insert>
+	
+	
+	<update id="update_mb_dg_editlist" parameterType="HashMap">
+			UPDATE 
+				mb_dg
+			SET
+			 		SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+			    	SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 
+			    	TEST_DAY =  #{testDay},   
+					DG_01 =  #{dg01  , jdbcType=VARCHAR},   
+					DG_02 = #{dg02  , jdbcType=VARCHAR}, 
+					DG_03_1 = #{dg031 , jdbcType=VARCHAR}, 
+					DG_03_2 = #{dg032 , jdbcType=VARCHAR}, 
+					DG_03_3 = #{dg033 , jdbcType=VARCHAR}, 
+					DG_03_4 = #{dg034 , jdbcType=VARCHAR}, 
+					DG_03_5 = #{dg035 , jdbcType=VARCHAR}, 
+					DG_03_6 = #{dg036 , jdbcType=VARCHAR}, 
+					DG_03_7 = #{dg037 , jdbcType=VARCHAR}, 
+					DG_03_8 = #{dg038 , jdbcType=VARCHAR}, 
+					DG_03_9 = #{dg039 , jdbcType=VARCHAR}, 
+					DG_03_10 = #{dg0310, jdbcType=VARCHAR}, 
+					DG_03_11 = #{dg0311, jdbcType=VARCHAR}, 
+					DG_03_12 = #{dg0312, jdbcType=VARCHAR}, 
+					DG_03_13 = #{dg0313, jdbcType=VARCHAR}, 
+					DG_03_14 = #{dg0314, jdbcType=VARCHAR}, 
+					DG_03_15 = #{dg0315, jdbcType=VARCHAR}, 
+					DG_04 = #{dg04  , jdbcType=VARCHAR}, 
+					UPDATE_DATE = now(),                                
+		     		UPDATE_USERID =#{updateUserid}         
+		   			WHERE                                        
+		     		OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}
+		     		AND FLAG = 'U'                             
+		   		<if test="examIdx != '' ">                 
+		     		AND IDX = #{examIdx,jdbcType=NUMERIC}      
+		   		</if>    	
+	</update>
+	
+	
+	<select id="select_mb_mb_list" parameterType="HashMap" resultType="MbMbVO">
+		SELECT B_01,B_02,B_03,B_04,B_05,B_06,B_07,B_08
+		FROM mb_mb
+	   WHERE OBJECT_IDX = #{objectIdx}
+		 AND SELECTION_NUM = #{examNum}
+		 AND FLAG = 'U'
+	</select>
+
+	<select id="select_mb_fh_list" parameterType="HashMap" resultType="MbFhVO">
+		SELECT F_02,F_04
+	  , CASE F_01 WHEN '1' THEN '아니오' WHEN '2' THEN '예' ELSE F_01 END F_01
+	  , CASE F_03 WHEN '1' THEN '아니오' WHEN '2' THEN '예' ELSE F_03 END F_03
+		FROM mb_fh
+	   WHERE OBJECT_IDX = #{objectIdx}
+		 AND SELECTION_NUM = #{examNum}
+		 AND FLAG = 'U'
+	</select>
+
+	<select id="select_mb_fmh_list" parameterType="HashMap" resultType="MbFmhVO">
+			<![CDATA[
+		SELECT  IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,
+		F_01_A,
+		F_01_B,
+		F_02_A,
+		F_02_B,
+		F_03_A,
+		F_03_B	
+		FROM mb_fmh
+	   WHERE OBJECT_IDX = #{objectIdx}
+		 AND SELECTION_NUM = #{examNum}
+		 AND FLAG = 'U'
+		 ]]>
+	</select>
+		
+	<insert id="update_mb_fmh_newlist" parameterType="HashMap">
+		INSERT INTO mb_fmh(
+						OBJECT_IDX,
+						SUBJECT_IDX,
+						SELECTION_NUM,
+						TEST_DAY,
+						F_01_A,
+						F_01_B,
+						F_02_A,
+						F_02_B,
+						F_03_A,
+						F_03_B,                             
+						FLAG,
+						INSERT_DATE,
+						INSERT_USERID,
+						UPDATE_DATE,
+						UPDATE_USERID
+						) VALUES                                        
+						  (
+						#{objectIdx , jdbcType=NUMERIC},
+						#{subjectIdx , jdbcType=NUMERIC},
+						#{examNum ,jdbcType=NUMERIC},
+						#{testDay},
+						#{f01A ,jdbcType = VARCHAR}, 					
+						#{f01B ,jdbcType = VARCHAR}, 
+						#{f02A ,jdbcType = VARCHAR}, 
+						#{f02B ,jdbcType = VARCHAR}, 
+						#{f03A ,jdbcType = VARCHAR}, 
+						#{f03B ,jdbcType = VARCHAR},  					
+					  'U',                                         
+		 				now(),                            
+		 				#{insertUserid ,jdbcType=NUMERIC},
+		 				now(),                            
+		 				#{updateUserid ,jdbcType=NUMERIC} 
+		 				)          
+
+	</insert>
+
+
+	<update id="update_mb_fmh_editlist" parameterType="HashMap">
+	
+		
+			UPDATE 
+				mb_fmh
+			SET
+			 		SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+			   	SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 
+					F_01_A = #{f01A ,jdbcType = VARCHAR},                      
+					F_01_B = #{f01B ,jdbcType = VARCHAR},                      
+					F_02_A = #{f02A ,jdbcType = VARCHAR},                      
+					F_02_B = #{f02B ,jdbcType = VARCHAR},                      
+					F_03_A = #{f03A ,jdbcType = VARCHAR},                      
+					F_03_B = #{f03B ,jdbcType = VARCHAR},      
+				TEST_DAY =  #{testDay},               	
+     			UPDATE_DATE = now(),                                                                                   
+     		 	UPDATE_USERID =#{updateUserid ,jdbcType=NUMERIC}               
+     		WHERE                                        
+     		 		OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+     		   AND FLAG = 'U'                               
+     		<if test="examIdx != '' ">                     
+     		   AND IDX = #{examIdx,jdbcType=NUMERIC}        
+     		</if>    	                     
+	
+	</update>
+
+
+
+	<select id="select_mb_ah_list" parameterType="HashMap" resultType="MbAhVO">
+		SELECT O_01,O_02_REASON,O_02_YEAR
+		  , CASE O_02_SEASON WHEN '1' THEN '봄' WHEN '2' THEN '여름' WHEN '3' THEN '가을' WHEN '4' THEN '겨울' ELSE O_02_SEASON END AS O_02_SEASON
+		  FROM mb_ah
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<select id="select_mb_sh_list" parameterType="HashMap" resultType="MbShVO">
+		SELECT S_A_01,S_A_02
+			  ,S_S_01
+			  ,B.CDNM S_S_02
+			  ,CASE WHEN S_S_02 = '1' THEN '●' ELSE '' END AS S_S_02_01
+			  ,CASE WHEN S_S_02 = '2' THEN '●' ELSE '' END AS S_S_02_02
+			  ,CASE WHEN S_S_02 = '3' THEN '●' ELSE '' END AS S_S_02_03
+			  ,CASE WHEN S_S_02 = '4' THEN '●' ELSE '' END AS S_S_02_04
+			  ,CASE WHEN S_S_02 = '5' THEN '●' ELSE '' END AS S_S_02_05
+			  ,CASE WHEN S_S_02 = '6' THEN '●' ELSE '' END AS S_S_02_06
+			  ,S_S_03,S_S_04
+			  ,S_A_02_A,S_A_02_B,S_A_02_C
+		  FROM mb_sh A
+		  LEFT JOIN mb_etccd B ON B.KDCD = 'A018' AND B.CDBS = A.S_S_02
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+
+	<insert id="update_mb_kdsq_newlist" parameterType="HashMap">
+     INSERT INTO mb_kdsq(
+     			 OBJECT_IDX,       
+     			 SUBJECT_IDX,
+     			 SELECTION_NUM,
+     			 TEST_DAY, 
+	             KDSQ_01,
+	             KDSQ_02,
+	             KDSQ_03,
+	             KDSQ_04,
+	             KDSQ_05,
+	             KDSQ_06,
+	             KDSQ_07,
+	             KDSQ_08,
+	             KDSQ_09,
+	             KDSQ_10,
+	             KDSQ_11,
+	             KDSQ_12,
+	             KDSQ_13,
+	             KDSQ_14,
+	             KDSQ_15,
+	             KDSQ_TOTAL, 
+	             FLAG,
+	             INSERT_DATE,
+	             INSERT_USERID,
+	             UPDATE_DATE,
+	             UPDATE_USERID 
+		         ) VALUES
+		         (
+		         #{objectIdx , jdbcType=NUMERIC},
+				 #{subjectIdx , jdbcType=NUMERIC},
+				 #{examNum ,jdbcType=NUMERIC},
+				 #{testDay},
+				  #{kdsq01 , jdbcType = VARCHAR},   
+		          #{kdsq02 , jdbcType = VARCHAR},
+		          #{kdsq03 , jdbcType = VARCHAR},
+		          #{kdsq04 , jdbcType = VARCHAR},
+		          #{kdsq05 , jdbcType = VARCHAR},
+		          #{kdsq06 , jdbcType = VARCHAR},
+		          #{kdsq07 , jdbcType = VARCHAR},
+		          #{kdsq08 , jdbcType = VARCHAR},
+		          #{kdsq09 , jdbcType = VARCHAR},
+		          #{kdsq10 , jdbcType = VARCHAR},
+		          #{kdsq11 , jdbcType = VARCHAR},
+		          #{kdsq12 , jdbcType = VARCHAR},
+		          #{kdsq13 , jdbcType = VARCHAR},
+		          #{kdsq14 , jdbcType = VARCHAR},
+		          #{kdsq15 , jdbcType = VARCHAR},
+		          #{kdsqTotal ,jdbcType = NUMERIC},
+		          'U',                                         
+		          now(),                                 
+		          #{insertUserid ,jdbcType=NUMERIC},     
+		          now(),                                 
+		          #{updateUserid ,jdbcType=NUMERIC}      
+		          )             	
+
+	</insert>
+
+
+
+
+	<update id="update_mb_kdsq_editlist" parameterType="HashMap">
+
+			UPDATE 
+				mb_kdsq
+			SET
+			 		SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+			   		SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 
+					KDSQ_01 = #{kdsq01 , jdbcType = VARCHAR},                      
+					KDSQ_02 = #{kdsq02 , jdbcType = VARCHAR},                      
+					KDSQ_03 = #{kdsq03 , jdbcType = VARCHAR},                      
+					KDSQ_04 = #{kdsq04 , jdbcType = VARCHAR},                      
+					KDSQ_05 = #{kdsq05 , jdbcType = VARCHAR},                      
+					KDSQ_06 = #{kdsq06 , jdbcType = VARCHAR},                      
+					KDSQ_07 = #{kdsq07 , jdbcType = VARCHAR},                      
+					KDSQ_08 = #{kdsq08 , jdbcType = VARCHAR},                      
+					KDSQ_09 = #{kdsq09 , jdbcType = VARCHAR},                      
+					KDSQ_10 = #{kdsq10 , jdbcType = VARCHAR},                      
+					KDSQ_11 = #{kdsq11 , jdbcType = VARCHAR},                      
+					KDSQ_12 = #{kdsq12 , jdbcType = VARCHAR},                      
+					KDSQ_13 = #{kdsq13 , jdbcType = VARCHAR},                      
+					KDSQ_14 = #{kdsq14 , jdbcType = VARCHAR},                      
+					KDSQ_15 = #{kdsq15 , jdbcType = VARCHAR},                      
+					KDSQ_TOTAL = #{kdsqTotal , jdbcType = VARCHAR},
+					TEST_DAY =  #{testDay},
+     				UPDATE_DATE = now(),                                                                                   
+     		 		UPDATE_USERID =#{updateUserid}               
+     		WHERE                                        
+     		 		OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+     		   AND FLAG = 'U'                               
+     		<if test="examIdx != '' ">                     
+     		   AND IDX = #{examIdx,jdbcType=NUMERIC}        
+     		</if>    	                 
+
+	</update>
+
+
+	<select id="select_mb_kdsq_list" parameterType="HashMap" resultType="MbKdsqVO">
+		SELECT  IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,KDSQ_01,KDSQ_02,KDSQ_03,KDSQ_04,KDSQ_05,KDSQ_06,KDSQ_07,KDSQ_08,KDSQ_09,KDSQ_10
+		,KDSQ_11,KDSQ_12,KDSQ_13,KDSQ_14,KDSQ_15,KDSQ_TOTAL
+		  FROM mb_kdsq
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+    <insert id="update_mb_kdsqv_newlist" parameterType="HashMap">
+         INSERT INTO mb_kdsqv(
+     			 OBJECT_IDX,       
+     			 SUBJECT_IDX,
+     			 SELECTION_NUM,
+     			 TEST_DAY, 
+	             KDSQV_01,
+	             KDSQV_02,
+	             KDSQV_03,
+	             KDSQV_04,
+	             KDSQV_05,
+	   
+	             FLAG,
+	             INSERT_DATE,
+	             INSERT_USERID,
+	             UPDATE_DATE,
+	             UPDATE_USERID 
+	             ) VALUES
+	             (
+         		  #{objectIdx , jdbcType=NUMERIC},
+			 	  #{subjectIdx , jdbcType=NUMERIC},
+			 	  #{examNum ,jdbcType=NUMERIC},
+			 	  #{testDay},
+			 	  #{kdsqv01 , jdbcType = VARCHAR},   
+		          #{kdsqv02 , jdbcType = VARCHAR},
+		          #{kdsqv03 , jdbcType = VARCHAR},
+		          #{kdsqv04 , jdbcType = VARCHAR},
+		          #{kdsqv05 , jdbcType = VARCHAR},
+		          'U',                                         
+		          now(),                                 
+		          #{insertUserid ,jdbcType=NUMERIC},     
+		          now(),                                 
+		          #{updateUserid ,jdbcType=NUMERIC}      
+		          )      
+    
+    </insert>
+    
+    
+    <update id="update_mb_kdsqv_editlist" parameterType="HashMap">
+
+	UPDATE 
+		mb_kdsqv
+		SET
+		SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+		SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 
+		KDSQV_01 = #{kdsqv01 , jdbcType = VARCHAR},                      
+		KDSQV_02 = #{kdsqv02 , jdbcType = VARCHAR},                      
+		KDSQV_03 = #{kdsqv03 , jdbcType = VARCHAR},                      
+		KDSQV_04 = #{kdsqv04 , jdbcType = VARCHAR},                      
+		KDSQV_05 = #{kdsqv05 , jdbcType = VARCHAR},
+		TEST_DAY =  #{testDay},                                   
+		UPDATE_DATE = now(),                                                                                   
+		UPDATE_USERID =#{updateUserid}               
+	WHERE                                        
+		OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+		AND FLAG = 'U'                               
+		<if test="examIdx != '' ">                     
+		   AND IDX = #{examIdx,jdbcType=NUMERIC}        
+		</if>    	                 
+
+	</update>
+    
+    
+	<select id="select_mb_kdsqv_list" parameterType="HashMap" resultType="MbKdsqvVO">
+		SELECT  IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,KDSQV_01,KDSQV_02,KDSQV_03,KDSQV_04,KDSQV_05
+		  FROM mb_kdsqv
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+
+	<insert id="update_mb_smcq_newlist" parameterType="HashMap">
+    	 INSERT INTO mb_smcq(
+     			   OBJECT_IDX,       
+     			   SUBJECT_IDX,
+     			   SELECTION_NUM,
+     			   TEST_DAY, 
+	             SMCQ_01,
+	          	 SMCQ_02,
+	          	 SMCQ_N03,
+	          	 SMCQ_03,
+	          	 SMCQ_04,
+	          	 SMCQ_05,
+	          	 SMCQ_06,
+	          	 SMCQ_07,
+	          	 SMCQ_08,
+	          	 SMCQ_09,
+	          	 SMCQ_10,
+	          	 SMCQ_11,
+	          	 SMCQ_12,
+	          	 SMCQ_13,
+	          	 SMCQ_14,
+	          	 SMCQ_TOTAL,            
+	             FLAG,
+	             INSERT_DATE,
+	             INSERT_USERID,
+	             UPDATE_DATE,
+	             UPDATE_USERID 
+	             ) VALUES
+	             (
+	         	#{objectIdx , jdbcType=NUMERIC},
+				 		#{subjectIdx , jdbcType=NUMERIC},
+				 		#{examNum ,jdbcType=NUMERIC},
+				 		#{testDay},
+			      #{smcq01, jdbcType=VARCHAR},
+						#{smcq02, jdbcType=VARCHAR},
+						#{smcqN03, jdbcType=VARCHAR},
+						#{smcq03, jdbcType=VARCHAR},
+						#{smcq04, jdbcType=VARCHAR},
+						#{smcq05, jdbcType=VARCHAR},
+						#{smcq06, jdbcType=VARCHAR},
+						#{smcq07, jdbcType=VARCHAR},
+						#{smcq08, jdbcType=VARCHAR},
+						#{smcq09, jdbcType=VARCHAR},
+						#{smcq10, jdbcType=VARCHAR},
+						#{smcq11, jdbcType=VARCHAR},
+						#{smcq12, jdbcType=VARCHAR},
+						#{smcq13, jdbcType=VARCHAR},
+						#{smcq14, jdbcType=VARCHAR}, 
+	          #{smcqTotal , jdbcType = NUMERIC},
+	          'U',                                         
+	          now(),                                 
+	          #{insertUserid ,jdbcType=NUMERIC},     
+	          now(),                                 
+	          #{updateUserid ,jdbcType=NUMERIC}      
+	          )     
+	</insert>  
+ 	
+ 	
+ 	<update id="update_mb_smcq_editlist" parameterType="HashMap">
+		UPDATE 
+			mb_smcq
+		SET
+			SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+			SELECTION_NUM = #{examNum ,jdbcType=NUMERIC},                    
+			SMCQ_01 =  #{smcq01, jdbcType=VARCHAR},   
+			SMCQ_02 =  #{smcq02, jdbcType=VARCHAR},   
+			SMCQ_N03 =  #{smcqN03, jdbcType=VARCHAR},  
+			SMCQ_03 =  #{smcq03, jdbcType=VARCHAR},   
+			SMCQ_04 =  #{smcq04, jdbcType=VARCHAR},   
+			SMCQ_05 =  #{smcq05, jdbcType=VARCHAR},   
+			SMCQ_06 =  #{smcq06, jdbcType=VARCHAR},   
+			SMCQ_07 =  #{smcq07, jdbcType=VARCHAR},   
+			SMCQ_08 =  #{smcq08, jdbcType=VARCHAR},   
+			SMCQ_09 =  #{smcq09, jdbcType=VARCHAR},   
+			SMCQ_10 =  #{smcq10, jdbcType=VARCHAR},   
+			SMCQ_11 =  #{smcq11, jdbcType=VARCHAR},   
+			SMCQ_12 =  #{smcq12, jdbcType=VARCHAR},   
+			SMCQ_13 =  #{smcq13, jdbcType=VARCHAR},   
+			SMCQ_14 =  #{smcq14, jdbcType=VARCHAR},   
+			SMCQ_TOTAL =  #{smcqTotal , jdbcType = NUMERIC},                  
+		    TEST_DAY =  #{testDay},              
+			UPDATE_DATE = now(),                                                                                   
+			UPDATE_USERID =#{updateUserid}               
+		WHERE                                        
+			OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+			AND FLAG = 'U'                               
+			<if test="examIdx != '' ">                     
+			   AND IDX = #{examIdx,jdbcType=NUMERIC}        
+			</if>    	
+	</update>
+	
+	<select id="select_mb_smcq_list" parameterType="HashMap" resultType="MbSmcqVO">
+		SELECT  IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,SMCQ_01,SMCQ_02,SMCQ_N03,SMCQ_03,SMCQ_04,SMCQ_05,SMCQ_06,SMCQ_07,SMCQ_08,SMCQ_09,SMCQ_10
+			  ,SMCQ_11,SMCQ_12,SMCQ_13,SMCQ_14
+		  FROM mb_smcq
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+
+	<insert id="update_mb_gdsk_newlist" parameterType="HashMap">
+INSERT INTO mb_gds(
+		    OBJECT_IDX,       
+		    SUBJECT_IDX,
+		    SELECTION_NUM,
+		    TEST_DAY, 
+			 GDS_01, 
+			 GDS_02, 
+			 GDS_03, 
+			 GDS_04, 
+			 GDS_05, 
+			 GDS_06, 
+			 GDS_07, 
+			 GDS_08, 
+			 GDS_09, 
+			 GDS_10,                                              
+			 GDS_11,
+			 GDS_12,
+			 GDS_13,
+			 GDS_14,
+			 GDS_15,
+			 GDS_16,
+			 GDS_17,
+			 GDS_18,
+			 GDS_19,
+			 GDS_20,
+			 GDS_21,
+			 GDS_22,
+			 GDS_23,
+			 GDS_24,
+			 GDS_25,
+			 GDS_26,
+			 GDS_27,
+			 GDS_28,
+			 GDS_29,
+			 GDS_30,
+			 GDS_TOTAL,   
+			 FLAG,         						 
+			 INSERT_DATE,  						 
+			 INSERT_USERID,
+			 UPDATE_DATE,  
+			 UPDATE_USERID 
+			 ) VALUES      
+			 (  
+			 	#{objectIdx , jdbcType=NUMERIC},
+			 	#{subjectIdx , jdbcType=NUMERIC},
+			 	#{examNum ,jdbcType=NUMERIC},
+			 	#{testDay},
+				#{gds01 , jdbcType=VARCHAR},    			              
+				#{gds02 , jdbcType=VARCHAR},   
+				#{gds03 , jdbcType=VARCHAR},   
+				#{gds04 , jdbcType=VARCHAR},   
+				#{gds05 , jdbcType=VARCHAR},   
+				#{gds06 , jdbcType=VARCHAR},   
+				#{gds07 , jdbcType=VARCHAR},   
+				#{gds08 , jdbcType=VARCHAR},   
+				#{gds09 , jdbcType=VARCHAR},   
+				#{gds10 , jdbcType=VARCHAR},   
+				#{gds11 , jdbcType=VARCHAR},   
+				#{gds12 , jdbcType=VARCHAR},   
+				#{gds13 , jdbcType=VARCHAR},   
+				#{gds14 , jdbcType=VARCHAR},   
+				#{gds15 , jdbcType=VARCHAR},   
+				#{gds16 , jdbcType=VARCHAR},   
+				#{gds17 , jdbcType=VARCHAR},   
+				#{gds18 , jdbcType=VARCHAR},   
+				#{gds19 , jdbcType=VARCHAR},   
+				#{gds20 , jdbcType=VARCHAR},   
+				#{gds21 , jdbcType=VARCHAR},   
+				#{gds22 , jdbcType=VARCHAR},   
+				#{gds23 , jdbcType=VARCHAR},   
+				#{gds24 , jdbcType=VARCHAR},   
+				#{gds25 , jdbcType=VARCHAR},   
+				#{gds26 , jdbcType=VARCHAR},   
+				#{gds27 , jdbcType=VARCHAR},   
+				#{gds28 , jdbcType=VARCHAR},   
+				#{gds29 , jdbcType=VARCHAR},   
+				#{gds30 , jdbcType=VARCHAR},   
+				#{gdsTotal ,jdbcType =NUMERIC},
+				'U',                                  
+		       now(),                                
+		       #{insertUserid ,jdbcType=NUMERIC},    
+		       now(),                                
+		       #{updateUserid ,jdbcType=NUMERIC}     
+		       ) 	
+	
+	</insert>
+
+	<update id="update_mb_gdsk_editlist" parameterType="HashMap">
+		UPDATE                                                                                                     
+			mb_gds                                                   
+		SET                                                       
+			SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},           
+			SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 
+			GDS_01 =  #{gds01 , jdbcType=VARCHAR},    			                          
+			GDS_02 =  #{gds02 , jdbcType=VARCHAR},                          
+			GDS_03 =  #{gds03 , jdbcType=VARCHAR},                          
+			GDS_04 =  #{gds04 , jdbcType=VARCHAR},                          
+			GDS_05 =  #{gds05 , jdbcType=VARCHAR},                          
+			GDS_06 =  #{gds06 , jdbcType=VARCHAR},                          
+			GDS_07 =  #{gds07 , jdbcType=VARCHAR},                          
+			GDS_08 =  #{gds08 , jdbcType=VARCHAR},                          
+			GDS_09 =  #{gds09 , jdbcType=VARCHAR},                          
+			GDS_10 =  #{gds10 , jdbcType=VARCHAR},                          
+			GDS_11 =  #{gds11 , jdbcType=VARCHAR},                          
+			GDS_12 =  #{gds12 , jdbcType=VARCHAR},                          
+			GDS_13 =  #{gds13 , jdbcType=VARCHAR},                          
+			GDS_14 =  #{gds14 , jdbcType=VARCHAR},                          
+			GDS_15 =  #{gds15 , jdbcType=VARCHAR},                          
+			GDS_16 =  #{gds16 , jdbcType=VARCHAR},                          
+			GDS_17 =  #{gds17 , jdbcType=VARCHAR},                          
+			GDS_18 =  #{gds18 , jdbcType=VARCHAR},                          
+			GDS_19 =  #{gds19 , jdbcType=VARCHAR},                          
+			GDS_20 =  #{gds20 , jdbcType=VARCHAR},                          
+			GDS_21 =  #{gds21 , jdbcType=VARCHAR},                          
+			GDS_22 =  #{gds22 , jdbcType=VARCHAR},                          
+			GDS_23 =  #{gds23 , jdbcType=VARCHAR},                          
+			GDS_24 =  #{gds24 , jdbcType=VARCHAR},                          
+			GDS_25 =  #{gds25 , jdbcType=VARCHAR},                          
+			GDS_26 =  #{gds26 , jdbcType=VARCHAR},                          
+			GDS_27 =  #{gds27 , jdbcType=VARCHAR},                          
+			GDS_28 =  #{gds28 , jdbcType=VARCHAR},                          
+			GDS_29 =  #{gds29 , jdbcType=VARCHAR},                          
+			GDS_30 =  #{gds30 , jdbcType=VARCHAR},                          
+			GDS_TOTAL = #{gdsTotal ,jdbcType =NUMERIC},    
+			UPDATE_DATE = now(),                                                                                   
+			UPDATE_USERID =#{updateUserid},
+			TEST_DAY =  #{testDay}               
+		WHERE                                        
+			OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+			AND FLAG = 'U'                               
+		<if test="examIdx != '' ">                     
+		   AND IDX = #{examIdx,jdbcType=NUMERIC}        
+		</if>    		
+	
+	
+	
+	</update>
+
+
+
+	<select id="select_mb_gdsk_list" parameterType="HashMap" resultType="MbGdsVO">
+		SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,GDS_01,GDS_02,GDS_03,GDS_04,GDS_05,GDS_06,GDS_07,GDS_08,GDS_09,GDS_10
+			  ,GDS_11,GDS_12,GDS_13,GDS_14,GDS_15,GDS_16,GDS_17,GDS_18,GDS_19,GDS_20
+			  ,GDS_21,GDS_22,GDS_23,GDS_24,GDS_25,GDS_26,GDS_27,GDS_28,GDS_29,GDS_30
+		  FROM mb_gds
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+<insert id="update_mb_kiadl_newlist" parameterType="HashMap">
+			<![CDATA[
+		INSERT INTO mb_kiadl(
+			OBJECT_IDX,
+			SUBJECT_IDX,
+			SELECTION_NUM,
+			TEST_DAY,
+			KIADL_01,
+			KIADL_02,
+			KIADL_03,
+			KIADL_04,
+			KIADL_05,
+			KIADL_06,
+			KIADL_07,
+			KIADL_08,
+			KIADL_09,
+			KIADL_10,
+			KIADL_11,
+			KIADL_TOTAL,
+		  	KIADL_KSCORE,
+			FLAG,
+			INSERT_DATE,
+			INSERT_USERID,
+			UPDATE_DATE,
+			UPDATE_USERID
+			) VALUES
+			(
+			#{objectIdx , jdbcType=NUMERIC},               				                
+			#{subjectIdx , jdbcType=NUMERIC},                                      
+			#{examNum ,jdbcType=NUMERIC},                                          
+			#{testDay},
+			#{kiadl01 ,jdbcType = VARCHAR},     
+			#{kiadl02 ,jdbcType = VARCHAR},     
+			#{kiadl03 ,jdbcType = VARCHAR},     
+			#{kiadl04 ,jdbcType = VARCHAR},     
+			#{kiadl05 ,jdbcType = VARCHAR},     
+			#{kiadl06 ,jdbcType = VARCHAR},     
+			#{kiadl07 ,jdbcType = VARCHAR},     
+			#{kiadl08 ,jdbcType = VARCHAR},     
+			#{kiadl09 ,jdbcType = VARCHAR},       
+			#{kiadl10 ,jdbcType = VARCHAR}, 
+			#{kiadl11 ,jdbcType = VARCHAR},      
+			#{kiadlTotal ,jdbcType = VARCHAR},
+		    #{kiadlKscore ,jdbcType = VARCHAR},	
+		  'U',                                                                          
+		  now(),                                                                              
+		  #{insertUserid ,jdbcType=NUMERIC},                                                 
+			now(),                                                                              
+			#{updateUserid ,jdbcType=NUMERIC}                                                 
+			)                                                  
+	]]>
+	</insert>
+
+	<update id="update_mb_kiadl_editlist" parameterType="HashMap">
+		UPDATE 
+			mb_kiadl
+		SET
+			SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},
+			SELECTION_NUM = #{examNum ,jdbcType=NUMERIC}, 
+     	KIADL_01 = #{kiadl01 ,jdbcType = VARCHAR}, 
+		  KIADL_02 = #{kiadl02 ,jdbcType = VARCHAR}, 
+		  KIADL_03 = #{kiadl03 ,jdbcType = VARCHAR}, 
+		  KIADL_04 = #{kiadl04 ,jdbcType = VARCHAR}, 
+		  KIADL_05 = #{kiadl05 ,jdbcType = VARCHAR}, 
+		  KIADL_06 = #{kiadl06 ,jdbcType = VARCHAR}, 
+		  KIADL_07 = #{kiadl07 ,jdbcType = VARCHAR}, 
+		  KIADL_08 = #{kiadl08 ,jdbcType = VARCHAR}, 
+		  KIADL_09 = #{kiadl09 ,jdbcType = VARCHAR}, 
+		  KIADL_10 = #{kiadl10 ,jdbcType = VARCHAR}, 
+		  KIADL_11 = #{kiadl11 ,jdbcType = VARCHAR}, 
+		  KIADL_TOTAL = #{kiadlTotal ,jdbcType = NUMERIC},
+		  KIADL_KSCORE = #{kiadlKscore ,jdbcType = VARCHAR},
+			TEST_DAY =  #{testDay},
+     	UPDATE_DATE = now(),                                                                                   
+     	UPDATE_USERID =#{updateUserid ,jdbcType=NUMERIC}               
+    WHERE                                        
+     	OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+     	AND FLAG = 'U'                               
+    <if test="examIdx != '' ">                     
+     	AND IDX = #{examIdx,jdbcType=NUMERIC}        
+    </if>    	           
+		
+
+	</update>
+
+	<select id="select_mb_kiadl_list" parameterType="HashMap" resultType="MbKiadlVO">
+		SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,KIADL_01,KIADL_02,KIADL_03,KIADL_04,KIADL_05,KIADL_06,KIADL_07,KIADL_08,KIADL_09,KIADL_10,KIADL_11
+		 ,KIADL_TOTAL,KIADL_KSCORE 
+		 FROM mb_kiadl
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<select id="select_remark" parameterType="HashMap" resultType="String">
+		SELECT REMARK
+		  FROM mb_remark
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<insert id="update_mb_c1_newlist" parameterType="HashMap">
+	
+	INSERT INTO mb_c1(
+		   OBJECT_IDX,       
+		   SUBJECT_IDX,
+		   SELECTION_NUM,
+		   TEST_DAY, 
+			 C_M_01,
+			 C_M_02,
+			 C_M_03,
+			 C_M_04,
+			 C_M_05,
+			 C_M_06,
+			 C_M_07,
+			 C_M_08,
+			 C_M_09,
+			 C_M_10,
+			 C_M_11,
+			 C_M_12,
+			 C_M_13,
+			 C_M_14,
+			 C_M_15,
+			 C_M_16,
+			 C_M_17,
+			 C_M_18,
+			 C_M_19,
+			 C_M_20,
+			 C_M_21,
+			 C_M_22,
+			 FLAG,         						 
+			 INSERT_DATE,  						 
+			 INSERT_USERID,
+			 UPDATE_DATE,  
+			 UPDATE_USERID 
+			 ) VALUES
+			 ( 
+				#{objectIdx , jdbcType=NUMERIC},
+			 	#{subjectIdx , jdbcType=NUMERIC},
+			 	#{examNum ,jdbcType=NUMERIC},
+			 	#{testDay},			 
+				#{cM01, jdbcType=VARCHAR},       
+		      	#{cM02, jdbcType=VARCHAR},
+		      	#{cM03, jdbcType=VARCHAR},
+		      	#{cM04, jdbcType=VARCHAR},
+		      	#{cM05, jdbcType=VARCHAR},
+		      	#{cM06, jdbcType=VARCHAR},
+		      	#{cM07, jdbcType=VARCHAR},
+		      	#{cM08, jdbcType=VARCHAR},
+		      	#{cM09, jdbcType=VARCHAR},
+		      	#{cM10, jdbcType=VARCHAR},
+		      	#{cM11, jdbcType=VARCHAR},
+		      	#{cM12, jdbcType=VARCHAR},
+		      	#{cM13, jdbcType=VARCHAR},
+		      	#{cM14, jdbcType=VARCHAR},
+		      	#{cM15, jdbcType=VARCHAR},
+		      	#{cM16, jdbcType=VARCHAR},
+		      	#{cM17, jdbcType=VARCHAR},
+		      	#{cM18, jdbcType=VARCHAR},
+		      	#{cM19, jdbcType=VARCHAR},
+		      	#{cM20, jdbcType=VARCHAR},
+		      	#{cM21, jdbcType=VARCHAR},
+		      	#{cM22, jdbcType=VARCHAR},
+		       	'U',                                  
+		       	now(),                                
+		       	#{insertUserid ,jdbcType=NUMERIC},    
+		       	now(),                                
+		       	#{updateUserid ,jdbcType=NUMERIC}    
+		       	
+		       	)
+
+	</insert>
+
+	<update id="update_mb_c1_editlist" parameterType="HashMap">
+	
+  			UPDATE                                                                                                     
+				 mb_c1                                                  
+				SET                                                       
+				 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},           
+				 SELECTION_NUM = #{examNum ,jdbcType=NUMERIC},
+	 			 C_M_01 = 	#{cM01, jdbcType=VARCHAR},       
+				 C_M_02 =  #{cM02, jdbcType=VARCHAR}, 
+				 C_M_03 =  #{cM03, jdbcType=VARCHAR}, 
+				 C_M_04 =  #{cM04, jdbcType=VARCHAR}, 
+				 C_M_05 =  #{cM05, jdbcType=VARCHAR}, 
+				 C_M_06 =  #{cM06, jdbcType=VARCHAR}, 
+				 C_M_07 =  #{cM07, jdbcType=VARCHAR}, 
+				 C_M_08 =  #{cM08, jdbcType=VARCHAR}, 
+				 C_M_09 =  #{cM09, jdbcType=VARCHAR}, 
+				 C_M_10 =  #{cM10, jdbcType=VARCHAR}, 
+				 C_M_11 =  #{cM11, jdbcType=VARCHAR}, 
+				 C_M_12 =  #{cM12, jdbcType=VARCHAR}, 
+				 C_M_13 =  #{cM13, jdbcType=VARCHAR}, 
+				 C_M_14 =  #{cM14, jdbcType=VARCHAR}, 
+				 C_M_15 =  #{cM15, jdbcType=VARCHAR}, 
+				 C_M_16 =  #{cM16, jdbcType=VARCHAR}, 
+				 C_M_17 =  #{cM17, jdbcType=VARCHAR}, 
+				 C_M_18 =  #{cM18, jdbcType=VARCHAR}, 
+				 C_M_19 =  #{cM19, jdbcType=VARCHAR}, 
+				 C_M_20 =  #{cM20, jdbcType=VARCHAR}, 
+				 C_M_21 =  #{cM21, jdbcType=VARCHAR}, 
+				 C_M_22 =  #{cM22, jdbcType=VARCHAR}, 
+				 TEST_DAY =  #{testDay}, 
+				 UPDATE_DATE = now(),                                                                                   
+				 UPDATE_USERID =#{updateUserid}               
+				 WHERE                                        
+				 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC}  
+				 AND FLAG = 'U'                               
+				 <if test="examIdx != '' ">                     
+				    AND IDX = #{examIdx,jdbcType=NUMERIC}        
+				 </if>    					      	
+
+	</update>
+	
+	<select id="select_mb_c1_list" parameterType="HashMap" resultType="MbC1VO">
+		SELECT  IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,C_M_01,C_M_02,C_M_03,C_M_04,C_M_05,C_M_06,C_M_07,C_M_08,C_M_09,C_M_10
+			  ,C_M_11,C_M_12,C_M_13,C_M_14,C_M_15,C_M_16,C_M_17,C_M_18,C_M_19,C_M_20
+			  ,C_M_21,C_M_22
+		  FROM mb_c1
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<insert id="update_mb_c2_cogn1_newlist" parameterType="HashMap">
+
+		INSERT INTO mb_c2(
+			     OBJECT_IDX,       
+			     SUBJECT_IDX,
+			     SELECTION_NUM,
+			     C2_L_TEST_DAY, 
+				 	 C_L_01,
+				 	 C_L_02,		
+				 	 FLAG,         						 
+				 	 C2_L_INSERT_DATE,  						 
+				 	 C2_L_INSERT_USERID,
+				 	 C2_L_UPDATE_DATE,  
+				 	 C2_L_UPDATE_USERID 
+				 	) VALUES
+				 	( 
+					#{objectIdx , jdbcType=NUMERIC},
+			 		#{subjectIdx , jdbcType=NUMERIC},
+			 		#{examNum ,jdbcType=NUMERIC},
+			 		#{testDay},		
+		      #{cL01, jdbcType=VARCHAR},
+			    #{cL02, jdbcType=VARCHAR},
+			    'U',                                     		 	
+			    now(),                                   		 	
+			    #{insertUserid ,jdbcType=NUMERIC},       		 	
+			    now(),                                   		 	
+		      #{updateUserid ,jdbcType=NUMERIC}        
+		       	                                         
+		       	)     	
+			
+	
+	</insert>
+	
+	<update id="update_mb_c2_cogn1_list" parameterType="HashMap">	
+	
+			UPDATE                                                                                                     
+				 mb_c2                                                 
+				SET                                                       
+				 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},             
+				 C_L_01 =  #{cL01, jdbcType=VARCHAR},           
+				 C_L_02 =  #{cL02, jdbcType=VARCHAR},            
+				 C2_L_TEST_DAY = #{testDay},           
+				 C2_L_INSERT_DATE = now(),  						 
+				 C2_L_INSERT_USERID = #{insertUserid},
+				 C2_L_UPDATE_DATE = now(),                        		           	                                   
+ 			 	 C2_L_UPDATE_USERID =#{updateUserid}              
+ 			 WHERE                                       
+ 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+ 			 	 AND FLAG = 'U'                              
+ 			 	 <if test="examIdx != '' ">                  
+ 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+ 			 	 </if>
+ 			 	 <if test ="examNum != '' ">
+ 			 	 AND SELECTION_NUM = #{examNum ,jdbcType=NUMERIC} 
+ 			 	 </if>    					      	  	
+ 			 	  
+	
+	</update>
+	
+	
+	
+	<update id="update_mb_c2_cogn1_editlist" parameterType="HashMap">	
+	
+			UPDATE                                                                                                     
+				 mb_c2                                                 
+				SET                                                       
+				 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},           
+				 SELECTION_NUM = #{examNum ,jdbcType=NUMERIC},   
+				 C_L_01 =  #{cL01, jdbcType=VARCHAR},           
+				 C_L_02 =  #{cL02, jdbcType=VARCHAR},            
+				 C2_L_TEST_DAY = #{testDay},
+				 C2_L_UPDATE_DATE = now(),                        		           	                                   
+ 			 	 C2_L_UPDATE_USERID =#{updateUserid}              
+ 			 WHERE                                       
+ 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+ 			 	 AND FLAG = 'U' 
+ 			 	 AND SELECTION_NUM =#{examNum}                             
+ 			 	 <if test="examIdx != '' ">                  
+ 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+ 			 	 </if>    					      	  	
+	
+	</update>
+
+
+		<select id="select_mb_c2_cogn1_list" parameterType="HashMap" resultType="MbC2VO">
+		
+		 SELECT A.IDX IDX,A.OBJECT_IDX OBJECT_IDX, A.SELECTION_NUM SELECTION_NUM, DATE_FORMAT(A.TEST_DAY, '%Y%m%d') AS TEST_DAY
+			  ,A.C_L_01 C_L_01,A.C_L_02 C_L_02
+	     FROM(
+	     		SELECT IDX,OBJECT_IDX,SELECTION_NUM,C2_L_TEST_DAY AS TEST_DAY,
+	     		CASE WHEN C_L_01 = '' THEN NULL ELSE C_L_01 END C_L_01,
+	        	CASE WHEN C_L_02 = '' THEN NULL ELSE C_L_02 END C_L_02,
+	        	FLAG
+	     FROM mb_c2  
+	     WHERE OBJECT_IDX = #{objectIdx} ) A
+	    	 WHERE 
+			    	 A.C_L_01 IS NOT NULL
+				 AND A.C_L_02 IS NOT NULL
+			     AND A.FLAG=  'U'
+			     AND A.OBJECT_IDX = #{objectIdx}
+			      ORDER BY A.SELECTION_NUM DESC
+			        limit 0,1
+
+		</select>
+
+		<insert id="update_mb_c2_cogn1_newlist2" parameterType="HashMap">
+			
+			INSERT INTO mb_c2(
+					     OBJECT_IDX,       
+					     SUBJECT_IDX,
+					     SELECTION_NUM,
+ 							C2_P_TEST_DAY, 
+						 	 C_P_01,
+						 	 C_P_02,
+						 	 C_P_03,
+						 	 C_P_04,
+						 	 C_P_05,
+						 FLAG,         						 
+						 C2_P_INSERT_DATE,  						 
+						 C2_P_INSERT_USERID,
+						 C2_P_UPDATE_DATE,  
+						 C2_P_UPDATE_USERID 
+						 ) VALUES
+						 ( 
+						#{objectIdx , jdbcType=NUMERIC},
+					 	#{subjectIdx , jdbcType=NUMERIC},
+					 	#{examNum ,jdbcType=NUMERIC},
+					 	#{testDay},		
+				    	#{cP01, jdbcType=VARCHAR},
+					    #{cP02, jdbcType=VARCHAR},
+					    #{cP03, jdbcType=VARCHAR},
+					    #{cP04, jdbcType=VARCHAR},     
+					    #{cP05, jdbcType=VARCHAR},
+					    'U',                                     		 	
+					    now(),                                   		 	
+					    #{insertUserid ,jdbcType=NUMERIC},       		 	
+					    now(),                                   		 	
+				      #{updateUserid ,jdbcType=NUMERIC}        
+				       	                                         
+				       	)     	
+					
+			
+		</insert>
+	
+		<update id="update_mb_c2_cogn1_list2" parameterType="HashMap">	
+	
+				UPDATE                                                                                                     
+					 mb_c2                                                 
+					SET                                                       
+					 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},             
+					 C_P_01 =  #{cP01, jdbcType=VARCHAR},           
+					 C_P_02 =  #{cP02, jdbcType=VARCHAR},            
+					 C_P_03 =  #{cP03, jdbcType=VARCHAR},           
+					 C_P_04 =  #{cP04, jdbcType=VARCHAR},   
+					 C_P_05 =  #{cP05, jdbcType=VARCHAR}, 
+					 C2_P_TEST_DAY = #{testDay},           
+					 C2_P_INSERT_DATE = now(),  						 
+					 C2_P_INSERT_USERID = #{insertUserid},
+					 C2_P_UPDATE_DATE = now(),                        		           	                                   
+	 			 	 C2_P_UPDATE_USERID =#{updateUserid}              
+	 			 WHERE                                       
+	 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+	 			 	 AND FLAG = 'U'                              
+	 			 	 <if test="examIdx != '' ">                  
+	 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+	 			 	 </if>
+	 			 	 <if test ="examNum != '' ">
+	 			 	 AND SELECTION_NUM = #{examNum ,jdbcType=NUMERIC} 
+	 			 	 </if>    					      	  	
+ 			 	  
+	
+		</update>
+	
+	
+	
+		<update id="update_mb_c2_cogn1_editlist2" parameterType="HashMap">	
+		
+				UPDATE                                                                                                     
+					 mb_c2                                                 
+					SET                                                       
+					 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},           
+					 SELECTION_NUM = #{examNum ,jdbcType=NUMERIC},   
+					 C_P_01 =  #{cP01, jdbcType=VARCHAR},           
+					 C_P_02 =  #{cP02, jdbcType=VARCHAR},            
+					 C_P_03 =  #{cP03, jdbcType=VARCHAR},           
+					 C_P_04 =  #{cP04, jdbcType=VARCHAR},           
+					 C_P_05 =  #{cP05, jdbcType=VARCHAR}, 
+					 C2_P_TEST_DAY = #{testDay},
+					 C2_P_UPDATE_DATE = now(),                        		           	                                   
+	 			 	 C2_P_UPDATE_USERID =#{updateUserid}              
+	 			 WHERE                                       
+	 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+	 			 	 AND FLAG = 'U' 
+	 			 	 AND SELECTION_NUM =#{examNum}                             
+	 			 	 <if test="examIdx != '' ">                  
+	 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+	 			 	 </if>    					      	  	
+		
+		</update>
+
+		<select id="select_mb_c2_cogn1_list2" parameterType="HashMap" resultType="MbC2VO">
+	  
+	    SELECT A.IDX IDX,A.OBJECT_IDX OBJECT_IDX, A.SELECTION_NUM SELECTION_NUM, DATE_FORMAT(A.TEST_DAY, '%Y%m%d') AS TEST_DAY, 
+			  A.C_P_01 C_P_01,A.C_P_02 C_P_02,A.C_P_03 C_P_03,A.C_P_04 C_P_04,A.C_P_05 C_P_05
+	     FROM(
+	     		SELECT IDX,OBJECT_IDX,SELECTION_NUM,C2_P_TEST_DAY AS TEST_DAY,
+	     		CASE WHEN C_P_01 = '' THEN NULL ELSE C_P_01 END C_P_01,
+	        	CASE WHEN C_P_02 = '' THEN NULL ELSE C_P_02 END C_P_02,
+	        	CASE WHEN C_P_03 = '' THEN NULL ELSE C_P_03 END C_P_03,
+	        	CASE WHEN C_P_04 = '' THEN NULL ELSE C_P_04 END C_P_04,
+	        	CASE WHEN C_P_05 = '' THEN NULL ELSE C_P_05 END C_P_05,
+	        	FLAG
+	     FROM mb_c2  
+	     WHERE OBJECT_IDX = #{objectIdx} ) A
+	    	 WHERE 
+			    	 A.C_P_01 IS NOT NULL
+				 AND A.C_P_02 IS NOT NULL
+			     AND A.C_P_03 IS NOT NULL
+				 AND A.C_P_04 IS NOT NULL
+				 AND A.C_P_05 IS NOT NULL
+			     AND A.FLAG=  'U'
+			     AND A.OBJECT_IDX = #{objectIdx}
+			      ORDER BY A.SELECTION_NUM DESC
+			        limit 0,1
+		
+		</select>
+		
+		<insert id="update_mb_c2_cogn1_newlist3" parameterType="HashMap">
+		
+			INSERT INTO mb_c2(
+				     OBJECT_IDX,       
+				     SUBJECT_IDX,
+				     SELECTION_NUM,
+				     C2_C_TEST_DAY, 
+					 	 C_C_01,
+					 	 C_C_02,
+					 	 C_C_03,
+					 	 C_C_04,
+					 FLAG,         						 
+					 C2_C_INSERT_DATE,  						 
+					 C2_C_INSERT_USERID,
+					 C2_C_UPDATE_DATE,  
+					 C2_C_UPDATE_USERID 
+					 ) VALUES
+					 ( 
+					#{objectIdx , jdbcType=NUMERIC},
+				 	#{subjectIdx , jdbcType=NUMERIC},
+				 	#{examNum ,jdbcType=NUMERIC},
+				 	#{testDay},		
+			      #{cC01, jdbcType=VARCHAR},
+				    #{cC02, jdbcType=VARCHAR},
+				    #{cC03, jdbcType=VARCHAR},
+				    #{cC04, jdbcType=VARCHAR},
+				     'U',                                     		 	
+				     now(),                                   		 	
+				    #{insertUserid ,jdbcType=NUMERIC},       		 	
+				      now(),                                   		 	
+			       	#{updateUserid ,jdbcType=NUMERIC}        
+			       	                                         
+			       	)     	
+				
+		
+		</insert>
+		
+		<update id="update_mb_c2_cogn1_list3" parameterType="HashMap">	
+		
+				UPDATE                                                                                                     
+					 mb_c2                                                 
+					SET                                                       
+					 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},             
+					 C_C_01 =  #{cC01, jdbcType=VARCHAR},           
+					 C_C_02 =  #{cC02, jdbcType=VARCHAR},            
+					 C_C_03 =  #{cC03, jdbcType=VARCHAR},           
+					 C_C_04 =  #{cC04, jdbcType=VARCHAR}, 
+					 C2_C_TEST_DAY = #{testDay},           
+					 C2_C_INSERT_DATE = now(),  						 
+					 C2_C_INSERT_USERID = #{insertUserid},
+					 C2_C_UPDATE_DATE = now(),                        		           	                                   
+	 			 	 C2_C_UPDATE_USERID =#{updateUserid}              
+	 			 WHERE                                       
+	 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+	 			 	 AND FLAG = 'U'                              
+	 			 	 <if test="examIdx != '' ">                  
+	 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+	 			 	 </if>
+	 			 	 <if test ="examNum != '' ">
+	 			 	 AND SELECTION_NUM = #{examNum ,jdbcType=NUMERIC} 
+	 			 	 </if>    					      	  	
+	 			 	  
+		
+		</update>
+		
+		
+		
+		<update id="update_mb_c2_cogn1_editlist3" parameterType="HashMap">	
+		
+				UPDATE                                                                                                     
+					 mb_c2                                                 
+					SET                                                       
+					 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},           
+					 SELECTION_NUM = #{examNum ,jdbcType=NUMERIC},   
+					 C_C_01 =  #{cC01, jdbcType=VARCHAR},           
+					 C_C_02 =  #{cC02, jdbcType=VARCHAR},            
+					 C_C_03 =  #{cC03, jdbcType=VARCHAR},           
+					 C_C_04 =  #{cC04, jdbcType=VARCHAR},           
+					 C2_C_TEST_DAY = #{testDay},
+					 C2_C_UPDATE_DATE = now(),                        		           	                                   
+	 			 	 C2_C_UPDATE_USERID =#{updateUserid}              
+	 			 WHERE                                       
+	 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+	 			 	 AND FLAG = 'U' 
+	 			 	 AND SELECTION_NUM =#{examNum}                             
+	 			 	 <if test="examIdx != '' ">                  
+	 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+	 			 	 </if>    					      	  	
+		
+		</update>
+		
+		<select id="select_mb_c2_cogn1_list3" parameterType="HashMap" resultType="MbC2VO">
+				   
+	    SELECT A.IDX IDX,A.OBJECT_IDX OBJECT_IDX,A.SELECTION_NUM SELECTION_NUM,DATE_FORMAT(A.TEST_DAY, '%Y%m%d') AS TEST_DAY,
+	    	 A.C_C_01 C_C_01,A.C_C_02 C_C_02,A.C_C_03 C_C_03,A.C_C_04 C_C_04
+	     FROM(
+	     		SELECT IDX,OBJECT_IDX,SELECTION_NUM,C2_C_TEST_DAY AS TEST_DAY,
+	     		CASE WHEN C_C_01 = '' THEN NULL ELSE C_C_01 END C_C_01,
+	        	CASE WHEN C_C_02 = '' THEN NULL ELSE C_C_02 END C_C_02,
+	        	CASE WHEN C_C_03 = '' THEN NULL ELSE C_C_03 END C_C_03,
+	        	CASE WHEN C_C_04 = '' THEN NULL ELSE C_C_04 END C_C_04,
+	        	FLAG
+	     FROM mb_c2  
+	     WHERE OBJECT_IDX = #{objectIdx} ) A
+	     WHERE 
+	    	 A.C_C_01 IS NOT NULL
+		 AND A.C_C_02 IS NOT NULL
+	     AND A.C_C_03 IS NOT NULL
+		 AND A.C_C_04 IS NOT NULL
+	     AND A.FLAG=  'U'
+	     AND A.OBJECT_IDX = #{objectIdx}
+	      ORDER BY A.SELECTION_NUM DESC
+	        limit 0,1		   
+		</select>
+	
+	
+	
+		<insert id="update_mb_c2_cogn1_newlist4" parameterType="HashMap">
+	
+		INSERT INTO mb_c2(
+			     OBJECT_IDX,       
+			     SUBJECT_IDX,
+			     SELECTION_NUM,
+			     C2_AD_TEST_DAY, 
+				 C_AD_01,
+				 C_AD_02,
+				 C_AD_03,
+				 C_AD_04,
+				 FLAG,         						 
+				 C2_AD_INSERT_DATE,  						 
+				 C2_AD_INSERT_USERID,
+				 C2_AD_UPDATE_DATE,  
+				 C2_AD_UPDATE_USERID 
+				 ) VALUES
+				 ( 
+				#{objectIdx , jdbcType=NUMERIC},
+			 	#{subjectIdx , jdbcType=NUMERIC},
+			 	#{examNum ,jdbcType=NUMERIC},
+			 	#{testDay},		
+		        #{cAd01, jdbcType=VARCHAR},
+			    #{cAd02, jdbcType=VARCHAR},
+			    #{cAd03, jdbcType=VARCHAR},
+			    #{cAd04, jdbcType=VARCHAR},
+			     'U',                                     		 	
+			     now(),                                   		 	
+			    #{insertUserid ,jdbcType=NUMERIC},       		 	
+			      now(),                                   		 	
+		       	#{updateUserid ,jdbcType=NUMERIC}        
+		       	                                         
+		       	)     	
+			
+	
+	</insert>
+	
+	<update id="update_mb_c2_cogn1_list4" parameterType="HashMap">	
+	
+			UPDATE                                                                                                     
+				 mb_c2                                                 
+				SET                                                       
+				 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},             
+				 C_AD_01 =  #{cAd01, jdbcType=VARCHAR},           
+				 C_AD_02 =  #{cAd02, jdbcType=VARCHAR},            
+				 C_AD_03 =  #{cAd03, jdbcType=VARCHAR},           
+				 C_AD_04 =  #{cAd04, jdbcType=VARCHAR}, 
+				 C2_AD_TEST_DAY = #{testDay},           
+				 C2_AD_INSERT_DATE = now(),  						 
+				 C2_AD_INSERT_USERID = #{insertUserid},
+				 C2_AD_UPDATE_DATE = now(),                        		           	                                   
+ 			 	 C2_AD_UPDATE_USERID =#{updateUserid}              
+ 			 WHERE                                       
+ 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+ 			 	 AND FLAG = 'U'                              
+ 			 	 <if test="examIdx != '' ">                  
+ 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+ 			 	 </if>
+ 			 	 <if test ="examNum != '' ">
+ 			 	 AND SELECTION_NUM = #{examNum ,jdbcType=NUMERIC} 
+ 			 	 </if>    					      	  	
+ 			 	  
+	
+	</update>
+	
+	
+	
+	<update id="update_mb_c2_cogn1_editlist4" parameterType="HashMap">	
+	
+			UPDATE                                                                                                     
+				 mb_c2                                                 
+				SET                                                       
+				 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},           
+				 SELECTION_NUM = #{examNum ,jdbcType=NUMERIC},   
+				 C_AD_01 =  #{cAd01, jdbcType=VARCHAR},           
+				 C_AD_02 =  #{cAd02, jdbcType=VARCHAR},            
+				 C_AD_03 =  #{cAd03, jdbcType=VARCHAR},           
+				 C_AD_04 =  #{cAd04, jdbcType=VARCHAR},           
+				 C2_AD_TEST_DAY = #{testDay},
+				 C2_AD_UPDATE_DATE = now(),                        		           	                                   
+ 			 	 C2_AD_UPDATE_USERID =#{updateUserid}              
+ 			 WHERE                                       
+ 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+ 			 	 AND FLAG = 'U' 
+ 			 	 AND SELECTION_NUM =#{examNum}                             
+ 			 	 <if test="examIdx != '' ">                  
+ 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+ 			 	 </if>    					      	  	
+	
+	</update>
+	
+	
+	
+	<select id="select_mb_c2_cogn1_list4" parameterType="HashMap" resultType="MbC2VO">
+
+
+	SELECT A.IDX IDX,A.OBJECT_IDX OBJECT_IDX, A.SELECTION_NUM SELECTION_NUM, DATE_FORMAT(A.TEST_DAY, '%Y%m%d') AS TEST_DAY, 
+		  A.C_AD_01 C_AD_01,A.C_AD_02 C_AD_02,A.C_AD_03 C_AD_03,A.C_AD_04 C_AD_04
+     FROM(
+     		SELECT IDX,OBJECT_IDX,SELECTION_NUM,C2_AD_TEST_DAY AS TEST_DAY,
+     		CASE WHEN C_AD_01 = '' THEN NULL ELSE C_AD_01 END C_AD_01,
+        	CASE WHEN C_AD_02 = '' THEN NULL ELSE C_AD_02 END C_AD_02,
+        	CASE WHEN C_AD_03 = '' THEN NULL ELSE C_AD_03 END C_AD_03,
+        	CASE WHEN C_AD_04 = '' THEN NULL ELSE C_AD_04 END C_AD_04,
+        	FLAG
+     FROM mb_c2  
+     WHERE OBJECT_IDX = #{objectIdx} ) A
+     WHERE 
+    	 A.C_AD_01 IS NOT NULL
+	 AND A.C_AD_02 IS NOT NULL
+     AND A.C_AD_03 IS NOT NULL
+	 AND A.C_AD_04 IS NOT NULL
+     AND A.FLAG=  'U'
+     AND A.OBJECT_IDX = #{objectIdx}
+      ORDER BY A.SELECTION_NUM DESC
+        limit 0,1
+	
+	</select>
+		
+	
+	<insert id="update_mb_c2_cogn2_newlist1" parameterType="HashMap">
+	
+	INSERT INTO mb_c2(
+			     OBJECT_IDX,       
+			     SUBJECT_IDX,
+			     SELECTION_NUM,
+			     C2_S_TEST_DAY, 
+				 C_S_01,
+				 C_S_02,
+				 C_S_03,
+				 C_S_04,
+				 FLAG,         						 
+				 C2_S_INSERT_DATE,  						 
+				 C2_S_INSERT_USERID,
+				 C2_S_UPDATE_DATE,  
+				 C2_S_UPDATE_USERID 
+				 ) VALUES
+				 ( 
+				#{objectIdx , jdbcType=NUMERIC},
+			 	#{subjectIdx , jdbcType=NUMERIC},
+			 	#{examNum ,jdbcType=NUMERIC},
+			 	#{testDay},		
+		        #{cS01, jdbcType=VARCHAR},
+			      #{cS02, jdbcType=VARCHAR},
+			      #{cS03, jdbcType=VARCHAR},
+			      #{cS04, jdbcType=VARCHAR},
+			      'U',                                     		 	
+			      now(),                                   		 	
+			      #{insertUserid ,jdbcType=NUMERIC},       		 	
+			      now(),                                   		 	
+		       	#{updateUserid ,jdbcType=NUMERIC}        
+		       	                                         
+		       	)     	
+			
+	
+	</insert>
+	
+	<update id="update_mb_c2_cogn2_list1" parameterType="HashMap">	
+	
+			UPDATE                                                                                                     
+				 mb_c2                                                 
+				SET                                                       
+				 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},             
+				 C_S_01 =  #{cS01, jdbcType=VARCHAR},           
+				 C_S_02 =  #{cS02, jdbcType=VARCHAR},            
+				 C_S_03 =  #{cS03, jdbcType=VARCHAR},           
+				 C_S_04 =  #{cS04, jdbcType=VARCHAR}, 
+				 C2_S_TEST_DAY = #{testDay},           
+				 C2_S_INSERT_DATE = now(),  						 
+				 C2_S_INSERT_USERID = #{insertUserid},
+				 C2_S_UPDATE_DATE = now(),                        		           	                                   
+ 			 	 C2_S_UPDATE_USERID =#{updateUserid}              
+ 			 WHERE                                       
+ 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+ 			 	 AND FLAG = 'U'                              
+ 			 	 <if test="examIdx != '' ">                  
+ 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+ 			 	 </if>
+ 			 	 <if test ="examNum != '' ">
+ 			 	 AND SELECTION_NUM = #{examNum ,jdbcType=NUMERIC} 
+ 			 	 </if>    					      	  	
+ 			 	  
+	
+	</update>
+	
+	
+	<update id="update_mb_c2_cogn2_editlist1" parameterType="HashMap">	
+	
+			UPDATE                                                                                                     
+				 mb_c2                                                 
+				SET                                                       
+				 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},           
+				 SELECTION_NUM = #{examNum ,jdbcType=NUMERIC},   
+				 C_S_01 =  #{cS01, jdbcType=VARCHAR},           
+				 C_S_02 =  #{cS02, jdbcType=VARCHAR},            
+				 C_S_03 =  #{cS03, jdbcType=VARCHAR},           
+				 C_S_04 =  #{cS04, jdbcType=VARCHAR},           
+				 C2_S_TEST_DAY = #{testDay},
+				 C2_S_UPDATE_DATE = now(),                        		           	                                   
+ 			 	 C2_S_UPDATE_USERID =#{updateUserid}              
+ 			 WHERE                                       
+ 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+ 			 	 AND FLAG = 'U' 
+ 			 	 AND SELECTION_NUM =#{examNum}                             
+ 			 	 <if test="examIdx != '' ">                  
+ 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+ 			 	 </if>    					      	  	
+	
+	</update>
+	
+	<select id="select_mb_c2_cogn2_list1" parameterType="HashMap" resultType="MbC2VO">
+	SELECT A.IDX IDX,A.OBJECT_IDX OBJECT_IDX, A.SELECTION_NUM SELECTION_NUM, DATE_FORMAT(A.TEST_DAY, '%Y%m%d') AS TEST_DAY, 
+		  A.C_S_01 C_S_01,A.C_S_02 C_S_02,A.C_S_03 C_S_03,A.C_S_04 C_S_04
+     FROM(
+     		SELECT IDX,OBJECT_IDX,SELECTION_NUM,C2_S_TEST_DAY AS TEST_DAY,
+     		CASE WHEN C_S_01 = '' THEN NULL ELSE C_S_01 END C_S_01,
+        CASE WHEN C_S_02 = '' THEN NULL ELSE C_S_02 END C_S_02,
+        CASE WHEN C_S_03 = '' THEN NULL ELSE C_S_03 END C_S_03,
+        CASE WHEN C_S_04 = '' THEN NULL ELSE C_S_04 END C_S_04,
+        FLAG
+     FROM mb_c2  WHERE OBJECT_IDX = #{objectIdx} ) A
+     
+     WHERE 
+    	 A.C_S_01 IS NOT NULL
+	 AND A.C_S_02 IS NOT NULL
+     AND A.C_S_03 IS NOT NULL
+		 AND A.C_S_04 IS NOT NULL
+     AND A.FLAG=  'U'
+     AND A.OBJECT_IDX = #{objectIdx}
+      ORDER BY A.SELECTION_NUM DESC
+        limit 0,1
+	
+	</select>
+
+	<select id="select_mb_c2_chkExamNumlist" parameterType="HashMap" resultType="MbC2VO">
+ 	SELECT IDX,OBJECT_IDX,SELECTION_NUM        
+ 	,C_L_01,C_L_02,C_P_01,C_P_02,C_P_03,C_P_04,C_P_05,C_C_01,C_C_02,C_C_03,C_C_04,C_AD_01,C_AD_02,C_AD_03,C_AD_04
+ 	,C_S_01, C_S_02,C_S_03,C_S_04,C_J_01,C_J_02,C_J_03,C_J_04,C_J_05,C_J_06,C_J_07,C_J_08,C_J_09,C_J_10,C_Z_01,C_Z_02	
+	 FROM mb_c2
+ 	WHERE OBJECT_IDX = #{objectIdx}
+ 	AND FLAG ='U'
+ 	AND SELECTION_NUM = #{examNum}    
+	
+	</select>
+
+	<select id="select_mb_c2_cogn2_list2" parameterType="HashMap" resultType="MbC2VO">
+	SELECT A.IDX IDX,A.OBJECT_IDX OBJECT_IDX, A.SELECTION_NUM SELECTION_NUM, DATE_FORMAT(A.TEST_DAY, '%Y%m%d') AS TEST_DAY, 
+		  A.C_J_01 C_J_01,A.C_J_02 C_J_02,A.C_J_03 C_J_03,A.C_J_04 C_J_04,A.C_J_05 C_J_05,
+		  A.C_J_06 C_J_06,A.C_J_07 C_J_07,A.C_J_08 C_J_08,A.C_J_09 C_J_09,A.C_J_10 C_J_10,
+		  A.C_Z_01 C_Z_01,A.C_Z_02 C_Z_02
+     FROM(
+     		SELECT IDX,OBJECT_IDX,SELECTION_NUM,C2_Z_TEST_DAY AS TEST_DAY,
+     		CASE WHEN C_J_01 = '' THEN NULL ELSE C_J_01 END C_J_01,
+        	CASE WHEN C_J_02 = '' THEN NULL ELSE C_J_02 END C_J_02,
+        	CASE WHEN C_J_03 = '' THEN NULL ELSE C_J_03 END C_J_03,
+        	CASE WHEN C_J_04 = '' THEN NULL ELSE C_J_04 END C_J_04,
+        	CASE WHEN C_J_05 = '' THEN NULL ELSE C_J_05 END C_J_05,
+        	CASE WHEN C_J_06 = '' THEN NULL ELSE C_J_06 END C_J_06,
+        	CASE WHEN C_J_07 = '' THEN NULL ELSE C_J_07 END C_J_07,
+        	CASE WHEN C_J_08 = '' THEN NULL ELSE C_J_08 END C_J_08,
+        	CASE WHEN C_J_09 = '' THEN NULL ELSE C_J_09 END C_J_09,
+        	CASE WHEN C_J_10 = '' THEN NULL ELSE C_J_10 END C_J_10,
+        	CASE WHEN C_Z_01 = '' THEN NULL ELSE C_Z_01 END C_Z_01,
+        	CASE WHEN C_Z_02 = '' THEN NULL ELSE C_Z_02 END C_Z_02,
+        	FLAG
+     	FROM mb_c2  
+     	WHERE OBJECT_IDX = #{objectIdx} ) A
+     WHERE 
+		    	 A.C_J_01 IS NOT NULL
+			 AND A.C_J_02 IS NOT NULL
+		     AND A.C_J_03 IS NOT NULL
+			 AND A.C_J_04 IS NOT NULL
+			 AND A.C_J_05 IS NOT NULL
+		     AND A.C_J_06 IS NOT NULL
+			 AND A.C_J_07 IS NOT NULL
+			 AND A.C_J_08 IS NOT NULL
+		     AND A.C_J_09 IS NOT NULL
+			 AND A.C_J_10 IS NOT NULL
+			 AND A.C_Z_01 IS NOT NULL
+		     AND A.FLAG=  'U'
+		     AND A.OBJECT_IDX = #{objectIdx}
+		      ORDER BY A.SELECTION_NUM DESC
+		        limit 0,1
+	
+	</select>
+
+
+	<insert id="update_mb_c2_cogn2_newlist2" parameterType="HashMap">
+		
+		INSERT INTO mb_c2(
+			   	 OBJECT_IDX,       
+			   	 SUBJECT_IDX,
+			   	 SELECTION_NUM,
+			  	 C2_Z_TEST_DAY, 
+				 C_J_01,
+				 C_J_02,
+				 C_J_03,
+				 C_J_04,
+				 C_J_05,
+				 C_J_06,
+				 C_J_07,
+				 C_J_08,
+				 C_J_09,
+				 C_J_10,
+				 C_Z_01,
+				 C_Z_02,
+				 FLAG,         						 
+				 C2_Z_INSERT_DATE,  						 
+				 C2_Z_INSERT_USERID,
+				 C2_Z_UPDATE_DATE,  
+				 C2_Z_UPDATE_USERID 
+				 ) VALUES
+				 ( 
+				#{objectIdx , jdbcType=NUMERIC},
+			 	#{subjectIdx , jdbcType=NUMERIC},
+			 	#{examNum ,jdbcType=NUMERIC},
+			 	#{testDay},		
+	          	#{cJ01, jdbcType=VARCHAR},
+		      	#{cJ02, jdbcType=VARCHAR},
+		      	#{cJ03, jdbcType=VARCHAR},
+		      	#{cJ04, jdbcType=VARCHAR},
+		      	#{cJ05, jdbcType=VARCHAR},
+		      	#{cJ06, jdbcType=VARCHAR},
+		      	#{cJ07, jdbcType=VARCHAR},
+		      	#{cJ08, jdbcType=VARCHAR},
+		      	#{cJ09, jdbcType=VARCHAR},
+		      	#{cJ10, jdbcType=VARCHAR},
+		      	#{cZ01, jdbcType=VARCHAR},
+		      	#{cZ02, jdbcType=VARCHAR},
+		      	'U',                                     		 	
+		      	now(),                                   		 	
+		      	#{insertUserid ,jdbcType=NUMERIC},       		 	
+		      	now(),                                   		 	
+	       		#{updateUserid ,jdbcType=NUMERIC}        
+	       	                                         
+	       		)     	
+	
+	
+	</insert>
+	
+	
+	<update id="update_mb_c2_cogn2_list2" parameterType="HashMap">	
+	
+			UPDATE                                                                                                     
+				 mb_c2                                                 
+				SET                                                       
+				 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},             
+				 C_J_01 =  #{cJ01, jdbcType=VARCHAR},           
+				 C_J_02 =  #{cJ02, jdbcType=VARCHAR},            
+				 C_J_03 =  #{cJ03, jdbcType=VARCHAR},           
+				 C_J_04 =  #{cJ04, jdbcType=VARCHAR},           
+				 C_J_05 =  #{cJ05, jdbcType=VARCHAR},           
+				 C_J_06 =  #{cJ06, jdbcType=VARCHAR},           
+				 C_J_07 =  #{cJ07, jdbcType=VARCHAR},           
+				 C_J_08 =  #{cJ08, jdbcType=VARCHAR},           
+				 C_J_09 =  #{cJ09, jdbcType=VARCHAR},           
+				 C_J_10 =  #{cJ10, jdbcType=VARCHAR},           
+				 C_Z_01 =  #{cZ01, jdbcType=VARCHAR},           
+				 C_Z_02 =  #{cZ02, jdbcType=VARCHAR}, 
+				 C2_Z_TEST_DAY = #{testDay},              
+				 C2_Z_INSERT_DATE = now(),  						 
+				 C2_Z_INSERT_USERID = #{insertUserid},  
+				 C2_Z_UPDATE_DATE = now(),                        		           	                                   
+ 			 	 C2_Z_UPDATE_USERID =#{updateUserid}              
+ 			 WHERE                                       
+ 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+ 			 	 AND FLAG = 'U'                              
+ 			 	 <if test="examIdx != '' ">                  
+ 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+ 			 	 </if>
+ 			 	 <if test ="examNum != '' ">
+ 			 	 AND SELECTION_NUM = #{examNum ,jdbcType=NUMERIC} 
+ 			 	 </if>    					      	  	
+ 			 	  
+	
+	</update>
+	
+	<update id="update_mb_c2_cogn2_editlist2" parameterType="HashMap">
+  			UPDATE                                                                                                     
+				 mb_c2                                                 
+				SET                                                       
+				 SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},           
+				 SELECTION_NUM = #{examNum ,jdbcType=NUMERIC},   
+				 C_J_01 =  #{cJ01, jdbcType=VARCHAR},           
+				 C_J_02 =  #{cJ02, jdbcType=VARCHAR},            
+				 C_J_03 =  #{cJ03, jdbcType=VARCHAR},           
+				 C_J_04 =  #{cJ04, jdbcType=VARCHAR},           
+				 C_J_05 =  #{cJ05, jdbcType=VARCHAR},           
+				 C_J_06 =  #{cJ06, jdbcType=VARCHAR},           
+				 C_J_07 =  #{cJ07, jdbcType=VARCHAR},           
+				 C_J_08 =  #{cJ08, jdbcType=VARCHAR},           
+				 C_J_09 =  #{cJ09, jdbcType=VARCHAR},           
+				 C_J_10 =  #{cJ10, jdbcType=VARCHAR},           
+				 C_Z_01 =  #{cZ01, jdbcType=VARCHAR},           
+				 C_Z_02 =  #{cZ02, jdbcType=VARCHAR},            
+				 C2_Z_TEST_DAY = #{testDay},
+				 C2_Z_UPDATE_DATE = now(),                        		           	                                   
+ 			 	 C2_Z_UPDATE_USERID =#{updateUserid}              
+ 			 WHERE                                       
+ 			 	 OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+ 			 	 AND FLAG = 'U'                              
+ 			 	 <if test="examIdx != '' ">                  
+ 			 	    AND IDX = #{examIdx,jdbcType=NUMERIC}    
+ 			 	 </if>    					      	  	
+	
+	</update>
+	
+	<select id="select_mb_c3_list" parameterType="HashMap" resultType="MbC3VO">
+		SELECT IDX,OBJECT_IDX,SELECTION_NUM,DATE_FORMAT(TEST_DAY, '%Y%m%d') AS TEST_DAY,C_O_01,C_O_02,C_AC_01,C_AC_02,C_H_01,C_H_02
+		  FROM mb_c3
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<insert id="update_mb_c3_newlist" parameterType="HashMap">
+
+	INSERT INTO mb_c3(
+		   OBJECT_IDX,       
+		   SUBJECT_IDX,
+		   SELECTION_NUM,
+		   TEST_DAY, 
+			 C_O_01,
+			 C_O_02,
+			 C_AC_01,
+			 C_AC_02,
+			 C_H_01,
+			 C_H_02,
+			 FLAG,         						 
+			 INSERT_DATE,  						 
+			 INSERT_USERID,
+			 UPDATE_DATE,  
+			 UPDATE_USERID 
+			 ) VALUES
+			 ( 
+			#{objectIdx , jdbcType=NUMERIC},
+			 #{subjectIdx , jdbcType=NUMERIC},
+			 #{examNum ,jdbcType=NUMERIC},
+			 #{testDay},		
+	          #{cO01,  jdbcType=VARCHAR},
+		      #{cO02,  jdbcType=VARCHAR},
+		      #{cAc01, jdbcType=VARCHAR},
+		      #{cAc02, jdbcType=VARCHAR},
+		      #{cH01,  jdbcType=VARCHAR},
+		      #{cH02,	 jdbcType=VARCHAR},
+		      'U',                                     		 	
+		      now(),                                   		 	
+		      #{insertUserid ,jdbcType=NUMERIC},       		 	
+		      now(),                                   		 	
+	       	  #{updateUserid ,jdbcType=NUMERIC}        
+       	                                         
+      		 	)     	
+
+	</insert>
+	
+	<update id="update_mb_c3_editlist" parameterType="HashMap">
+	
+	     	UPDATE                                                                                                     
+				 mb_c3                                                  
+				SET                                                       
+				   SUBJECT_IDX =  #{subjectIdx ,jdbcType=NUMERIC},           
+				   SELECTION_NUM = #{examNum ,jdbcType=NUMERIC},   
+				   C_O_01  =  #{cO01,  jdbcType=VARCHAR},       
+				   C_O_02  =  #{cO02,  jdbcType=VARCHAR},       
+				   C_AC_01 =  #{cAc01, jdbcType=VARCHAR},       
+				   C_AC_02 =  #{cAc02, jdbcType=VARCHAR},       
+				   C_H_01  =  #{cH01,  jdbcType=VARCHAR},       
+				   C_H_02  =  #{cH02,	 jdbcType=VARCHAR},
+				   TEST_DAY =  #{testDay},
+				   UPDATE_DATE = now(),                        		           	                                   
+ 			 	   UPDATE_USERID =#{updateUserid}              
+ 			 WHERE                                       
+ 			 	   OBJECT_IDX = #{objectIdx ,jdbcType=NUMERIC} 
+ 			 	   AND FLAG = 'U'                              
+ 			 	 <if test="examIdx != '' ">                  
+ 			 	   AND IDX = #{examIdx,jdbcType=NUMERIC}    
+ 			 	 </if>    					      	                 
+	
+	</update>
+
+	<select id="select_mb_hrsd_list" parameterType="HashMap" resultType="MbHrsdVO">
+		SELECT HRSD_01,HRSD_02,HRSD_03,HRSD_04,HRSD_05,HRSD_06
+				, HRSD_07,HRSD_08,HRSD_09,HRSD_10,HRSD_11
+				, HRSD_12,HRSD_13,HRSD_14,HRSD_15,HRSD_16,HRSD_16_A,HRSD_16_B,HRSD_17
+		  FROM mb_hrsd
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<select id="select_mb_cdr1_list" parameterType="HashMap" resultType="MbCdr1VO">
+		SELECT 'S' AUD
+			  ,CASE WHEN CDR_M = '0' THEN '●' ELSE '' END AS CDR_M_01
+			  ,CASE WHEN CDR_M = '0.5' THEN '●' ELSE '' END AS CDR_M_02
+			  ,CASE WHEN CDR_M = '1' THEN '●' ELSE '' END AS CDR_M_03
+			  ,CASE WHEN CDR_M = '2' THEN '●' ELSE '' END AS CDR_M_04
+			  ,CASE WHEN CDR_M = '3' THEN '●' ELSE '' END AS CDR_M_05
+			  ,CASE WHEN CDR_O = '0' THEN '●' ELSE '' END AS CDR_O_01
+			  ,CASE WHEN CDR_O = '0.5' THEN '●' ELSE '' END AS CDR_O_02
+			  ,CASE WHEN CDR_O = '1' THEN '●' ELSE '' END AS CDR_O_03
+			  ,CASE WHEN CDR_O = '2' THEN '●' ELSE '' END AS CDR_O_04
+			  ,CASE WHEN CDR_O = '3' THEN '●' ELSE '' END AS CDR_O_05
+			  ,CASE WHEN CDR_J = '0' THEN '●' ELSE '' END AS CDR_J_01
+			  ,CASE WHEN CDR_J = '0.5' THEN '●' ELSE '' END AS CDR_J_02
+			  ,CASE WHEN CDR_J = '1' THEN '●' ELSE '' END AS CDR_J_03
+			  ,CASE WHEN CDR_J = '2' THEN '●' ELSE '' END AS CDR_J_04
+			  ,CASE WHEN CDR_J = '3' THEN '●' ELSE '' END AS CDR_J_05
+			  ,CASE WHEN CDR_S = '0' THEN '●' ELSE '' END AS CDR_S_01
+			  ,CASE WHEN CDR_S = '0.5' THEN '●' ELSE '' END AS CDR_S_02
+			  ,CASE WHEN CDR_S = '1' THEN '●' ELSE '' END AS CDR_S_03
+			  ,CASE WHEN CDR_S = '2' THEN '●' ELSE '' END AS CDR_S_04
+			  ,CASE WHEN CDR_S = '3' THEN '●' ELSE '' END AS CDR_S_05
+		  FROM mb_cdr
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<select id="select_mb_cdr2_list" parameterType="HashMap" resultType="MbCdr2VO">
+		SELECT 'S' AUD
+			  ,CASE WHEN CDR_H    = '0' THEN '●' ELSE '' END AS CDR_H_01
+			  ,CASE WHEN CDR_H    = '0.5' THEN '●' ELSE '' END AS CDR_H_02
+			  ,CASE WHEN CDR_H    = '1' THEN '●' ELSE '' END AS CDR_H_03
+			  ,CASE WHEN CDR_H    = '2' THEN '●' ELSE '' END AS CDR_H_04
+			  ,CASE WHEN CDR_H    = '3' THEN '●' ELSE '' END AS CDR_H_05
+			  ,CASE WHEN CDR_P    = '0'	THEN '●' ELSE '' END AS CDR_P_01
+			  ,CASE WHEN CDR_P    = '1'	THEN '●' ELSE '' END AS CDR_P_02
+			  ,CASE WHEN CDR_P    = '2'	THEN '●' ELSE '' END AS CDR_P_03
+			  ,CASE WHEN CDR_P    = '3'	THEN '●' ELSE '' END AS CDR_P_04
+			  , CDR_STEP,CDR_M,CDR_O,CDR_J,CDR_S,CDR_H,CDR_P
+		  FROM mb_cdr
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<select id="select_mb_lab1_list" parameterType="HashMap" resultType="MbLabVO">
+		SELECT 'S' AUD
+			  ,CASE WHEN LAB_CBC_01	= '1' THEN 'V' ELSE '' END LAB_CBC_01
+			  ,CASE WHEN LAB_CBC_02	= '1' THEN 'V' ELSE '' END LAB_CBC_02
+			  ,CASE WHEN LAB_CBC_03	= '1' THEN 'V' ELSE '' END LAB_CBC_03
+			  ,CASE WHEN LAB_CBC_04	= '1' THEN 'V' ELSE '' END LAB_CBC_04
+			  ,CASE WHEN LAB_CBC_05	= '1' THEN 'V' ELSE '' END LAB_CBC_05
+			  ,CASE WHEN LAB_CBC_06	= '1' THEN 'V' ELSE '' END LAB_CBC_06
+			  ,CASE WHEN LAB_BLOOD_01	= '1' THEN 'V' ELSE '' END LAB_BLOOD_01
+			  ,CASE WHEN LAB_BLOOD_02	= '1' THEN 'V' ELSE '' END LAB_BLOOD_02
+			  ,CASE WHEN LAB_BLOOD_03	= '1' THEN 'V' ELSE '' END LAB_BLOOD_03
+			  ,CASE WHEN LAB_BLOOD_04	= '1' THEN 'V' ELSE '' END LAB_BLOOD_04
+			  ,CASE WHEN LAB_BLOOD_05	= '1' THEN 'V' ELSE '' END LAB_BLOOD_05
+			  ,CASE WHEN LAB_BLOOD_06	= '1' THEN 'V' ELSE '' END LAB_BLOOD_06
+			  ,CASE WHEN LAB_BLOOD_07	= '1' THEN 'V' ELSE '' END LAB_BLOOD_07
+			  ,CASE WHEN LAB_BLOOD_08	= '1' THEN 'V' ELSE '' END LAB_BLOOD_08
+			  ,CASE WHEN LAB_BLOOD_09	= '1' THEN 'V' ELSE '' END LAB_BLOOD_09
+			  ,CASE WHEN LAB_BLOOD_10	= '1' THEN 'V' ELSE '' END LAB_BLOOD_10
+			  ,CASE WHEN LAB_BLOOD_11	= '1' THEN 'V' ELSE '' END LAB_BLOOD_11
+			  ,CASE WHEN LAB_BLOOD_12	= '1' THEN 'V' ELSE '' END LAB_BLOOD_12
+			  ,CASE WHEN LAB_BLOOD_13	= '1' THEN 'V' ELSE '' END LAB_BLOOD_13
+			  ,CASE WHEN LAB_BLOOD_14	= '1' THEN 'V' ELSE '' END LAB_BLOOD_14
+			  ,CASE WHEN LAB_BLOOD_15	= '1' THEN 'V' ELSE '' END LAB_BLOOD_15
+			  ,CASE WHEN LAB_BLOOD_16	= '1' THEN 'V' ELSE '' END LAB_BLOOD_16
+			  ,CASE WHEN LAB_BLOOD_17	= '1' THEN 'V' ELSE '' END LAB_BLOOD_17
+			  ,CASE WHEN LAB_BLOOD_18	= '1' THEN 'V' ELSE '' END LAB_BLOOD_18
+			  ,CASE WHEN LAB_BLOODS_01	= '1' THEN 'V' ELSE '' END LAB_BLOODS_01
+			  ,CASE WHEN LAB_BLOODS_02	= '1' THEN 'V' ELSE '' END LAB_BLOODS_02
+			  ,CASE WHEN LAB_BLOODS_03	= '1' THEN 'V' ELSE '' END LAB_BLOODS_03
+			  ,CASE WHEN LAB_BLOODS_04	= '1' THEN 'V' ELSE '' END LAB_BLOODS_04
+			  ,CASE WHEN LAB_TFT_01	= '1' THEN 'V' ELSE '' END LAB_TFT_01
+			  ,CASE WHEN LAB_TFT_02	= '1' THEN 'V' ELSE '' END LAB_TFT_02
+			  ,CASE WHEN LAB_TFT_03	= '1' THEN 'V' ELSE '' END LAB_TFT_03
+			  ,CASE LAB_CBC_SEL_01	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_CBC_SEL_01		 END AS LAB_CBC_SEL_01
+			  ,CASE LAB_CBC_SEL_02	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_CBC_SEL_02	     END AS LAB_CBC_SEL_02
+			  ,CASE LAB_CBC_SEL_03	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_CBC_SEL_03	     END AS LAB_CBC_SEL_03
+			  ,CASE LAB_CBC_SEL_04	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_CBC_SEL_04	     END AS LAB_CBC_SEL_04
+			  ,CASE LAB_CBC_SEL_05	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_CBC_SEL_05	     END AS LAB_CBC_SEL_05
+			  ,CASE LAB_CBC_SEL_06	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_CBC_SEL_06	     END AS LAB_CBC_SEL_06
+			  ,CASE LAB_BLOOD_SEL_01	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_01	 END AS LAB_BLOOD_SEL_01
+			  ,CASE LAB_BLOOD_SEL_02	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_02	 END AS LAB_BLOOD_SEL_02
+			  ,CASE LAB_BLOOD_SEL_03	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_03	 END AS LAB_BLOOD_SEL_03
+			  ,CASE LAB_BLOOD_SEL_04	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_04	 END AS LAB_BLOOD_SEL_04
+			  ,CASE LAB_BLOOD_SEL_05	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_05	 END AS LAB_BLOOD_SEL_05
+			  ,CASE LAB_BLOOD_SEL_06	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_06	 END AS LAB_BLOOD_SEL_06
+			  ,CASE LAB_BLOOD_SEL_07	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_07	 END AS LAB_BLOOD_SEL_07
+			  ,CASE LAB_BLOOD_SEL_08	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_08	 END AS LAB_BLOOD_SEL_08
+			  ,CASE LAB_BLOOD_SEL_09	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_09	 END AS LAB_BLOOD_SEL_09
+			  ,CASE LAB_BLOOD_SEL_10	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_10	 END AS LAB_BLOOD_SEL_10
+			  ,CASE LAB_BLOOD_SEL_11	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_11	 END AS LAB_BLOOD_SEL_11
+			  ,CASE LAB_BLOOD_SEL_12	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_12	 END AS LAB_BLOOD_SEL_12
+			  ,CASE LAB_BLOOD_SEL_13	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_13	 END AS LAB_BLOOD_SEL_13
+			  ,CASE LAB_BLOOD_SEL_14	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_14	 END AS LAB_BLOOD_SEL_14
+			  ,CASE LAB_BLOOD_SEL_15	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_15	 END AS LAB_BLOOD_SEL_15
+			  ,CASE LAB_BLOOD_SEL_16	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_16	 END AS LAB_BLOOD_SEL_16
+			  ,CASE LAB_BLOOD_SEL_17	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_17	 END AS LAB_BLOOD_SEL_17
+			  ,CASE LAB_BLOOD_SEL_18	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOOD_SEL_18	 END AS LAB_BLOOD_SEL_18
+			  ,CASE LAB_BLOODS_SEL_01	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOODS_SEL_01	 END AS LAB_BLOODS_SEL_01
+			  ,CASE LAB_BLOODS_SEL_02	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOODS_SEL_02	 END AS LAB_BLOODS_SEL_02
+			  ,CASE LAB_BLOODS_SEL_03	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOODS_SEL_03	 END AS LAB_BLOODS_SEL_03
+			  ,CASE LAB_BLOODS_SEL_04	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_BLOODS_SEL_04	 END AS LAB_BLOODS_SEL_04
+			  ,CASE LAB_TFT_SEL_01	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_TFT_SEL_01	     END AS LAB_TFT_SEL_01
+			  ,CASE LAB_TFT_SEL_02	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_TFT_SEL_02	     END AS LAB_TFT_SEL_02
+			  ,CASE LAB_TFT_SEL_03	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_TFT_SEL_03	     END AS LAB_TFT_SEL_03
+			  ,LAB_CBC_TXT_01,LAB_CBC_TXT_02,LAB_CBC_TXT_03,LAB_CBC_TXT_04,LAB_CBC_TXT_05,LAB_CBC_TXT_06
+			  ,LAB_CBC_ETC_01,LAB_CBC_ETC_02,LAB_CBC_ETC_03,LAB_CBC_ETC_04,LAB_CBC_ETC_05,LAB_CBC_ETC_06
+			  ,LAB_BLOOD_TXT_01,LAB_BLOOD_TXT_02,LAB_BLOOD_TXT_03,LAB_BLOOD_TXT_04,LAB_BLOOD_TXT_05,LAB_BLOOD_TXT_06,LAB_BLOOD_TXT_07,LAB_BLOOD_TXT_08,LAB_BLOOD_TXT_09,LAB_BLOOD_TXT_10
+			  ,LAB_BLOOD_TXT_11,LAB_BLOOD_TXT_12,LAB_BLOOD_TXT_13,LAB_BLOOD_TXT_14,LAB_BLOOD_TXT_15,LAB_BLOOD_TXT_16,LAB_BLOOD_TXT_17,LAB_BLOOD_TXT_18
+			  ,LAB_BLOOD_ETC_01,LAB_BLOOD_ETC_02,LAB_BLOOD_ETC_03,LAB_BLOOD_ETC_04,LAB_BLOOD_ETC_05,LAB_BLOOD_ETC_06,LAB_BLOOD_ETC_07,LAB_BLOOD_ETC_08,LAB_BLOOD_ETC_09,LAB_BLOOD_ETC_10
+			  ,LAB_BLOOD_ETC_11,LAB_BLOOD_ETC_12,LAB_BLOOD_ETC_13,LAB_BLOOD_ETC_14,LAB_BLOOD_ETC_15,LAB_BLOOD_ETC_16,LAB_BLOOD_ETC_17,LAB_BLOOD_ETC_18
+			  ,LAB_BLOODS_TXT_01,LAB_BLOODS_TXT_02,LAB_BLOODS_TXT_03,LAB_BLOODS_TXT_04,LAB_BLOODS_ETC_01,LAB_BLOODS_ETC_02,LAB_BLOODS_ETC_03,LAB_BLOODS_ETC_04
+			  ,LAB_TFT_TXT_01,LAB_TFT_TXT_02,LAB_TFT_TXT_03,LAB_TFT_ETC_01,LAB_TFT_ETC_02,LAB_TFT_ETC_03
+		  FROM mb_lab
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<select id="select_mb_lab2_list" parameterType="HashMap" resultType="MbLabVO">
+		SELECT 'S' AUD
+			  ,CASE WHEN LAB_URI_01	= '1' THEN 'V' ELSE '' END LAB_URI_01
+			  ,CASE WHEN LAB_URI_02	= '1' THEN 'V' ELSE '' END LAB_URI_02
+			  ,CASE WHEN LAB_URI_03	= '1' THEN 'V' ELSE '' END LAB_URI_03
+			  ,CASE WHEN LAB_URI_04	= '1' THEN 'V' ELSE '' END LAB_URI_04
+			  ,CASE WHEN LAB_URI_05	= '1' THEN 'V' ELSE '' END LAB_URI_05
+			  ,CASE WHEN LAB_URI_06	= '1' THEN 'V' ELSE '' END LAB_URI_06
+			  ,CASE WHEN LAB_URI_07	= '1' THEN 'V' ELSE '' END LAB_URI_07
+			  ,CASE WHEN LAB_URI_08	= '1' THEN 'V' ELSE '' END LAB_URI_08
+			  ,CASE WHEN LAB_URI_09	= '1' THEN 'V' ELSE '' END LAB_URI_09
+			  ,CASE WHEN LAB_URI_10	= '1' THEN 'V' ELSE '' END LAB_URI_10
+			  ,CASE WHEN LAB_URI_11	= '1' THEN 'V' ELSE '' END LAB_URI_11
+			  ,CASE WHEN LAB_URI_12	= '1' THEN 'V' ELSE '' END LAB_URI_12
+			  ,CASE WHEN LAB_URI_13	= '1' THEN 'V' ELSE '' END LAB_URI_13
+			  ,CASE WHEN LAB_URI_14	= '1' THEN 'V' ELSE '' END LAB_URI_14
+			  ,CASE LAB_TFT_SEL_01	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_TFT_SEL_01	     END AS LAB_TFT_SEL_01
+			  ,CASE LAB_TFT_SEL_02	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_TFT_SEL_02	     END AS LAB_TFT_SEL_02
+			  ,CASE LAB_TFT_SEL_03	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_TFT_SEL_03	     END AS LAB_TFT_SEL_03
+			  ,CASE LAB_URI_SEL_01	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_01	     END AS LAB_URI_SEL_01
+			  ,CASE LAB_URI_SEL_02	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_02	     END AS LAB_URI_SEL_02
+			  ,CASE LAB_URI_SEL_03	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_03	     END AS LAB_URI_SEL_03
+			  ,CASE LAB_URI_SEL_04	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_04	     END AS LAB_URI_SEL_04
+			  ,CASE LAB_URI_SEL_05	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_05	     END AS LAB_URI_SEL_05
+			  ,CASE LAB_URI_SEL_06	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_06	     END AS LAB_URI_SEL_06
+			  ,CASE LAB_URI_SEL_07	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_07	     END AS LAB_URI_SEL_07
+			  ,CASE LAB_URI_SEL_08	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_08	     END AS LAB_URI_SEL_08
+			  ,CASE LAB_URI_SEL_09	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_09	     END AS LAB_URI_SEL_09
+			  ,CASE LAB_URI_SEL_10	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_10	     END AS LAB_URI_SEL_10
+			  ,CASE LAB_URI_SEL_11	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_11	     END AS LAB_URI_SEL_11
+			  ,CASE LAB_URI_SEL_12	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_12	     END AS LAB_URI_SEL_12
+			  ,CASE LAB_URI_SEL_13	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_13	     END AS LAB_URI_SEL_13
+			  ,CASE LAB_URI_SEL_14	WHEN '1' THEN '정상' WHEN '2' THEN '정상초과' WHEN '3' THEN '정상미만' ELSE LAB_URI_SEL_14	     END AS LAB_URI_SEL_14
+			  ,LAB_URI_TXT_01,LAB_URI_TXT_02,LAB_URI_TXT_03,LAB_URI_TXT_04,LAB_URI_TXT_05,LAB_URI_TXT_06,LAB_URI_TXT_07,LAB_URI_TXT_08,LAB_URI_TXT_09,LAB_URI_TXT_10
+			  ,LAB_URI_TXT_11,LAB_URI_TXT_12,LAB_URI_TXT_13,LAB_URI_TXT_14
+			  ,LAB_URI_ETC_01,LAB_URI_ETC_02,LAB_URI_ETC_03,LAB_URI_ETC_04,LAB_URI_ETC_05,LAB_URI_ETC_06,LAB_URI_ETC_07,LAB_URI_ETC_08,LAB_URI_ETC_09,LAB_URI_ETC_10
+			  ,LAB_URI_ETC_11,LAB_URI_ETC_12,LAB_URI_ETC_13,LAB_URI_ETC_14
+		  FROM mb_lab
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<select id="select_mb_dia_list" parameterType="HashMap" resultType="MbDiaVO">
+		SELECT CASE WHEN DIA_01 = '1' THEN '●' ELSE '' END AS DIA_01_1
+			  ,CASE WHEN DIA_01 = '2' THEN '●' ELSE '' END AS DIA_01_2
+			  ,CASE WHEN DIA_01 = '3' THEN '●' ELSE '' END AS DIA_01_3
+			  ,CASE WHEN DIA_01 = '4' THEN '●' ELSE '' END AS DIA_01_4
+			  ,CASE WHEN DIA_02_CK01 = '1' THEN 'V' ELSE '' END AS DIA_02_CK01
+			  ,CASE WHEN DIA_02_CK02 = '1' THEN 'V' ELSE '' END AS DIA_02_CK02
+			  ,CASE WHEN DIA_02_CK03 = '1' THEN 'V' ELSE '' END AS DIA_02_CK03
+			  -- ,CASE WHEN DIA_02_CK04 = '1' THEN 'V' ELSE '' END AS DIA_02_CK04
+			  -- ,CASE WHEN DIA_02_CK05 = '1' THEN 'V' ELSE '' END AS DIA_02_CK05
+			  -- ,CASE WHEN DIA_02_CK06 = '1' THEN 'V' ELSE '' END AS DIA_02_CK06
+			  ,CASE WHEN DIA_02_CK07 = '1' THEN 'V' ELSE '' END AS DIA_02_CK07
+			  ,CASE WHEN DIA_02_CK08 = '1' THEN 'V' ELSE '' END AS DIA_02_CK08
+			  ,CASE WHEN DIA_02_CK09 = '1' THEN 'V' ELSE '' END AS DIA_02_CK09
+			  ,DIA_02_CK04_TXT,DIA_02_CK05_TXT,DIA_02_CK06_TXT,DIA_02_CK07_TXT
+			  ,CASE WHEN DIA_03_CK	= '1' THEN '●' ELSE '' END AS 	DIA_03_CK_01
+			  ,CASE WHEN DIA_03_CK	= '2' THEN '●' ELSE '' END AS 	DIA_03_CK_02
+			  ,CASE WHEN DIA_03_CK	= '3' THEN '●' ELSE '' END AS 	DIA_03_CK_03
+			  ,CASE WHEN DIA_03_CK	= '4' THEN '●' ELSE '' END AS 	DIA_03_CK_04
+			  ,CASE WHEN DIA_03_CK	= '5' THEN '●' ELSE '' END AS 	DIA_03_CK_05
+			  ,CASE WHEN DIA_03_CK	= '6' THEN '●' ELSE '' END AS 	DIA_03_CK_06
+			  ,CASE WHEN DIA_03_CK	= '7' THEN '●' ELSE '' END AS 	DIA_03_CK_07
+			  ,CASE WHEN DIA_03_CK	= '8' THEN '●' ELSE '' END AS 	DIA_03_CK_08
+			  ,CASE WHEN DIA_03_CK	= '9' THEN '●' ELSE '' END AS 	DIA_03_CK_09
+			  ,CASE WHEN DIA_03_CK	= '10'	THEN '●' ELSE '' END AS 	DIA_03_CK_10
+			  ,CASE WHEN DIA_03_CK	= '11'	THEN '●' ELSE '' END AS 	DIA_03_CK_11
+			  ,CASE WHEN DIA_03_CK	= '12'	THEN '●' ELSE '' END AS 	DIA_03_CK_12
+			  ,DIA_03_CK_TXT
+			  ,DIA_04_TXT
+		  FROM mb_dia
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM =  #{examNum}
+		   AND flag = 'U'
+	</select>
+
+	<select id="select_memo" parameterType="HashMap" resultType="String">
+		SELECT MEMO
+		  FROM mb_memo
+		 WHERE OBJECT_IDX = #{objectIdx}
+		   AND SELECTION_NUM = #{examNum}
+		   AND FLAG = 'U'
+	</select>
+
+	<select id="select_mb_testblod_list" parameterType="HashMap" resultType="MbTestblodVO">
+		<![CDATA[
+		SELECT REMARK,B.CHARTNO
+			  ,HEIGHT,WEIGHT,ABO,BPRESSURE1,BPRESSURE2
+			  ,WHITEBLOOD,REDBLOOD
+			  ,THROMBOCYT,HEMOGLOBIN,HEMATOCRIT,WBCDIFF1,WBCDIFF2,WBCDIFF3,WBCDIFF4,WBCDIFF5
+			  ,WBCDIFF6,PROTEIN,ALBUMIN,CHOLESTERO,TRIGLYCERI,ASTSGOT,ALTSGPT,BUN
+			  ,CREATININE,HBAIC,T3,T4,TSH,MRIDIAG,PETDIAG,MRIID,LDLCHOLE,HDLCHOLE,GLUCOSE
+			  ,CASE WHEN GENDER = 1 THEN 'M' ELSE 'F' END GENDER
+				, (YEAR(A.TESTDATE)-YEAR(CONCAT(BIRTH1,BIRTH2,CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END))
+			   - (RIGHT(A.TESTDATE,4)<RIGHT(CONCAT(BIRTH1,BIRTH2,CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END),4)))
+				AGE 	#검사시 실제나이
+		  FROM mb_testblod A
+		  JOIN mb_object B ON A.OBJECT_IDX = B.IDX
+		 WHERE A.OBJECT_IDX = #{objectIdx}
+		   AND A.TESTDATE = #{examNum}
+		]]>
+	</select>
+</mapper>
+

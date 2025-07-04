@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Member">
+	<select id="selectMember" parameterType="MemberVO" resultType="MemberVO">
+		SELECT idx
+			 , id
+			 , pw
+			 , name
+			 , auth
+			 , tel_no
+			 , remark
+			 , use_yn
+		FROM mb_subject
+		WHERE 1=1
+		  AND id = #{id}
+		  AND use_yn = 'Y'
+	</select>
+
+	<update id="updateMemberUseProgram" parameterType="MemberUseProgramVO">
+		UPDATE mb_useprogram
+		   SET
+		   	   CSDTE = SYSDATE()
+		   	    , UPDEMPLNO = #{userId}
+		   	    , UPDDT = SYSDATE()
+		 WHERE 1=1
+		   AND USEYMD = #{today}
+		   AND USEUSERID = #{userId}
+		   AND IPADDR = #{ip}
+		   AND CSDTE IS NULL
+		   AND 1=1
+	</update>
+
+	<select id="selectCountMemberUseProgram" parameterType="MemberUseProgramVO" resultType="Integer">
+		SELECT COUNT(*)
+		  FROM mb_useprogram
+		 WHERE 1=1
+		   AND USEYMD = #{today}
+		   AND USEPGID = #{usepgid}
+		   AND USEUSERID = #{userId}
+		   AND IPADDR = #{ip}
+		   AND CSDTE IS NULL
+	</select>
+
+	<insert id="insertMemberUseProgram" parameterType="MemberUseProgramVO">
+		INSERT INTO
+			mb_useprogram (IDX, USEYMD, USEPGID, USEUSERID, STDTE, CSDTE, IPADDR, MACADDR, INQFL, SAVFL, UPDFL, DELFL, PRTFL, EXEFL, INSEMPLNO, INSDT, UPDEMPLNO, UPDDT)
+			VALUES (
+				0, #{today} , #{usepgid}, #{userId}, now(), null, #{ip}, 'web', 'N','N','N','N','N','N',#{userId},now(),#{userId},now()
+			)
+	</insert>
+
+	<select id="selectCountMemberProgramList" parameterType="String" resultType="Integer">
+		SELECT COUNT(*)
+		  FROM mb_proglist
+		 WHERE 1=1
+		   AND lower(progid)=#{progid}
+		   AND useyn='Y'
+	</select>
+
+	<select id="selectCountMemberPermissionPower" parameterType="HashMap" resultType="Integer">
+		SELECT COUNT(*)
+		  FROM mb_pempower
+		 WHERE 1=1
+		   AND puserid = #{userId}
+		   AND lower(progid) = #{progid}
+	</select>
+
+	<select id="selectMemberProgramList" parameterType="String" resultType="MemberProgramListVO">
+		SELECT idx
+			 , progcd01
+			 , progcd02
+			 , progcd03
+			 , progid
+			 , progname
+			 , useyn
+		  FROM mb_proglist
+		 WHERE 1=1
+		   AND lower(progid) = #{progid}
+		   AND useyn='Y'
+	</select>
+
+	<select id="selectMemberProgramListForWeb" resultType="MemberProgramListVO">
+		SELECT idx
+			 , progcd01
+			 , progcd02
+			 , progcd03
+			 , progid
+			 , progname
+			 , useyn
+		  FROM mb_proglist
+		 WHERE 1=1
+		   AND progcd01='01'
+		   AND useyn='Y'
+		   ORDER BY progcd01, progcd02, progcd03
+	</select>
+
+	<select id="selectMemberPermissionPowerList" parameterType="String" resultType="HashMap">
+		SELECT modifydate
+			 , modifyusid
+			 , progid
+			 , puserid
+		  FROM mb_pempower
+		 WHERE 1=1
+		   AND puserid = #{userId}
+	</select>
+<!--        , (YEAR(CURDATE())-YEAR(CONCAT(BIRTH1,BIRTH2,CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END))
+	       - (RIGHT(CURDATE(),5)<RIGHT(CONCAT(BIRTH1,BIRTH2,CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END),4))) AGE -->
+	<select id="selectMemberObject" parameterType="String" resultType="MbObjectVO">
+		<![CDATA[
+		SELECT IDX, NAME, TEL1, TEL2, TEL3
+	       , MOBILE1, MOBILE2, MOBILE3
+	       , JUMIN1, JUMIN2, JUMIN3
+	       , BIRTH1, BIRTH2, BIRTH3
+	       , AGE
+           , CASE WHEN GENDER = 1 THEN 'M' ELSE 'F' END GENDER
+           , YEAR_ANI, EDU
+	       , ADDRESS1, ADDRESS2, ADDRESS3, ADDRESS4, PHOTOPATH
+           , NAME AS  NAME2
+	       , CONCAT(JUMIN1,'-',JUMIN2,JUMIN3) JUMIN
+           , CONCAT(TEL1,'-',TEL2,'-',TEL3) TELNO
+	       , CONCAT(MOBILE1,'-',MOBILE2,'-',MOBILE3) MOBILE
+        FROM mb_object
+       WHERE IDX = #{objectIdx}
+       ]]>
+	</select>
+
+
+		<select id ="select_from_object_to_dm" parameterType="HashMap" resultType="MbObjectVO">
+				<![CDATA[
+			SELECT IDX, NAME, TEL1, TEL2, TEL3
+	       , MOBILE1, MOBILE2, MOBILE3
+           ,CASE WHEN SUBSTRING(JUMIN2,1,1) = '1' THEN LPAD(SUBSTRING(JUMIN1,1,2),'4','19')
+				 WHEN SUBSTRING(JUMIN2,1,1) = '2' THEN LPAD(SUBSTRING(JUMIN1,1,2),'4','19')
+                 WHEN SUBSTRING(JUMIN2,1,1) = '3' THEN LPAD(SUBSTRING(JUMIN1,1,2),'4','20')
+                 WHEN SUBSTRING(JUMIN2,1,1) = '4' THEN LPAD(SUBSTRING(JUMIN1,1,2),'4','20')
+                 ELSE '' END DM07_R
+			,SUBSTRING(JUMIN1,3,2) DM07_A
+			,SUBSTRING(JUMIN1,5,2) DM07_B
+			,CONCAT(JUMIN2, JUMIN3) DM08
+			  , JUMIN2, JUMIN3
+            , CONCAT(BIRTH1,'-',BIRTH2,'-',ifnull(BIRTH3,'01')) DM_07_C
+           , GENDER
+           , YEAR_ANI, EDU
+	       , ADDRESS1, ADDRESS2, ADDRESS3, ADDRESS4, PHOTOPATH
+           , NAME AS  NAME2
+	       , CONCAT(JUMIN1,'-',JUMIN2,JUMIN3) JUMIN
+           , CONCAT(TEL1,'-',TEL2,'-',TEL3) TELNO
+	       , CONCAT(MOBILE1,'-',MOBILE2,'-',MOBILE3) MOBILE
+        FROM mb_object
+       WHERE IDX = #{objectIdx}
+	   			 ]]>
+	</select>
+
+
+	<!-- 진료소견 -->
+	<select id="selectMemberOpinion" parameterType="String" resultType="MbOpinionVO">
+		select object_idx, opindesc, modifyusid, modifydate, insert_date, insert_userid, update_date, update_userid, remark from mb_opinion where object_idx=#{objectIdx}
+	</select>
+
+	<update id="updateMemberOpinion" parameterType="HashMap">
+		update mb_opinion set opindesc=#{opindesc}, modifyusid=#{modifyusid}, modifydate=DATE_FORMAT(sysdate(), '%Y%m%d%h%i%s%p') where object_idx = #{objectIdx} and 1=1
+	</update>
+
+	<insert id="insertMemberOpinion" parameterType="HashMap"> <!-- 20220822 / mb.opinion 테이블 null값 입력되도록 쿼리 수정 / th.kim -->
+		insert into mb_opinion (object_idx, opindesc, modifyusid, modifydate, insert_date, insert_userid, update_date, update_userid)
+						values (#{objectIdx}, #{opindesc}, #{modifyusid}, DATE_FORMAT(sysdate(), '%Y%m%d%h%i%s%p'), now(), #{subject_idx}, now(), #{subject_idx})
+	</insert>
+	
+	<!-- 비고 -->
+	<select id="selectMemberOpinionRemark" parameterType="String" resultType="MbOpinionVO">
+		select object_idx, opindesc, modifyusid, modifydate, insert_date, insert_userid, update_date, update_userid, remark from mb_opinion where object_idx=#{objectIdx}
+	</select>
+	
+	<update id="updateMemberOpinionRemark" parameterType="HashMap">
+		update mb_opinion set remark=#{remark}, modifyusid=#{modifyusid}, modifydate=DATE_FORMAT(sysdate(), '%Y%m%d%h%i%s%p') where object_idx = #{objectIdx} and 1=1
+	</update>
+
+	<insert id="insertMemberOpinionRemark" parameterType="HashMap"> <!-- 20220822 / mb.opinion 테이블 null값 입력되도록 쿼리 수정 / th.kim -->
+		insert into mb_opinion (object_idx, remark, modifyusid, modifydate, insert_date, insert_userid, update_date, update_userid)
+						values (#{objectIdx}, #{remark}, #{modifyusid}, DATE_FORMAT(sysdate(), '%Y%m%d%h%i%s%p'), now(), #{subject_idx}, now(), #{subject_idx})
+	</insert>
+	
+</mapper>
+

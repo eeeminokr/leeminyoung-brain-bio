@@ -1,0 +1,1410 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CSBR90">
+
+	<select id="select_csbr9020_left_data" parameterType="String" resultType="CamelCaseMap">
+		 SELECT 'S' AUD, IDX,ID,PW,NAME,AUTH,TEL_NO,REMARK,USE_YN
+					  FROM mb_subject
+					 WHERE NAME LIKE CONCAT('%', #{value},'%')
+					 ORDER BY NAME, ID
+	</select>
+
+	<select id="select_csbr9020_right_data" parameterType="String" resultType="CamelCaseMap">
+		 SELECT 'S' AUD, IDX,ID,PW,NAME,AUTH,TEL_NO,REMARK,USE_YN
+			  FROM mb_subject
+			 WHERE ID = #{value}
+	</select>
+
+	<select id="select_csbr9020_right_data2" parameterType="String" resultType="CamelCaseMap">
+		 SELECT 'S' AUD
+			 ,  CONCAT(A.PROGCD01,') ', X.progname)	AS MENU01
+			 ,  CONCAT(A.PROGCD02,') ', Y.progname) AS MENU02
+			 , CONCAT(A.PROGCD03,') ', A.PROGNAME) PROGNAME
+		   , A.PROGID
+			 , CASE WHEN B.PROGID IS NULL THEN 'N' ELSE 'Y' END CHK
+		   , CASE WHEN B.PROGID IS NULL THEN 'N' ELSE 'Y' END CHK_O
+		   FROM mb_proglist A
+		   JOIN mb_proglist X ON X.progcd03 = '' AND X.progcd02 = '' AND  X.progcd01 = A.PROGCD01
+		   LEFT JOIN mb_proglist Y ON Y.progcd03 = '' AND Y.progcd02 = A.progcd02 AND Y.progcd01 = A.PROGCD01
+		   LEFT JOIN mb_pempower B ON A.PROGID = B.PROGID AND B.PUSERID = #{value}
+		  WHERE A.PROGID != ''
+			AND A.USEYN = 'Y'
+		  ORDER BY MENU01, MENU02, PROGNAME
+	</select>
+
+	<select id="select_csbr9020_nrcd_data" parameterType="String" resultType="CamelCaseMap">
+		 SELECT a.userid_fr as USERID, s.name as USERNAME
+			  FROM mb_nrcdpower a
+			  JOIN mb_subject s on a.userid_fr = s.id
+			 WHERE a.progid = 'CSBR1050'
+			   AND a.userid = #{value}
+			 ORDER BY USERNAME
+	</select>
+
+	<select id="select_csbr9020_nrcd_data2" parameterType="String" resultType="CamelCaseMap">
+		 SELECT id as USERID, s.name as USERNAME
+			  FROM mb_subject s
+			 WHERE NOT EXISTS (SELECT 1
+										   FROM mb_nrcdpower x
+								WHERE x.progid ='CSBR1050'
+								  AND x.userid = #{value}
+								  AND x.userid_fr = s.id)
+			 ORDER BY USERNAME
+	</select>
+
+	<select id="select_count_mb_subject" parameterType="String" resultType="int">
+		select count(*) from mb_subject where id=#{value}
+	</select>
+
+	<select id="select_mb_subject" parameterType="String" resultType="CamelCaseMap">
+		select idx
+			  , id
+			  , pw
+			  , name
+			  , auth
+			  , tel_no
+			  , remark
+			  , use_yn
+	    from mb_subject
+	   where id= #{value}
+	</select>
+
+	<insert id="insert_mb_subject" parameterType="HashMap">
+		insert into mb_subject
+		(id, pw, name, auth, tel_no, remark, use_yn)
+		values (#{userid}
+				, #{userpw}
+				, #{username}
+				, #{userauth}
+				, #{usertelno}
+				, #{userremark}
+				, #{useruseyn}
+				)
+	</insert>
+
+	<update id="update_mb_subject" parameterType="HashMap">
+		update mb_subject
+		   set pw=#{userpw}
+		   		, name=#{username}
+		   		, auth=#{userauth}
+		   		, tel_no=#{usertelno}
+		   		, remark=#{userremark}
+		   		, use_yn=#{useruseyn}
+		 where id=#{userid}
+		   and 1=1
+	</update>
+
+	<select id="select_count_mb_pempower" parameterType="HashMap" resultType="int">
+		select count(*) from mb_pempower
+		 where puserid = #{puserid}
+		   and UPPER(progid) = #{progid}
+	</select>
+
+	<delete id="delete_mb_pempower" parameterType="HashMap">
+		 delete from mb_pempower
+		  where puserid=#{puserid} and UPPER(progid)=#{progid} and 1=1
+	</delete>
+
+	<insert id="insert_mb_pempower" parameterType="HashMap">
+		insert into mb_pempower
+		values ( #{puserid}
+				, #{progid}
+				, #{modifyusid}
+				, DATE_FORMAT(sysdate(), '%Y%m%d%h%i%s%p')
+				)
+	</insert>
+
+	<update id="update_mb_pempower" parameterType="HashMap">
+		update mb_pempower
+		   set modifyusid=#{modifyusid}
+		   		, modifydate=DATE_FORMAT(sysdate(), '%Y%m%d%h%i%s%p')
+		 where puserid=#{puserid}
+		   and UPPER(progid)=#{progid}
+		   and 1=1
+	</update>
+
+	<insert id="insert_mb_nrcdpower" parameterType="HashMap">
+		insert into mb_nrcdpower
+		values ( #{userid}
+				, #{progid}
+				, #{useridFr}
+				, #{modifyusid}
+				, DATE_FORMAT(sysdate(), '%Y%m%d%h%i%s%p')
+				)
+	</insert>
+
+	<delete id="delete_mb_nrcdpower">
+		 delete from mb_nrcdpower
+		  where userid=#{userid}
+		    and UPPER(progid)=#{progid}
+		    and userid_fr=#{useridFr}
+		    and 1=1
+	</delete>
+
+	<select id="select_csbr9030_left_data" parameterType="HashMap" resultType="CamelCaseMap">
+		SELECT DATE_FORMAT(INSERT_DATE,'%Y-%m-%d') AS USEDATE
+				, case dayofweek(INSERT_DATE) when 1 then '일'
+				 when 2 then '월'
+				 when 3 then '화'
+				 when 4 then '수'
+				 when 5 then '목'
+				 when 6 then '금'
+				 else '토' end AS WEEK
+				,COUNT(*) AS CNT
+			  FROM mb_usedlog A
+			  JOIN mb_subject B ON B.ID=A.USERID
+			  JOIN mb_proglist C ON C.PROGID=A.USEPGID
+			 WHERE USEDBUTTON = 'EXCEL'
+			   AND INSERT_DATE BETWEEN '${sd} 00:00:00' AND '${ed} 23:59:59'
+			   ${snameQuery}
+			   ${spnameQuery}
+			 GROUP BY USEDATE
+			 ORDER BY USEDATE DESC
+	</select>
+
+	<select id="select_csbr9030_right_data" parameterType="HashMap" resultType="CamelCaseMap">
+		SELECT 'S' AUD, A.USERID,NAME,PROGNAME
+				  ,DATE_FORMAT(A.INSERT_DATE, '%Y-%m-%d %H:%i:%s') AS INSERT_DATE
+			  FROM mb_usedlog A
+			  JOIN mb_subject B ON B.ID=A.USERID
+			  JOIN mb_proglist C ON C.PROGID=A.USEPGID
+			 WHERE USEDBUTTON = 'EXCEL'
+			   AND INSERT_DATE LIKE CONCAT(#{d} ,'%')
+			   ${snameQuery}
+			   ${spnameQuery}
+			 ORDER BY INSERT_DATE
+	</select>
+
+	<select id="select_csbr9140_left_right_data" parameterType="HashMap" resultType="CamelCaseMap">
+		SELECT 'S' AUD, KDCD,CDBS,CDNM,SORTNO,UNUSEYN,DESC1,DESC2,DESC3,MODIFYUSID,MODIFYDATE
+		  FROM mb_etccd
+		 WHERE KDCD = #{kdcd}
+		 <choose>
+			  <when test="orderby !=null and orderby != '' ">
+			 	${orderby}
+			  </when>
+			  <otherwise>
+				 ORDER BY CDBS
+			  </otherwise>
+		  </choose>
+	</select>
+
+	<update id="update_csbr9140_left_mb_etccd" parameterType="HashMap" >
+		update mb_etccd set CDNM=#{nm} where KDCD='0000' and CDBS = #{bs} and 1=1
+	</update>
+
+	<insert id="insert_csbr9140_left_mb_etccd" parameterType="HashMap" >
+		insert into mb_etccd (KDCD, CDBS, CDNM, SORTNO, UNUSEYN, DESC1, DESC2, DESC3, MODIFYUSID, MODIFYDATE)
+		values ('0000',#{bs},#{nm},0,'N','','','',#{modifyusid},now())
+	</insert>
+
+	<update id="update_csbr9140_right_mb_etccd" parameterType="HashMap" >
+		update mb_etccd set CDNM=#{nm}, SORTNO=#{sno}, UNUSEYN=#{uyn}, DESC1=#{d1}, DESC2=#{d2}, DESC3=#{d3}
+		 where KDCD=#{selcode} and CDBS=#{bs}
+		   and 1=1
+	</update>
+
+	<insert id="insert_csbr9140_right_mb_etccd" parameterType="HashMap" >
+		insert into mb_etccd (KDCD, CDBS, CDNM, SORTNO, UNUSEYN, DESC1, DESC2, DESC3, MODIFYUSID, MODIFYDATE)
+		values (#{selcode}, #{bs}, #{nm}, #{sno}, #{uyn}, #{d1}, #{d2}, #{d3}, #{modifyusid}, now())
+	</insert>
+
+	<select id="select_csbr9201_left_data" parameterType="HashMap" resultType="CamelCaseMap">
+		SELECT DISTINCT
+				   a.USEUSERID USERID
+				 , s.name	USERNM
+				 , CASE WHEN a.STDTE IS NOT NULL AND a.CSDTE IS NULL THEN '접속' ELSE '종료' END USERUSYN
+			  FROM mb_useprogram a
+			  JOIN mb_subject s on s.ID = a.USEUSERID
+			 WHERE a.USEYMD = #{sd}
+			 ${stypeQuery}
+	</select>
+
+	<select id="select_csbr9201_right_data" parameterType="HashMap" resultType="CamelCaseMap">
+		SELECT CASE WHEN a.USEPGID = '00000000' AND a.CSDTE IS NULL THEN '접속:시작'
+						WHEN a.USEPGID = '00000000' AND a.CSDTE IS NOT NULL THEN '접속:시작-종료'
+						ELSE p.progname END PGNM
+				 , a.IPADDR
+				 , a.MACADDR
+				 , DATE_FORMAT(a.STDTE, '%Y-%m-%d %H:%i:%s') STDTE
+				 , DATE_FORMAT(a.CSDTE, '%Y-%m-%d %H:%i:%s') CSDTE
+			  FROM mb_useprogram a
+			  LEFT JOIN mb_proglist p on p.progid = a.USEPGID
+			 WHERE a.USEYMD = #{sdate}
+			   AND a.USEUSERID = #{id}
+			 ORDER BY STDTE, CSDTE
+	</select>
+
+	<select id="select_csbr9920_left_data" parameterType="HashMap" resultType="CamelCaseMap">
+		SELECT 'S' AUD, IDX, PROGCD01,PROGCD02,PROGCD03,PROGID,PROGNAME, USEYN
+			  FROM mb_proglist
+			 ORDER BY PROGCD01,PROGCD02,PROGCD03,PROGID
+	</select>
+
+	<select id="select_csbr9920_right_data" parameterType="String" resultType="CamelCaseMap">
+		SELECT id as USERID, s.name as USERNAME
+		  FROM mb_pempower a
+		  JOIN mb_subject s on a.puserid = s.id
+		 WHERE progid = #{value}
+		 ORDER BY USERNAME
+	</select>
+
+	<select id="select_csbr9920_right_data2" parameterType="String" resultType="CamelCaseMap">
+		SELECT id as USERID, s.name as USERNAME
+			  FROM mb_subject s
+			 WHERE NOT EXISTS (SELECT 1
+								 FROM mb_pempower x
+								WHERE x.progid = #{value}
+								  AND x.puserid = s.id)
+			 ORDER BY USERNAME
+	</select>
+
+	<update id="update_csbr9920_left_mb_proglist" parameterType="HashMap" >
+		 update mb_proglist set progcd01=#{cd1}, progcd02=#{cd2}, progcd03=#{cd3}, progid=#{pid}, progname=#{pname}, useyn=#{puseyn}
+		  where idx = #{k}
+		    and 1=1
+	</update>
+
+	<insert id="insert_csbr9920_left_mb_proglist" parameterType="HashMap" >
+		 insert into mb_proglist (progcd01, progcd02, progcd03, progid, progname, useyn)
+ 			values (#{cd1}, #{cd2}, #{cd3}, #{pid}, #{pname}, #{puseyn})
+	</insert>
+
+	<insert id="excelUpload" parameterType="HashMap">
+		INSERT INTO mb_snsb2data_excel1(
+		      Unum
+		      ,Name
+		      ,Record_Num
+		      ,Test_Day
+		      ,Jumin
+		      ,Age
+		      ,Birth
+		      ,Gender
+		      ,Education
+		      ,YearsOfEducation
+		      ,Job
+		      ,Handgrip
+		      ,Examinee_Telno
+		      ,Examinee_Mobile
+		      ,Guardian_Telno
+		      ,Guardian_Mobile
+		      ,Examinee_Address
+		      ,Guardian_Address
+		      ,Refer_Doctor
+		      ,Refer_Dept
+		      ,Diagnosis
+		      ,Duration
+		      ,Subject_Nm
+		      ,Inspection_Engine
+		      ,Remark
+		      ,Digit_span_Forward
+		      ,Digit_span_Forward_z
+		      ,Digit_span_Forward_p
+		      ,Digit_span_Backward
+		      ,Digit_span_Backward_z
+		      ,Digit_span_Backward_p
+		      ,Digit_span_Forward_Backward
+		      ,Digit_span_Forward_Backward_z
+		      ,Digit_span_Forward_Backward_p
+		      ,Letter_cancellation
+		      ,Neglect
+		      ,Spontaneous_speech_fluency
+		      ,Spontaneous_speech_contents
+		      ,Comprehension
+		      ,Repetition
+		      ,Repetition_z
+		      ,Repetition_p
+		      ,Naming_K_BNT
+		      ,Naming_K_BNT_z
+		      ,Naming_K_BNT_p
+		      ,Naming_S_K_BNT_form
+		      ,Naming_S_K_BNT_score
+		      ,Naming_Adjusted_S_K_BNT_score
+		      ,Naming_Adjusted_S_K_BNT_score_z
+		      ,Naming_Adjusted_S_K_BNT_score_p
+		      ,Reading
+		      ,Writing
+		      ,Finger_naming
+		      ,Right_left_orientation
+		      ,Body_part_identification
+		      ,Praxis_Ideomotor
+		      ,Praxis_Ideomotor_z
+		      ,Praxis_Ideomotor_p
+		      ,Praxis_buccofacial
+		      ,Calculation_add
+		      ,Calculation_add_z
+		      ,Calculation_add_p
+		      ,Calculation_sub
+		      ,Calculation_sub_z
+		      ,Calculation_sub_p
+		      ,Calculation_mul
+		      ,Calculation_mul_z
+		      ,Calculation_mul_p
+		      ,Calculation_div
+		      ,Calculation_div_z
+		      ,Calculation_div_p
+		      ,Calculation_total_score
+		      ,Calculation_total_score_z
+		      ,Calculation_total_score_p
+		      ,Interlocking_pentagon
+		      ,Interlocking_pentagon_z
+		      ,Interlocking_pentagon_p
+		      ,Rey_CFT_copy_score
+		      ,Rey_CFT_copy_score_z
+		      ,Rey_CFT_copy_score_p
+		      ,Rey_CFT_copy_score_s
+		      ,Rey_CFT_copy_time
+		      ,Rey_CFT_copy_time_z
+		      ,Rey_CFT_copy_time_p
+		      ,Rey_CFT_copy_time_s
+		      ,Mem_K_MMSE_registration
+		      ,Mem_K_MMSE_registration_z
+		      ,Mem_K_MMSE_registration_p
+		      ,Mem_K_MMSE_recall
+		      ,Mem_K_MMSE_recall_p
+		      ,Mem_K_MMSE_recall_z
+		      ,SVLT_recall_trial1
+		      ,SVLT_recall_trial2
+		      ,SVLT_recall_trial3
+		      ,SVLT_recall_total_score
+		      ,SVLT_recall_total_score_p
+		      ,SVLT_recall_total_score_z
+		      ,SVLT_recall_total_score_s
+		      ,SVLT_Delayed_recall
+		      ,SVLT_Delayed_recall_p
+		      ,SVLT_Delayed_recall_z
+		      ,SVLT_Delayed_recall_s
+		      ,SVLT_recognition_TP
+		      ,SVLT_recognition_TP_p
+		      ,SVLT_recognition_TP_z
+		      ,SVLT_recognition_TP_s
+		      ,SVLT_recognition_FP
+		      ,SVLT_recognition_FP_p
+		      ,SVLT_recognition_FP_z
+		      ,SVLT_recognition_FP_s
+		      ,SVLT_recognition_score
+		      ,SVLT_recognition_score_p
+		      ,SVLT_recognition_score_z
+		      ,SVLT_recognition_score_s
+		      ,SVLT_recognition_discriminability_index
+		      ,SVLT_recognition_discriminability_index_p
+		      ,SVLT_recognition_discriminability_index_z
+		      ,SVLT_recognition_discriminability_index_s
+		      ,RCFT_immediate_recall
+		      ,RCFT_immediate_recall_p
+		      ,RCFT_immediate_recall_z
+		      ,RCFT_immediate_recall_s
+		      ,RCFT_delayed_recall
+		      ,RCFT_delayed_recall_p
+		      ,RCFT_delayed_recall_z
+		      ,RCFT_delayed_recall_s
+		      ,RCFT_recognition_TP
+		      ,RCFT_recognition_TP_p
+		      ,RCFT_recognition_TP_z
+		      ,RCFT_recognition_FP
+		      ,RCFT_recognition_FP_p
+		      ,RCFT_recognition_FP_z
+		      ,RCFT_recognition_score
+		      ,RCFT_recognition_score_p
+		      ,RCFT_recognition_score_z
+		      ,RCFT_recognition_discriminability_index
+		      ,RCFT_recognition_discriminability_index_p
+		      ,RCFT_recognition_discriminability_index_z
+		      ,Motor_impersistence
+		      ,Contrasting_program
+		      ,Contrasting_program_p
+		      ,Contrasting_program_z
+		      ,Go_No_Go
+		      ,Go_No_Go_p
+		      ,Go_No_Go_z
+		      ,Fist_edge_palm
+		      ,Alternating_hand_movement
+		      ,Alternating_square_and_triangle
+		      ,Luria_loop
+		      ,COWAT_animal
+		      ,COWAT_animal_p
+		      ,COWAT_animal_z
+		      ,COWAT_supermarket
+		      ,COWAT_supermarket_p
+		      ,COWAT_supermarket_z
+		      ,COWAT_supermarket_s
+		      ,COWAT_giut
+		      ,COWAT_giut_p
+		      ,COWAT_giut_z
+		      ,COWAT_iung
+		      ,COWAT_iung_p
+		      ,COWAT_iung_z
+		      ,COWAT_siut
+		      ,COWAT_siut_p
+		      ,COWAT_siut_z
+		      ,COWAT_phonemic_total_score
+		      ,COWAT_phonemic_total_score_p
+		      ,COWAT_phonemic_total_score_z
+		      ,StroopTest_Wordreading_correct
+		      ,StroopTest_Wordreading_correct_p
+		      ,StroopTest_Wordreading_correct_z
+		      ,StroopTest_Wordreading_error
+		      ,StroopTest_Wordreading_error_p
+		      ,StroopTest_Wordreading_error_z
+		      ,StroopTest_Wordreading_time
+		      ,StroopTest_Wordreading_time_p
+		      ,StroopTest_Wordreading_time_z
+		      ,StroopTest_Wordreading_Correct_response_rate
+		      ,StroopTest_Wordreading_Correct_response_rate_p
+		      ,StroopTest_Wordreading_Correct_response_rate_z
+		      ,StroopTest_Wordreading_Time_per_item
+		      ,StroopTest_Wordreading_Time_per_item_p
+		      ,StroopTest_Wordreading_Time_per_item_z
+		      ,StroopTest_Colorreading_correct
+		      ,StroopTest_Colorreading_correct_p
+		      ,StroopTest_Colorreading_correct_z
+		      ,StroopTest_Colorreading_correct_s
+		      ,StroopTest_Colorreading_error
+		      ,StroopTest_Colorreading_error_p
+		      ,StroopTest_Colorreading_error_z
+		      ,StroopTest_Colorreading_time
+		      ,StroopTest_Colorreading_time_p
+		      ,StroopTest_Colorreading_time_z
+		      ,StroopTest_Colorreading_Correct_response_rate
+		      ,StroopTest_Colorreading_Correct_response_rate_p
+		      ,StroopTest_Colorreading_Correct_response_rate_z
+		      ,StroopTest_Colorreading_Correct_response_rate_s
+		      ,StroopTest_Colorreading_Time_per_item
+		      ,StroopTest_Colorreading_Time_per_item_p
+		      ,StroopTest_Colorreading_Time_per_item_z
+		      ,StroopTest_Colorreading_Time_per_item_s
+		      ,StroopTest_Interference_score
+		      ,StroopTest_Interference_score_p
+		      ,StroopTest_Interference_score_z
+		      ,StroopTest_Interference_score_s
+		      ,K_MMSE_orientation_to_time
+		      ,K_MMSE_orientation_to_time_p
+		      ,K_MMSE_orientation_to_time_z
+		      ,K_MMSE_orientation_to_place
+		      ,K_MMSE_orientation_to_place_p
+		      ,K_MMSE_orientation_to_place_z
+		      ,K_MMSE_Registation
+		      ,K_MMSE_Registation_p
+		      ,K_MMSE_Registation_z
+		      ,K_MMSE_attention_and_calculation
+		      ,K_MMSE_attention_and_calculation_p
+		      ,K_MMSE_attention_and_calculation_z
+		      ,K_MMSE_recall
+		      ,K_MMSE_recall_p
+		      ,K_MMSE_recall_z
+		      ,K_MMSE_language
+		      ,K_MMSE_language_p
+		      ,K_MMSE_language_z
+		      ,K_MMSE_drawing
+		      ,K_MMSE_drawing_p
+		      ,K_MMSE_drawing_z
+		      ,K_MMSE_total_score
+		      ,K_MMSE_total_score_p
+		      ,K_MMSE_total_score_z
+		      ,CDR
+		      ,B_ADL
+		      ,S1_GDS
+		      ,Sum_of_boxes
+		      ,Digit_span_Forward_s
+		      ,Digit_span_Backward_s
+		      ,Selectionl_Num
+		      ,Illiteracy
+		      ,Education_Level
+		      ,Ages
+		      ,DateOfOnset
+		      ,Vigilance
+		      ,Comprehension_Total_Score
+		      ,Naming_K_BNT_s
+		      ,Naming_S_K_BNT
+		      ,Naming_S_K_BNT_z
+		      ,Naming_S_K_BNT_p
+		      ,Naming_S_K_BNT_s
+		      ,K_MMSE_total_score_s
+		      ,Digit_span_Forward_plus_Backward
+		      ,Digit_span_Forward_plus_Backward_z
+		      ,Digit_span_Forward_plus_Backward_p
+		      ,COWAT_animal_giut
+		      ,RCFT_recognition_TP_s
+		      ,RCFT_recognition_score_s
+		      ,Insert_Date
+		      ,Insert_UserID
+		      ,Update_Date
+		      ,Update_UserID
+		)VALUES
+		<foreach collection="list" separator="," item="item">
+			(${item.Unum}
+		      ,#{item.Name}
+		      ,#{item.Record_Num}
+		      ,#{item.Test_Day}
+		      ,#{item.Jumin}
+		      ,#{item.Age}
+		      ,#{item.Birth}
+		      ,#{item.Gender}
+		      ,#{item.Education}
+		      ,#{item.YearsOfEducation}
+		      ,#{item.Job}
+		      ,#{item.Handgrip}
+		      ,#{item.Examinee_Telno}
+		      ,#{item.Examinee_Mobile}
+		      ,#{item.Guardian_Telno}
+		      ,#{item.Guardian_Mobile}
+		      ,#{item.Examinee_Address}
+		      ,#{item.Guardian_Address}
+		      ,#{item.Refer_Doctor}
+		      ,#{item.Refer_Dept}
+		      ,#{item.Diagnosis}
+		      ,#{item.Duration}
+		      ,#{item.Subject_Nm}
+		      ,#{item.Inspection_Engine}
+		      ,#{item.Remark}
+		      ,#{item.Digit_span_Forward}
+		      ,#{item.Digit_span_Forward_z}
+		      ,#{item.Digit_span_Forward_p}
+		      ,#{item.Digit_span_Backward}
+		      ,#{item.Digit_span_Backward_z}
+		      ,#{item.Digit_span_Backward_p}
+		      ,#{item.Digit_span_Forward_Backward}
+		      ,#{item.Digit_span_Forward_Backward_z}
+		      ,#{item.Digit_span_Forward_Backward_p}
+		      ,#{item.Letter_cancellation}
+		      ,#{item.Neglect}
+		      ,#{item.Spontaneous_speech_fluency}
+		      ,#{item.Spontaneous_speech_contents}
+		      ,#{item.Comprehension}
+		      ,#{item.Repetition}
+		      ,#{item.Repetition_z}
+		      ,#{item.Repetition_p}
+		      ,#{item.Naming_K_BNT}
+		      ,#{item.Naming_K_BNT_z}
+		      ,#{item.Naming_K_BNT_p}
+		      ,#{item.Naming_S_K_BNT_form}
+		      ,#{item.Naming_S_K_BNT_score}
+		      ,#{item.Naming_Adjusted_S_K_BNT_score}
+		      ,#{item.Naming_Adjusted_S_K_BNT_score_z}
+		      ,#{item.Naming_Adjusted_S_K_BNT_score_p}
+		      ,#{item.Reading}
+		      ,#{item.Writing}
+		      ,#{item.Finger_naming}
+		      ,#{item.Right_left_orientation}
+		      ,#{item.Body_part_identification}
+		      ,#{item.Praxis_Ideomotor}
+		      ,#{item.Praxis_Ideomotor_z}
+		      ,#{item.Praxis_Ideomotor_p}
+		      ,#{item.Praxis_buccofacial}
+		      ,#{item.Calculation_add}
+		      ,#{item.Calculation_add_z}
+		      ,#{item.Calculation_add_p}
+		      ,#{item.Calculation_sub}
+		      ,#{item.Calculation_sub_z}
+		      ,#{item.Calculation_sub_p}
+		      ,#{item.Calculation_mul}
+		      ,#{item.Calculation_mul_z}
+		      ,#{item.Calculation_mul_p}
+		      ,#{item.Calculation_div}
+		      ,#{item.Calculation_div_z}
+		      ,#{item.Calculation_div_p}
+		      ,#{item.Calculation_total_score}
+		      ,#{item.Calculation_total_score_z}
+		      ,#{item.Calculation_total_score_p}
+		      ,#{item.Interlocking_pentagon}
+		      ,#{item.Interlocking_pentagon_z}
+		      ,#{item.Interlocking_pentagon_p}
+		      ,#{item.Rey_CFT_copy_score}
+		      ,#{item.Rey_CFT_copy_score_z}
+		      ,#{item.Rey_CFT_copy_score_p}
+		      ,#{item.Rey_CFT_copy_score_s}
+		      ,#{item.Rey_CFT_copy_time}
+		      ,#{item.Rey_CFT_copy_time_z}
+		      ,#{item.Rey_CFT_copy_time_p}
+		      ,#{item.Rey_CFT_copy_time_s}
+		      ,#{item.Mem_K_MMSE_registration}
+		      ,#{item.Mem_K_MMSE_registration_z}
+		      ,#{item.Mem_K_MMSE_registration_p}
+		      ,#{item.Mem_K_MMSE_recall}
+		      ,#{item.Mem_K_MMSE_recall_p}
+		      ,#{item.Mem_K_MMSE_recall_z}
+		      ,#{item.SVLT_recall_trial1}
+		      ,#{item.SVLT_recall_trial2}
+		      ,#{item.SVLT_recall_trial3}
+		      ,#{item.SVLT_recall_total_score}
+		      ,#{item.SVLT_recall_total_score_p}
+		      ,#{item.SVLT_recall_total_score_z}
+		      ,#{item.SVLT_recall_total_score_s}
+		      ,#{item.SVLT_Delayed_recall}
+		      ,#{item.SVLT_Delayed_recall_p}
+		      ,#{item.SVLT_Delayed_recall_z}
+		      ,#{item.SVLT_Delayed_recall_s}
+		      ,#{item.SVLT_recognition_TP}
+		      ,#{item.SVLT_recognition_TP_p}
+		      ,#{item.SVLT_recognition_TP_z}
+		      ,#{item.SVLT_recognition_TP_s}
+		      ,#{item.SVLT_recognition_FP}
+		      ,#{item.SVLT_recognition_FP_p}
+		      ,#{item.SVLT_recognition_FP_z}
+		      ,#{item.SVLT_recognition_FP_s}
+		      ,#{item.SVLT_recognition_score}
+		      ,#{item.SVLT_recognition_score_p}
+		      ,#{item.SVLT_recognition_score_z}
+		      ,#{item.SVLT_recognition_score_s}
+		      ,#{item.SVLT_recognition_discriminability_index}
+		      ,#{item.SVLT_recognition_discriminability_index_p}
+		      ,#{item.SVLT_recognition_discriminability_index_z}
+		      ,#{item.SVLT_recognition_discriminability_index_s}
+		      ,#{item.RCFT_immediate_recall}
+		      ,#{item.RCFT_immediate_recall_p}
+		      ,#{item.RCFT_immediate_recall_z}
+		      ,#{item.RCFT_immediate_recall_s}
+		      ,#{item.RCFT_delayed_recall}
+		      ,#{item.RCFT_delayed_recall_p}
+		      ,#{item.RCFT_delayed_recall_z}
+		      ,#{item.RCFT_delayed_recall_s}
+		      ,#{item.RCFT_recognition_TP}
+		      ,#{item.RCFT_recognition_TP_p}
+		      ,#{item.RCFT_recognition_TP_z}
+		      ,#{item.RCFT_recognition_FP}
+		      ,#{item.RCFT_recognition_FP_p}
+		      ,#{item.RCFT_recognition_FP_z}
+		      ,#{item.RCFT_recognition_score}
+		      ,#{item.RCFT_recognition_score_p}
+		      ,#{item.RCFT_recognition_score_z}
+		      ,#{item.RCFT_recognition_discriminability_index}
+		      ,#{item.RCFT_recognition_discriminability_index_p}
+		      ,#{item.RCFT_recognition_discriminability_index_z}
+		      ,#{item.Motor_impersistence}
+		      ,#{item.Contrasting_program}
+		      ,#{item.Contrasting_program_p}
+		      ,#{item.Contrasting_program_z}
+		      ,#{item.Go_No_Go}
+		      ,#{item.Go_No_Go_p}
+		      ,#{item.Go_No_Go_z}
+		      ,#{item.Fist_edge_palm}
+		      ,#{item.Alternating_hand_movement}
+		      ,#{item.Alternating_square_and_triangle}
+		      ,#{item.Luria_loop}
+		      ,#{item.COWAT_animal}
+		      ,#{item.COWAT_animal_p}
+		      ,#{item.COWAT_animal_z}
+		      ,#{item.COWAT_supermarket}
+		      ,#{item.COWAT_supermarket_p}
+		      ,#{item.COWAT_supermarket_z}
+		      ,#{item.COWAT_supermarket_s}
+		      ,#{item.COWAT_giut}
+		      ,#{item.COWAT_giut_p}
+		      ,#{item.COWAT_giut_z}
+		      ,#{item.COWAT_iung}
+		      ,#{item.COWAT_iung_p}
+		      ,#{item.COWAT_iung_z}
+		      ,#{item.COWAT_siut}
+		      ,#{item.COWAT_siut_p}
+		      ,#{item.COWAT_siut_z}
+		      ,#{item.COWAT_phonemic_total_score}
+		      ,#{item.COWAT_phonemic_total_score_p}
+		      ,#{item.COWAT_phonemic_total_score_z}
+		      ,#{item.StroopTest_Wordreading_correct}
+		      ,#{item.StroopTest_Wordreading_correct_p}
+		      ,#{item.StroopTest_Wordreading_correct_z}
+		      ,#{item.StroopTest_Wordreading_error}
+		      ,#{item.StroopTest_Wordreading_error_p}
+		      ,#{item.StroopTest_Wordreading_error_z}
+		      ,#{item.StroopTest_Wordreading_time}
+		      ,#{item.StroopTest_Wordreading_time_p}
+		      ,#{item.StroopTest_Wordreading_time_z}
+		      ,#{item.StroopTest_Wordreading_Correct_response_rate}
+		      ,#{item.StroopTest_Wordreading_Correct_response_rate_p}
+		      ,#{item.StroopTest_Wordreading_Correct_response_rate_z}
+		      ,#{item.StroopTest_Wordreading_Time_per_item}
+		      ,#{item.StroopTest_Wordreading_Time_per_item_p}
+		      ,#{item.StroopTest_Wordreading_Time_per_item_z}
+		      ,#{item.StroopTest_Colorreading_correct}
+		      ,#{item.StroopTest_Colorreading_correct_p}
+		      ,#{item.StroopTest_Colorreading_correct_z}
+		      ,#{item.StroopTest_Colorreading_correct_s}
+		      ,#{item.StroopTest_Colorreading_error}
+		      ,#{item.StroopTest_Colorreading_error_p}
+		      ,#{item.StroopTest_Colorreading_error_z}
+		      ,#{item.StroopTest_Colorreading_time}
+		      ,#{item.StroopTest_Colorreading_time_p}
+		      ,#{item.StroopTest_Colorreading_time_z}
+		      ,#{item.StroopTest_Colorreading_Correct_response_rate}
+		      ,#{item.StroopTest_Colorreading_Correct_response_rate_p}
+		      ,#{item.StroopTest_Colorreading_Correct_response_rate_z}
+		      ,#{item.StroopTest_Colorreading_Correct_response_rate_s}
+		      ,#{item.StroopTest_Colorreading_Time_per_item}
+		      ,#{item.StroopTest_Colorreading_Time_per_item_p}
+		      ,#{item.StroopTest_Colorreading_Time_per_item_z}
+		      ,#{item.StroopTest_Colorreading_Time_per_item_s}
+		      ,#{item.StroopTest_Interference_score}
+		      ,#{item.StroopTest_Interference_score_p}
+		      ,#{item.StroopTest_Interference_score_z}
+		      ,#{item.StroopTest_Interference_score_s}
+		      ,#{item.K_MMSE_orientation_to_time}
+		      ,#{item.K_MMSE_orientation_to_time_p}
+		      ,#{item.K_MMSE_orientation_to_time_z}
+		      ,#{item.K_MMSE_orientation_to_place}
+		      ,#{item.K_MMSE_orientation_to_place_p}
+		      ,#{item.K_MMSE_orientation_to_place_z}
+		      ,#{item.K_MMSE_Registation}
+		      ,#{item.K_MMSE_Registation_p}
+		      ,#{item.K_MMSE_Registation_z}
+		      ,#{item.K_MMSE_attention_and_calculation}
+		      ,#{item.K_MMSE_attention_and_calculation_p}
+		      ,#{item.K_MMSE_attention_and_calculation_z}
+		      ,#{item.K_MMSE_recall}
+		      ,#{item.K_MMSE_recall_p}
+		      ,#{item.K_MMSE_recall_z}
+		      ,#{item.K_MMSE_language}
+		      ,#{item.K_MMSE_language_p}
+		      ,#{item.K_MMSE_language_z}
+		      ,#{item.K_MMSE_drawing}
+		      ,#{item.K_MMSE_drawing_p}
+		      ,#{item.K_MMSE_drawing_z}
+		      ,#{item.K_MMSE_total_score}
+		      ,#{item.K_MMSE_total_score_p}
+		      ,#{item.K_MMSE_total_score_z}
+		      ,#{item.CDR}
+		      ,#{item.B_ADL}
+		      ,#{item.S1_GDS}
+		      ,#{item.Sum_of_boxes}
+		      ,#{item.Digit_span_Forward_s}
+		      ,#{item.Digit_span_Backward_s}
+		      ,#{item.Selectionl_Num}
+		      ,#{item.Illiteracy}
+		      ,#{item.Education_Level}
+		      ,#{item.Ages}
+		      ,#{item.DateOfOnset}
+		      ,#{item.Vigilance}
+		      ,#{item.Comprehension_Total_Score}
+		      ,#{item.Naming_K_BNT_s}
+		      ,#{item.Naming_S_K_BNT}
+		      ,#{item.Naming_S_K_BNT_z}
+		      ,#{item.Naming_S_K_BNT_p}
+		      ,#{item.Naming_S_K_BNT_s}
+		      ,#{item.K_MMSE_total_score_s}
+		      ,#{item.Digit_span_Forward_plus_Backward}
+		      ,#{item.Digit_span_Forward_plus_Backward_z}
+		      ,#{item.Digit_span_Forward_plus_Backward_p}
+		      ,#{item.COWAT_animal_giut}
+		      ,#{item.RCFT_recognition_TP_s}
+		      ,#{item.RCFT_recognition_score_s}
+		      ,now()
+		      ,#{item.Insert_UserID}
+		      ,now()
+		      ,#{item.Insert_UserID}
+		)</foreach>
+		ON DUPLICATE KEY UPDATE
+		      Unum = VALUES(Unum)
+		      ,Name = VALUES(Name)
+		      ,Record_Num = VALUES(Record_Num)
+		      ,Test_Day = VALUES(Test_Day)
+		      ,Jumin = VALUES(Jumin)
+		      ,Age = VALUES(Age)
+		      ,Birth = VALUES(Birth)
+		      ,Gender = VALUES(Gender)
+		      ,Education = VALUES(Education)
+		      ,YearsOfEducation = VALUES(YearsOfEducation)
+		      ,Job = VALUES(Job)
+		      ,Handgrip = VALUES(Handgrip)
+		      ,Examinee_Telno = VALUES(Examinee_Telno)
+		      ,Examinee_Mobile = VALUES(Examinee_Mobile)
+		      ,Guardian_Telno = VALUES(Guardian_Telno)
+		      ,Guardian_Mobile = VALUES(Guardian_Mobile)
+		      ,Examinee_Address = VALUES(Examinee_Address)
+		      ,Guardian_Address = VALUES(Guardian_Address)
+		      ,Refer_Doctor = VALUES(Refer_Doctor)
+		      ,Refer_Dept = VALUES(Refer_Dept)
+		      ,Diagnosis = VALUES(Diagnosis)
+		      ,Duration = VALUES(Duration)
+		      ,Subject_Nm = VALUES(Subject_Nm)
+		      ,Inspection_Engine = VALUES(Inspection_Engine)
+		      ,Remark = VALUES(Remark)
+		      ,Digit_span_Forward = VALUES(Digit_span_Forward)
+		      ,Digit_span_Forward_z = VALUES(Digit_span_Forward_z)
+		      ,Digit_span_Forward_p = VALUES(Digit_span_Forward_p)
+		      ,Digit_span_Backward = VALUES(Digit_span_Backward)
+		      ,Digit_span_Backward_z = VALUES(Digit_span_Backward_z)
+		      ,Digit_span_Backward_p = VALUES(Digit_span_Backward_p)
+		      ,Digit_span_Forward_Backward = VALUES(Digit_span_Forward_Backward)
+		      ,Digit_span_Forward_Backward_z = VALUES(Digit_span_Forward_Backward_z)
+		      ,Digit_span_Forward_Backward_p = VALUES(Digit_span_Forward_Backward_p)
+		      ,Letter_cancellation = VALUES(Letter_cancellation)
+		      ,Neglect = VALUES(Neglect)
+		      ,Spontaneous_speech_fluency = VALUES(Spontaneous_speech_fluency)
+		      ,Spontaneous_speech_contents = VALUES(Spontaneous_speech_contents)
+		      ,Comprehension = VALUES(Comprehension)
+		      ,Repetition = VALUES(Repetition)
+		      ,Repetition_z = VALUES(Repetition_z)
+		      ,Repetition_p = VALUES(Repetition_p)
+		      ,Naming_K_BNT = VALUES(Naming_K_BNT)
+		      ,Naming_K_BNT_z = VALUES(Naming_K_BNT_z)
+		      ,Naming_K_BNT_p = VALUES(Naming_K_BNT_p)
+		      ,Naming_S_K_BNT_form = VALUES(Naming_S_K_BNT_form)
+		      ,Naming_S_K_BNT_score = VALUES(Naming_S_K_BNT_score)
+		      ,Naming_Adjusted_S_K_BNT_score = VALUES(Naming_Adjusted_S_K_BNT_score)
+		      ,Naming_Adjusted_S_K_BNT_score_z = VALUES(Naming_Adjusted_S_K_BNT_score_z)
+		      ,Naming_Adjusted_S_K_BNT_score_p = VALUES(Naming_Adjusted_S_K_BNT_score_p)
+		      ,Reading = VALUES(Reading)
+		      ,Writing = VALUES(Writing)
+		      ,Finger_naming = VALUES(Finger_naming)
+		      ,Right_left_orientation = VALUES(Right_left_orientation)
+		      ,Body_part_identification = VALUES(Body_part_identification)
+		      ,Praxis_Ideomotor = VALUES(Praxis_Ideomotor)
+		      ,Praxis_Ideomotor_z = VALUES(Praxis_Ideomotor_z)
+		      ,Praxis_Ideomotor_p = VALUES(Praxis_Ideomotor_p)
+		      ,Praxis_buccofacial = VALUES(Praxis_buccofacial)
+		      ,Calculation_add = VALUES(Calculation_add)
+		      ,Calculation_add_z = VALUES(Calculation_add_z)
+		      ,Calculation_add_p = VALUES(Calculation_add_p)
+		      ,Calculation_sub = VALUES(Calculation_sub)
+		      ,Calculation_sub_z = VALUES(Calculation_sub_z)
+		      ,Calculation_sub_p = VALUES(Calculation_sub_p)
+		      ,Calculation_mul = VALUES(Calculation_mul)
+		      ,Calculation_mul_z = VALUES(Calculation_mul_z)
+		      ,Calculation_mul_p = VALUES(Calculation_mul_p)
+		      ,Calculation_div = VALUES(Calculation_div)
+		      ,Calculation_div_z = VALUES(Calculation_div_z)
+		      ,Calculation_div_p = VALUES(Calculation_div_p)
+		      ,Calculation_total_score = VALUES(Calculation_total_score)
+		      ,Calculation_total_score_z = VALUES(Calculation_total_score_z)
+		      ,Calculation_total_score_p = VALUES(Calculation_total_score_p)
+		      ,Interlocking_pentagon = VALUES(Interlocking_pentagon)
+		      ,Interlocking_pentagon_z = VALUES(Interlocking_pentagon_z)
+		      ,Interlocking_pentagon_p = VALUES(Interlocking_pentagon_p)
+		      ,Rey_CFT_copy_score = VALUES(Rey_CFT_copy_score)
+		      ,Rey_CFT_copy_score_z = VALUES(Rey_CFT_copy_score_z)
+		      ,Rey_CFT_copy_score_p = VALUES(Rey_CFT_copy_score_p)
+		      ,Rey_CFT_copy_score_s = VALUES(Rey_CFT_copy_score_s)
+		      ,Rey_CFT_copy_time = VALUES(Rey_CFT_copy_time)
+		      ,Rey_CFT_copy_time_z = VALUES(Rey_CFT_copy_time_z)
+		      ,Rey_CFT_copy_time_p = VALUES(Rey_CFT_copy_time_p)
+		      ,Rey_CFT_copy_time_s = VALUES(Rey_CFT_copy_time_s)
+		      ,Mem_K_MMSE_registration = VALUES(Mem_K_MMSE_registration)
+		      ,Mem_K_MMSE_registration_z = VALUES(Mem_K_MMSE_registration_z)
+		      ,Mem_K_MMSE_registration_p = VALUES(Mem_K_MMSE_registration_p)
+		      ,Mem_K_MMSE_recall = VALUES(Mem_K_MMSE_recall)
+		      ,Mem_K_MMSE_recall_p = VALUES(Mem_K_MMSE_recall_p)
+		      ,Mem_K_MMSE_recall_z = VALUES(Mem_K_MMSE_recall_z)
+		      ,SVLT_recall_trial1 = VALUES(SVLT_recall_trial1)
+		      ,SVLT_recall_trial2 = VALUES(SVLT_recall_trial2)
+		      ,SVLT_recall_trial3 = VALUES(SVLT_recall_trial3)
+		      ,SVLT_recall_total_score = VALUES(SVLT_recall_total_score)
+		      ,SVLT_recall_total_score_p = VALUES(SVLT_recall_total_score_p)
+		      ,SVLT_recall_total_score_z = VALUES(SVLT_recall_total_score_z)
+		      ,SVLT_recall_total_score_s = VALUES(SVLT_recall_total_score_s)
+		      ,SVLT_Delayed_recall = VALUES(SVLT_Delayed_recall)
+		      ,SVLT_Delayed_recall_p = VALUES(SVLT_Delayed_recall_p)
+		      ,SVLT_Delayed_recall_z = VALUES(SVLT_Delayed_recall_z)
+		      ,SVLT_Delayed_recall_s = VALUES(SVLT_Delayed_recall_s)
+		      ,SVLT_recognition_TP = VALUES(SVLT_recognition_TP)
+		      ,SVLT_recognition_TP_p = VALUES(SVLT_recognition_TP_p)
+		      ,SVLT_recognition_TP_z = VALUES(SVLT_recognition_TP_z)
+		      ,SVLT_recognition_TP_s = VALUES(SVLT_recognition_TP_s)
+		      ,SVLT_recognition_FP = VALUES(SVLT_recognition_FP)
+		      ,SVLT_recognition_FP_p = VALUES(SVLT_recognition_FP_p)
+		      ,SVLT_recognition_FP_z = VALUES(SVLT_recognition_FP_z)
+		      ,SVLT_recognition_FP_s = VALUES(SVLT_recognition_FP_s)
+		      ,SVLT_recognition_score = VALUES(SVLT_recognition_score)
+		      ,SVLT_recognition_score_p = VALUES(SVLT_recognition_score_p)
+		      ,SVLT_recognition_score_z = VALUES(SVLT_recognition_score_z)
+		      ,SVLT_recognition_score_s = VALUES(SVLT_recognition_score_s)
+		      ,SVLT_recognition_discriminability_index = VALUES(SVLT_recognition_discriminability_index)
+		      ,SVLT_recognition_discriminability_index_p = VALUES(SVLT_recognition_discriminability_index_p)
+		      ,SVLT_recognition_discriminability_index_z = VALUES(SVLT_recognition_discriminability_index_z)
+		      ,SVLT_recognition_discriminability_index_s = VALUES(SVLT_recognition_discriminability_index_s)
+		      ,RCFT_immediate_recall = VALUES(RCFT_immediate_recall)
+		      ,RCFT_immediate_recall_p = VALUES(RCFT_immediate_recall_p)
+		      ,RCFT_immediate_recall_z = VALUES(RCFT_immediate_recall_z)
+		      ,RCFT_immediate_recall_s = VALUES(RCFT_immediate_recall_s)
+		      ,RCFT_delayed_recall = VALUES(RCFT_delayed_recall)
+		      ,RCFT_delayed_recall_p = VALUES(RCFT_delayed_recall_p)
+		      ,RCFT_delayed_recall_z = VALUES(RCFT_delayed_recall_z)
+		      ,RCFT_delayed_recall_s = VALUES(RCFT_delayed_recall_s)
+		      ,RCFT_recognition_TP = VALUES(RCFT_recognition_TP)
+		      ,RCFT_recognition_TP_p = VALUES(RCFT_recognition_TP_p)
+		      ,RCFT_recognition_TP_z = VALUES(RCFT_recognition_TP_z)
+		      ,RCFT_recognition_FP = VALUES(RCFT_recognition_FP)
+		      ,RCFT_recognition_FP_p = VALUES(RCFT_recognition_FP_p)
+		      ,RCFT_recognition_FP_z = VALUES(RCFT_recognition_FP_z)
+		      ,RCFT_recognition_score = VALUES(RCFT_recognition_score)
+		      ,RCFT_recognition_score_p = VALUES(RCFT_recognition_score_p)
+		      ,RCFT_recognition_score_z = VALUES(RCFT_recognition_score_z)
+		      ,RCFT_recognition_discriminability_index = VALUES(RCFT_recognition_discriminability_index)
+		      ,RCFT_recognition_discriminability_index_p = VALUES(RCFT_recognition_discriminability_index_p)
+		      ,RCFT_recognition_discriminability_index_z = VALUES(RCFT_recognition_discriminability_index_z)
+		      ,Motor_impersistence = VALUES(Motor_impersistence)
+		      ,Contrasting_program = VALUES(Contrasting_program)
+		      ,Contrasting_program_p = VALUES(Contrasting_program_p)
+		      ,Contrasting_program_z = VALUES(Contrasting_program_z)
+		      ,Go_No_Go = VALUES(Go_No_Go)
+		      ,Go_No_Go_p = VALUES(Go_No_Go_p)
+		      ,Go_No_Go_z = VALUES(Go_No_Go_z)
+		      ,Fist_edge_palm = VALUES(Fist_edge_palm)
+		      ,Alternating_hand_movement = VALUES(Alternating_hand_movement)
+		      ,Alternating_square_and_triangle = VALUES(Alternating_square_and_triangle)
+		      ,Luria_loop = VALUES(Luria_loop)
+		      ,COWAT_animal = VALUES(COWAT_animal)
+		      ,COWAT_animal_p = VALUES(COWAT_animal_p)
+		      ,COWAT_animal_z = VALUES(COWAT_animal_z)
+		      ,COWAT_supermarket = VALUES(COWAT_supermarket)
+		      ,COWAT_supermarket_p = VALUES(COWAT_supermarket_p)
+		      ,COWAT_supermarket_z = VALUES(COWAT_supermarket_z)
+		      ,COWAT_supermarket_s = VALUES(COWAT_supermarket_s)
+		      ,COWAT_giut = VALUES(COWAT_giut)
+		      ,COWAT_giut_p = VALUES(COWAT_giut_p)
+		      ,COWAT_giut_z = VALUES(COWAT_giut_z)
+		      ,COWAT_iung = VALUES(COWAT_iung)
+		      ,COWAT_iung_p = VALUES(COWAT_iung_p)
+		      ,COWAT_iung_z = VALUES(COWAT_iung_z)
+		      ,COWAT_siut = VALUES(COWAT_siut)
+		      ,COWAT_siut_p = VALUES(COWAT_siut_p)
+		      ,COWAT_siut_z = VALUES(COWAT_siut_z)
+		      ,COWAT_phonemic_total_score = VALUES(COWAT_phonemic_total_score)
+		      ,COWAT_phonemic_total_score_p = VALUES(COWAT_phonemic_total_score_p)
+		      ,COWAT_phonemic_total_score_z = VALUES(COWAT_phonemic_total_score_z)
+		      ,StroopTest_Wordreading_correct = VALUES(StroopTest_Wordreading_correct)
+		      ,StroopTest_Wordreading_correct_p = VALUES(StroopTest_Wordreading_correct_p)
+		      ,StroopTest_Wordreading_correct_z = VALUES(StroopTest_Wordreading_correct_z)
+		      ,StroopTest_Wordreading_error = VALUES(StroopTest_Wordreading_error)
+		      ,StroopTest_Wordreading_error_p = VALUES(StroopTest_Wordreading_error_p)
+		      ,StroopTest_Wordreading_error_z = VALUES(StroopTest_Wordreading_error_z)
+		      ,StroopTest_Wordreading_time = VALUES(StroopTest_Wordreading_time)
+		      ,StroopTest_Wordreading_time_p = VALUES(StroopTest_Wordreading_time_p)
+		      ,StroopTest_Wordreading_time_z = VALUES(StroopTest_Wordreading_time_z)
+		      ,StroopTest_Wordreading_Correct_response_rate = VALUES(StroopTest_Wordreading_Correct_response_rate)
+		      ,StroopTest_Wordreading_Correct_response_rate_p = VALUES(StroopTest_Wordreading_Correct_response_rate_p)
+		      ,StroopTest_Wordreading_Correct_response_rate_z = VALUES(StroopTest_Wordreading_Correct_response_rate_z)
+		      ,StroopTest_Wordreading_Time_per_item = VALUES(StroopTest_Wordreading_Time_per_item)
+		      ,StroopTest_Wordreading_Time_per_item_p = VALUES(StroopTest_Wordreading_Time_per_item_p)
+		      ,StroopTest_Wordreading_Time_per_item_z = VALUES(StroopTest_Wordreading_Time_per_item_z)
+		      ,StroopTest_Colorreading_correct = VALUES(StroopTest_Colorreading_correct)
+		      ,StroopTest_Colorreading_correct_p = VALUES(StroopTest_Colorreading_correct_p)
+		      ,StroopTest_Colorreading_correct_z = VALUES(StroopTest_Colorreading_correct_z)
+		      ,StroopTest_Colorreading_correct_s = VALUES(StroopTest_Colorreading_correct_s)
+		      ,StroopTest_Colorreading_error = VALUES(StroopTest_Colorreading_error)
+		      ,StroopTest_Colorreading_error_p = VALUES(StroopTest_Colorreading_error_p)
+		      ,StroopTest_Colorreading_error_z = VALUES(StroopTest_Colorreading_error_z)
+		      ,StroopTest_Colorreading_time = VALUES(StroopTest_Colorreading_time)
+		      ,StroopTest_Colorreading_time_p = VALUES(StroopTest_Colorreading_time_p)
+		      ,StroopTest_Colorreading_time_z = VALUES(StroopTest_Colorreading_time_z)
+		      ,StroopTest_Colorreading_Correct_response_rate = VALUES(StroopTest_Colorreading_Correct_response_rate)
+		      ,StroopTest_Colorreading_Correct_response_rate_p = VALUES(StroopTest_Colorreading_Correct_response_rate_p)
+		      ,StroopTest_Colorreading_Correct_response_rate_z = VALUES(StroopTest_Colorreading_Correct_response_rate_z)
+		      ,StroopTest_Colorreading_Correct_response_rate_s = VALUES(StroopTest_Colorreading_Correct_response_rate_s)
+		      ,StroopTest_Colorreading_Time_per_item = VALUES(StroopTest_Colorreading_Time_per_item)
+		      ,StroopTest_Colorreading_Time_per_item_p = VALUES(StroopTest_Colorreading_Time_per_item_p)
+		      ,StroopTest_Colorreading_Time_per_item_z = VALUES(StroopTest_Colorreading_Time_per_item_z)
+		      ,StroopTest_Colorreading_Time_per_item_s = VALUES(StroopTest_Colorreading_Time_per_item_s)
+		      ,StroopTest_Interference_score = VALUES(StroopTest_Interference_score)
+		      ,StroopTest_Interference_score_p = VALUES(StroopTest_Interference_score_p)
+		      ,StroopTest_Interference_score_z = VALUES(StroopTest_Interference_score_z)
+		      ,StroopTest_Interference_score_s = VALUES(StroopTest_Interference_score_s)
+		      ,K_MMSE_orientation_to_time = VALUES(K_MMSE_orientation_to_time)
+		      ,K_MMSE_orientation_to_time_p = VALUES(K_MMSE_orientation_to_time_p)
+		      ,K_MMSE_orientation_to_time_z = VALUES(K_MMSE_orientation_to_time_z)
+		      ,K_MMSE_orientation_to_place = VALUES(K_MMSE_orientation_to_place)
+		      ,K_MMSE_orientation_to_place_p = VALUES(K_MMSE_orientation_to_place_p)
+		      ,K_MMSE_orientation_to_place_z = VALUES(K_MMSE_orientation_to_place_z)
+		      ,K_MMSE_Registation = VALUES(K_MMSE_Registation)
+		      ,K_MMSE_Registation_p = VALUES(K_MMSE_Registation_p)
+		      ,K_MMSE_Registation_z = VALUES(K_MMSE_Registation_z)
+		      ,K_MMSE_attention_and_calculation = VALUES(K_MMSE_attention_and_calculation)
+		      ,K_MMSE_attention_and_calculation_p = VALUES(K_MMSE_attention_and_calculation_p)
+		      ,K_MMSE_attention_and_calculation_z = VALUES(K_MMSE_attention_and_calculation_z)
+		      ,K_MMSE_recall = VALUES(K_MMSE_recall)
+		      ,K_MMSE_recall_p = VALUES(K_MMSE_recall_p)
+		      ,K_MMSE_recall_z = VALUES(K_MMSE_recall_z)
+		      ,K_MMSE_language = VALUES(K_MMSE_language)
+		      ,K_MMSE_language_p = VALUES(K_MMSE_language_p)
+		      ,K_MMSE_language_z = VALUES(K_MMSE_language_z)
+		      ,K_MMSE_drawing = VALUES(K_MMSE_drawing)
+		      ,K_MMSE_drawing_p = VALUES(K_MMSE_drawing_p)
+		      ,K_MMSE_drawing_z = VALUES(K_MMSE_drawing_z)
+		      ,K_MMSE_total_score = VALUES(K_MMSE_total_score)
+		      ,K_MMSE_total_score_p = VALUES(K_MMSE_total_score_p)
+		      ,K_MMSE_total_score_z = VALUES(K_MMSE_total_score_z)
+		      ,CDR = VALUES(CDR)
+		      ,B_ADL = VALUES(B_ADL)
+		      ,S1_GDS = VALUES(S1_GDS)
+		      ,Sum_of_boxes = VALUES(Sum_of_boxes)
+		      ,Digit_span_Forward_s = VALUES(Digit_span_Forward_s)
+		      ,Digit_span_Backward_s = VALUES(Digit_span_Backward_s)
+		      ,Selectionl_Num = VALUES(Selectionl_Num)
+		      ,Illiteracy = VALUES(Illiteracy)
+		      ,Education_Level = VALUES(Education_Level)
+		      ,Ages = VALUES(Ages)
+		      ,DateOfOnset = VALUES(DateOfOnset)
+		      ,Vigilance = VALUES(Vigilance)
+		      ,Comprehension_Total_Score = VALUES(Comprehension_Total_Score)
+		      ,Naming_K_BNT_s = VALUES(Naming_K_BNT_s)
+		      ,Naming_S_K_BNT = VALUES(Naming_S_K_BNT)
+		      ,Naming_S_K_BNT_z = VALUES(Naming_S_K_BNT_z)
+		      ,Naming_S_K_BNT_p = VALUES(Naming_S_K_BNT_p)
+		      ,Naming_S_K_BNT_s = VALUES(Naming_S_K_BNT_s)
+		      ,K_MMSE_total_score_s = VALUES(K_MMSE_total_score_s)
+		      ,Digit_span_Forward_plus_Backward = VALUES(Digit_span_Forward_plus_Backward)
+		      ,Digit_span_Forward_plus_Backward_z = VALUES(Digit_span_Forward_plus_Backward_z)
+		      ,Digit_span_Forward_plus_Backward_p = VALUES(Digit_span_Forward_plus_Backward_p)
+		      ,COWAT_animal_giut = VALUES(COWAT_animal_giut)
+		      ,RCFT_recognition_TP_s = VALUES(RCFT_recognition_TP_s)
+		      ,RCFT_recognition_score_s = VALUES(RCFT_recognition_score_s)
+		      ,Update_Date = now()
+		      ,Update_UserID = VALUES(Insert_UserID)
+	</insert>
+
+	<insert id="excelUpload2" parameterType="HashMap">
+		INSERT INTO mb_snsb2data_excel2(
+			Unum
+			,Name
+			,CDT_Contour
+			,CDT_Numbers
+			,CDT_time_setting
+			,CDT_Total_score
+			,CDT_Total_score_p
+			,K_CWST_60_Wordreading_correct
+			,K_CWST_60_Wordreading_correct_p
+			,K_CWST_60_Wordreading_error
+			,K_CWST_60_Wordreading_error_p
+			,K_CWST_60_Wordresponse_time
+			,K_CWST_60_Colorreading_correct
+			,K_CWST_60_Colorreading_correct_p
+			,K_CWST_60_Colorreading_correct_z
+			,K_CWST_60_Colorreading_correct_s
+			,K_CWST_60_Colorreading_error
+			,K_CWST_60_Colorreading_error_p
+			,K_CWST_60_Colorresponse_time
+			,DSC_correct
+			,DSC_correct_p
+			,DSC_correct_z
+			,DSC_correct_s
+			,DSC_error
+			,DSC_error_p
+			,K_TMT_E_A_success
+			,K_TMT_E_A_time
+			,K_TMT_E_A_time_p
+			,K_TMT_E_A_time_z
+			,K_TMT_E_A_time_s
+			,K_TMT_E_A_error
+			,K_TMT_E_B_success
+			,K_TMT_E_B_time
+			,K_TMT_E_B_time_p
+			,K_TMT_E_B_time_z
+			,K_TMT_E_B_time_s
+			,K_TMT_E_B_error
+			,K_TMT_E_B_error_p
+			,RCFT_recognition_discriminability_index_s
+			,COWAT_animal_s
+			,COWAT_siut_s
+			,Fist_edge_palm_right
+			,Fist_edge_palm_left
+			,COWAT_animal_giut_p
+			,COWAT_animal_giut_z
+			,COWAT_animal_giut_s
+			,SGDS
+			,K_IADL_Total_score
+			,K_IADL_Xcount
+			,K_IADL_Score
+			,Global_DS
+			,SNSB_II_Domain_Attention
+			,SNSB_II_Domain_Attention_p
+			,SNSB_II_Domain_Attention_z
+			,SNSB_II_Domain_Attention_t
+			,SNSB_II_Domain_Attention_s
+			,SNSB_II_Domain_Language
+			,SNSB_II_Domain_Language_p
+			,SNSB_II_Domain_Language_z
+			,SNSB_II_Domain_Language_t
+			,SNSB_II_Domain_Language_s
+			,SNSB_II_Domain_Visuospatial
+			,SNSB_II_Domain_Visuospatial_p
+			,SNSB_II_Domain_Visuospatial_z
+			,SNSB_II_Domain_Visuospatial_t
+			,SNSB_II_Domain_Visuospatial_s
+			,SNSB_II_Domain_Memory
+			,SNSB_II_Domain_Memory_p
+			,SNSB_II_Domain_Memory_z
+			,SNSB_II_Domain_Memory_t
+			,SNSB_II_Domain_Memory_s
+			,SNSB_II_Domain_Frontal
+			,SNSB_II_Domain_Frontal_p
+			,SNSB_II_Domain_Frontal_z
+			,SNSB_II_Domain_Frontal_t
+			,SNSB_II_Domain_Frontal_s
+			,SNSB_C_Ani_giut
+			,SNSB_C_Ani_giut_p
+			,SNSB_C_Ani_giut_z
+			,SNSB_C_Ani_giut_t
+			,SNSB_C_Ani_giut_s
+			,DM
+			,HiBP
+			,HyLipid
+			,CardiacDs
+			,Stroke
+			,BrDamageAcc
+			,CO
+			,BrainSurgery
+			,Syphi
+			,Thyroid
+			,Encephalitis
+			,LiverDis
+			,Depression
+			,KidneyDis
+			,LungDis
+			,Arthritis
+			,SleepDis
+			,FamHis
+			,MetabBrDis
+			,MentalDis
+			,MentalRet
+			,BrainTumor
+			,GastroDis
+			,Cancer
+			,Fracture
+			,Anemia
+			,Epilepsy
+			,DrugAbu
+			,AlcoAbu
+			,LossConsc
+			,Other
+			,Insert_Date
+			,Insert_UserID
+			,Update_Date
+			,Update_UserID
+		)VALUES
+		<foreach collection="list" separator="," item="item">
+			(${item.Unum}
+			,#{item.Name}
+			,#{item.CDT_Contour}
+			,#{item.CDT_Numbers}
+			,#{item.CDT_time_setting}
+			,#{item.CDT_Total_score}
+			,#{item.CDT_Total_score_p}
+			,#{item.K_CWST_60_Wordreading_correct}
+			,#{item.K_CWST_60_Wordreading_correct_p}
+			,#{item.K_CWST_60_Wordreading_error}
+			,#{item.K_CWST_60_Wordreading_error_p}
+			,#{item.K_CWST_60_Wordresponse_time}
+			,#{item.K_CWST_60_Colorreading_correct}
+			,#{item.K_CWST_60_Colorreading_correct_p}
+			,#{item.K_CWST_60_Colorreading_correct_z}
+			,#{item.K_CWST_60_Colorreading_correct_s}
+			,#{item.K_CWST_60_Colorreading_error}
+			,#{item.K_CWST_60_Colorreading_error_p}
+			,#{item.K_CWST_60_Colorresponse_time}
+			,#{item.DSC_correct}
+			,#{item.DSC_correct_p}
+			,#{item.DSC_correct_z}
+			,#{item.DSC_correct_s}
+			,#{item.DSC_error}
+			,#{item.DSC_error_p}
+			,#{item.K_TMT_E_A_success}
+			,#{item.K_TMT_E_A_time}
+			,#{item.K_TMT_E_A_time_p}
+			,#{item.K_TMT_E_A_time_z}
+			,#{item.K_TMT_E_A_time_s}
+			,#{item.K_TMT_E_A_error}
+			,#{item.K_TMT_E_B_success}
+			,#{item.K_TMT_E_B_time}
+			,#{item.K_TMT_E_B_time_p}
+			,#{item.K_TMT_E_B_time_z}
+			,#{item.K_TMT_E_B_time_s}
+			,#{item.K_TMT_E_B_error}
+			,#{item.K_TMT_E_B_error_p}
+			,#{item.RCFT_recognition_discriminability_index_s}
+			,#{item.COWAT_animal_s}
+			,#{item.COWAT_siut_s}
+			,#{item.Fist_edge_palm_right}
+			,#{item.Fist_edge_palm_left}
+			,#{item.COWAT_animal_giut_p}
+			,#{item.COWAT_animal_giut_z}
+			,#{item.COWAT_animal_giut_s}
+			,#{item.SGDS}
+			,#{item.K_IADL_Total_score}
+			,#{item.K_IADL_Xcount}
+			,#{item.K_IADL_Score}
+			,#{item.Global_DS}
+			,#{item.SNSB_II_Domain_Attention}
+			,#{item.SNSB_II_Domain_Attention_p}
+			,#{item.SNSB_II_Domain_Attention_z}
+			,#{item.SNSB_II_Domain_Attention_t}
+			,#{item.SNSB_II_Domain_Attention_s}
+			,#{item.SNSB_II_Domain_Language}
+			,#{item.SNSB_II_Domain_Language_p}
+			,#{item.SNSB_II_Domain_Language_z}
+			,#{item.SNSB_II_Domain_Language_t}
+			,#{item.SNSB_II_Domain_Language_s}
+			,#{item.SNSB_II_Domain_Visuospatial}
+			,#{item.SNSB_II_Domain_Visuospatial_p}
+			,#{item.SNSB_II_Domain_Visuospatial_z}
+			,#{item.SNSB_II_Domain_Visuospatial_t}
+			,#{item.SNSB_II_Domain_Visuospatial_s}
+			,#{item.SNSB_II_Domain_Memory}
+			,#{item.SNSB_II_Domain_Memory_p}
+			,#{item.SNSB_II_Domain_Memory_z}
+			,#{item.SNSB_II_Domain_Memory_t}
+			,#{item.SNSB_II_Domain_Memory_s}
+			,#{item.SNSB_II_Domain_Frontal}
+			,#{item.SNSB_II_Domain_Frontal_p}
+			,#{item.SNSB_II_Domain_Frontal_z}
+			,#{item.SNSB_II_Domain_Frontal_t}
+			,#{item.SNSB_II_Domain_Frontal_s}
+			,#{item.SNSB_C_Ani_giut}
+			,#{item.SNSB_C_Ani_giut_p}
+			,#{item.SNSB_C_Ani_giut_z}
+			,#{item.SNSB_C_Ani_giut_t}
+			,#{item.SNSB_C_Ani_giut_s}
+			,#{item.DM}
+			,#{item.HiBP}
+			,#{item.HyLipid}
+			,#{item.CardiacDs}
+			,#{item.Stroke}
+			,#{item.BrDamageAcc}
+			,#{item.CO}
+			,#{item.BrainSurgery}
+			,#{item.Syphi}
+			,#{item.Thyroid}
+			,#{item.Encephalitis}
+			,#{item.LiverDis}
+			,#{item.Depression}
+			,#{item.KidneyDis}
+			,#{item.LungDis}
+			,#{item.Arthritis}
+			,#{item.SleepDis}
+			,#{item.FamHis}
+			,#{item.MetabBrDis}
+			,#{item.MentalDis}
+			,#{item.MentalRet}
+			,#{item.BrainTumor}
+			,#{item.GastroDis}
+			,#{item.Cancer}
+			,#{item.Fracture}
+			,#{item.Anemia}
+			,#{item.Epilepsy}
+			,#{item.DrugAbu}
+			,#{item.AlcoAbu}
+			,#{item.LossConsc}
+			,#{item.Other}
+			,now()
+			,#{item.Insert_UserID}
+			,now()
+			,#{item.Insert_UserID}
+		)</foreach>
+		ON DUPLICATE KEY UPDATE
+				Unum = VALUES(Unum)
+				,Name = VALUES(Name)
+				,CDT_Contour = VALUES(CDT_Contour)
+				,CDT_Numbers = VALUES(CDT_Numbers)
+				,CDT_time_setting = VALUES(CDT_time_setting)
+				,CDT_Total_score = VALUES(CDT_Total_score)
+				,CDT_Total_score_p = VALUES(CDT_Total_score_p)
+				,K_CWST_60_Wordreading_correct = VALUES(K_CWST_60_Wordreading_correct)
+				,K_CWST_60_Wordreading_correct_p = VALUES(K_CWST_60_Wordreading_correct_p)
+				,K_CWST_60_Wordreading_error = VALUES(K_CWST_60_Wordreading_error)
+				,K_CWST_60_Wordreading_error_p = VALUES(K_CWST_60_Wordreading_error_p)
+				,K_CWST_60_Wordresponse_time = VALUES(K_CWST_60_Wordresponse_time)
+				,K_CWST_60_Colorreading_correct = VALUES(K_CWST_60_Colorreading_correct)
+				,K_CWST_60_Colorreading_correct_p = VALUES(K_CWST_60_Colorreading_correct_p)
+				,K_CWST_60_Colorreading_correct_z = VALUES(K_CWST_60_Colorreading_correct_z)
+				,K_CWST_60_Colorreading_correct_s = VALUES(K_CWST_60_Colorreading_correct_s)
+				,K_CWST_60_Colorreading_error = VALUES(K_CWST_60_Colorreading_error)
+				,K_CWST_60_Colorreading_error_p = VALUES(K_CWST_60_Colorreading_error_p)
+				,K_CWST_60_Colorresponse_time = VALUES(K_CWST_60_Colorresponse_time)
+				,DSC_correct = VALUES(DSC_correct)
+				,DSC_correct_p = VALUES(DSC_correct_p)
+				,DSC_correct_z = VALUES(DSC_correct_z)
+				,DSC_correct_s = VALUES(DSC_correct_s)
+				,DSC_error = VALUES(DSC_error)
+				,DSC_error_p = VALUES(DSC_error_p)
+				,K_TMT_E_A_success = VALUES(K_TMT_E_A_success)
+				,K_TMT_E_A_time = VALUES(K_TMT_E_A_time)
+				,K_TMT_E_A_time_p = VALUES(K_TMT_E_A_time_p)
+				,K_TMT_E_A_time_z = VALUES(K_TMT_E_A_time_z)
+				,K_TMT_E_A_time_s = VALUES(K_TMT_E_A_time_s)
+				,K_TMT_E_A_error = VALUES(K_TMT_E_A_error)
+				,K_TMT_E_B_success = VALUES(K_TMT_E_B_success)
+				,K_TMT_E_B_time = VALUES(K_TMT_E_B_time)
+				,K_TMT_E_B_time_p = VALUES(K_TMT_E_B_time_p)
+				,K_TMT_E_B_time_z = VALUES(K_TMT_E_B_time_z)
+				,K_TMT_E_B_time_s = VALUES(K_TMT_E_B_time_s)
+				,K_TMT_E_B_error = VALUES(K_TMT_E_B_error)
+				,K_TMT_E_B_error_p = VALUES(K_TMT_E_B_error_p)
+				,RCFT_recognition_discriminability_index_s = VALUES(RCFT_recognition_discriminability_index_s)
+				,COWAT_animal_s = VALUES(COWAT_animal_s)
+				,COWAT_siut_s = VALUES(COWAT_siut_s)
+				,Fist_edge_palm_right = VALUES(Fist_edge_palm_right)
+				,Fist_edge_palm_left = VALUES(Fist_edge_palm_left)
+				,COWAT_animal_giut_p = VALUES(COWAT_animal_giut_p)
+				,COWAT_animal_giut_z = VALUES(COWAT_animal_giut_z)
+				,COWAT_animal_giut_s = VALUES(COWAT_animal_giut_s)
+				,SGDS = VALUES(SGDS)
+				,K_IADL_Total_score = VALUES(K_IADL_Total_score)
+				,K_IADL_Xcount = VALUES(K_IADL_Xcount)
+				,K_IADL_Score = VALUES(K_IADL_Score)
+				,Global_DS = VALUES(Global_DS)
+				,SNSB_II_Domain_Attention = VALUES(SNSB_II_Domain_Attention)
+				,SNSB_II_Domain_Attention_p = VALUES(SNSB_II_Domain_Attention_p)
+				,SNSB_II_Domain_Attention_z = VALUES(SNSB_II_Domain_Attention_z)
+				,SNSB_II_Domain_Attention_t = VALUES(SNSB_II_Domain_Attention_t)
+				,SNSB_II_Domain_Attention_s = VALUES(SNSB_II_Domain_Attention_s)
+				,SNSB_II_Domain_Language = VALUES(SNSB_II_Domain_Language)
+				,SNSB_II_Domain_Language_p = VALUES(SNSB_II_Domain_Language_p)
+				,SNSB_II_Domain_Language_z = VALUES(SNSB_II_Domain_Language_z)
+				,SNSB_II_Domain_Language_t = VALUES(SNSB_II_Domain_Language_t)
+				,SNSB_II_Domain_Language_s = VALUES(SNSB_II_Domain_Language_s)
+				,SNSB_II_Domain_Visuospatial = VALUES(SNSB_II_Domain_Visuospatial)
+				,SNSB_II_Domain_Visuospatial_p = VALUES(SNSB_II_Domain_Visuospatial_p)
+				,SNSB_II_Domain_Visuospatial_z = VALUES(SNSB_II_Domain_Visuospatial_z)
+				,SNSB_II_Domain_Visuospatial_t = VALUES(SNSB_II_Domain_Visuospatial_t)
+				,SNSB_II_Domain_Visuospatial_s = VALUES(SNSB_II_Domain_Visuospatial_s)
+				,SNSB_II_Domain_Memory = VALUES(SNSB_II_Domain_Memory)
+				,SNSB_II_Domain_Memory_p = VALUES(SNSB_II_Domain_Memory_p)
+				,SNSB_II_Domain_Memory_z = VALUES(SNSB_II_Domain_Memory_z)
+				,SNSB_II_Domain_Memory_t = VALUES(SNSB_II_Domain_Memory_t)
+				,SNSB_II_Domain_Memory_s = VALUES(SNSB_II_Domain_Memory_s)
+				,SNSB_II_Domain_Frontal = VALUES(SNSB_II_Domain_Frontal)
+				,SNSB_II_Domain_Frontal_p = VALUES(SNSB_II_Domain_Frontal_p)
+				,SNSB_II_Domain_Frontal_z = VALUES(SNSB_II_Domain_Frontal_z)
+				,SNSB_II_Domain_Frontal_t = VALUES(SNSB_II_Domain_Frontal_t)
+				,SNSB_II_Domain_Frontal_s = VALUES(SNSB_II_Domain_Frontal_s)
+				,SNSB_C_Ani_giut = VALUES(SNSB_C_Ani_giut)
+				,SNSB_C_Ani_giut_p = VALUES(SNSB_C_Ani_giut_p)
+				,SNSB_C_Ani_giut_z = VALUES(SNSB_C_Ani_giut_z)
+				,SNSB_C_Ani_giut_t = VALUES(SNSB_C_Ani_giut_t)
+				,SNSB_C_Ani_giut_s = VALUES(SNSB_C_Ani_giut_s)
+				,DM = VALUES(DM)
+				,HiBP = VALUES(HiBP)
+				,HyLipid = VALUES(HyLipid)
+				,CardiacDs = VALUES(CardiacDs)
+				,Stroke = VALUES(Stroke)
+				,BrDamageAcc = VALUES(BrDamageAcc)
+				,CO = VALUES(CO)
+				,BrainSurgery = VALUES(BrainSurgery)
+				,Syphi = VALUES(Syphi)
+				,Thyroid = VALUES(Thyroid)
+				,Encephalitis = VALUES(Encephalitis)
+				,LiverDis = VALUES(LiverDis)
+				,Depression = VALUES(Depression)
+				,KidneyDis = VALUES(KidneyDis)
+				,LungDis = VALUES(LungDis)
+				,Arthritis = VALUES(Arthritis)
+				,SleepDis = VALUES(SleepDis)
+				,FamHis = VALUES(FamHis)
+				,MetabBrDis = VALUES(MetabBrDis)
+				,MentalDis = VALUES(MentalDis)
+				,MentalRet = VALUES(MentalRet)
+				,BrainTumor = VALUES(BrainTumor)
+				,GastroDis = VALUES(GastroDis)
+				,Cancer = VALUES(Cancer)
+				,Fracture = VALUES(Fracture)
+				,Anemia = VALUES(Anemia)
+				,Epilepsy = VALUES(Epilepsy)
+				,DrugAbu = VALUES(DrugAbu)
+				,AlcoAbu = VALUES(AlcoAbu)
+				,LossConsc = VALUES(LossConsc)
+				,Other = VALUES(Other)
+				,Update_Date = now()
+				,Update_UserID = VALUES(Insert_UserID)
+	</insert>
+
+</mapper>
+

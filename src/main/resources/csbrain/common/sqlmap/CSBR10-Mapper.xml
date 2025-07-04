@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CSBR10">
+	<select id="select_csbr1010_search" parameterType="HashMap" resultType="MbObjectVO">
+		<![CDATA[
+		SELECT *
+				  FROM (
+				      SELECT O.IDX, NAME, TEL1, TEL2, TEL3
+					       , MOBILE1, MOBILE2, MOBILE3
+					       , JUMIN1, JUMIN2, JUMIN3
+					       , BIRTH1, BIRTH2, BIRTH3
+					       , (YEAR(CURDATE())-YEAR(CONCAT(BIRTH1,BIRTH2,CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END))
+					       - (RIGHT(CURDATE(),5)<RIGHT(CONCAT(BIRTH1,BIRTH2,CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END),4))) AGE
+					 , CASE WHEN GENDER = 1 THEN 'M' ELSE 'F' END GENDER
+					 , YEAR_ANI, EDU
+					       , ADDRESS1, ADDRESS2, ADDRESS3, ADDRESS4, PHOTOPATH
+					 , NAME AS  NAME2
+					       , CONCAT(JUMIN1,'-',JUMIN2,JUMIN3) JUMIN
+					 , CONCAT(TEL1,'-',TEL2,'-',TEL3) TELNO
+					       , CONCAT(MOBILE1,'-',MOBILE2,'-',MOBILE3) MOBILE
+					 , IFNULL(OPINDESC, '') OPINDESC
+					FROM mb_object O
+					LEFT JOIN mb_opinion B ON O.IDX = B.OBJECT_IDX
+				       WHERE O.NAME LIKE CONCAT('%', #{stName},'%')
+					 AND O.JUMIN1 LIKE CONCAT(#{stJumin},'%')
+					 AND O.TEL3 LIKE CONCAT(#{stTelno},'%')
+					 ${idxQuery}
+				      ) A
+				 WHERE A.OPINDESC LIKE '%%'
+				 ORDER BY NAME
+		]]>
+	</select>
+
+	
+
+	<select id="select_csbr1020_left_data" parameterType="HashMap" resultType="HashMap">
+		<![CDATA[
+		SELECT CONCAT(SUBSTR(RESEDATE,1,4) ,'-', SUBSTR(RESEDATE,5,2) ,'-', SUBSTR(RESEDATE,7,2)) AS resedate2
+			 , CASE DAYOFWEEK(RESEDATE) WHEN 1 THEN '일'
+			 WHEN 2 THEN '월'
+			 WHEN 3 THEN '화'
+			 WHEN 4 THEN '수'
+			 WHEN 5 THEN '목'
+			 WHEN 6 THEN '금'
+			 ELSE '토' END AS week
+		  FROM (SELECT RESEDATE FROM mb_resesel WHERE RESEDATE BETWEEN #{sd} AND #{ed}
+		  UNION ALL SELECT RESEDATE FROM mb_resemri WHERE RESEDATE BETWEEN #{sd} AND #{ed}
+		  UNION ALL SELECT RESEDATE FROM mb_resecst WHERE RESEDATE BETWEEN #{sd} AND #{ed}
+		  UNION ALL SELECT RESEDATE FROM mb_resemin WHERE RESEDATE BETWEEN #{sd} AND #{ed}
+		  UNION ALL SELECT RESEDATE FROM mb_resesnsb WHERE RESEDATE BETWEEN #{sd} AND #{ed}
+		  UNION ALL SELECT DATE_FORMAT(TEST_DAY, '%Y%m%d') FROM mb_mri1 WHERE TEST_DAY >= STR_TO_DATE(#{sd}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{ed}, '%Y%m%d'), interval +1 day)
+		  UNION ALL SELECT DATE_FORMAT(TEST_DAY, '%Y%m%d') FROM mb_rctu WHERE TEST_DAY >= STR_TO_DATE(#{sd}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{ed}, '%Y%m%d'), interval +1 day)
+		  UNION ALL SELECT SPECDATE FROM mb_csfhd WHERE specdate BETWEEN #{sd} AND #{ed}
+		  UNION ALL SELECT SPECDATE FROM mb_specimhd WHERE specdate BETWEEN #{sd} AND #{ed}
+			   ) A
+		 GROUP BY RESEDATE
+		 ORDER BY RESEDATE DESC
+		]]>
+	</select>
+
+	<select id="select_csbr1020_list_data" parameterType="HashMap" resultType="csbrain.data.service.Csbr1020ListDataVO">
+		<![CDATA[
+		SELECT 'S' AUD, B.IDX
+				 , MAX(B.NAME) AS NAME
+				 , MAX(B.NAME) AS NAME2
+				 , MAX(CONCAT(B.JUMIN1,'-',B.JUMIN2,B.JUMIN3)) JUMIN
+				 , MAX(CONCAT(B.TEL1,'-',B.TEL2,'-',B.TEL3)) TELNO
+				 , MAX(CONCAT(B.MOBILE1,'-',B.MOBILE2,'-',B.MOBILE3)) MOBILE
+				 , IFNULL(MAX(O.OPINDESC), '') OPINDESC
+			  FROM (
+			SELECT OBJECT_IDX FROM mb_mmse	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')           AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_dm	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_mb	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_fh	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_mh	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_ah	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_dg	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_gds 	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_kdsq 	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_kdsqv  WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_kiadl	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_remark WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_sh  	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_smcq	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_c1	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_c2	 WHERE C2_L_TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND C2_L_TEST_DAY  < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			
+			UNION ALL SELECT OBJECT_IDX FROM mb_c2	 WHERE C2_P_TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND C2_P_TEST_DAY  < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_c2	 WHERE C2_C_TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND C2_C_TEST_DAY  < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_c2	 WHERE C2_AD_TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND C2_AD_TEST_DAY  < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_c2	 WHERE C2_S_TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND C2_S_TEST_DAY  < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_c2	 WHERE C2_Z_TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND C2_Z_TEST_DAY  < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			
+			UNION ALL SELECT OBJECT_IDX FROM mb_c3	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_hrsd	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_cdr	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_lab	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_dia	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d')   AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_memo	 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_testblod WHERE testdate = #{d}
+			UNION ALL SELECT OBJECT_IDX FROM mb_mri1 WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_rctu WHERE TEST_DAY >= STR_TO_DATE(#{d}, '%Y%m%d') AND TEST_DAY < DATE_ADD(STR_TO_DATE(#{d}, '%Y%m%d'), interval +1 day)
+			UNION ALL SELECT OBJECT_IDX FROM mb_csfhd WHERE specdate = #{d}
+			UNION ALL SELECT OBJECT_IDX FROM mb_specimhd WHERE specdate = #{d}
+				) A
+			  JOIN mb_object B ON A.OBJECT_IDX = B.IDX
+			  LEFT JOIN mb_opinion O ON A.OBJECT_IDX = O.OBJECT_IDX
+			 GROUP BY IDX
+			 ORDER BY NAME, JUMIN
+		]]>
+	</select>
+
+
+	
+
+
+	<select id="select_csbr1031_search" parameterType="HashMap" resultType="csbrain.data.service.Csbr1031SearchVO">
+	
+              SELECT 
+A.SELECTION_NUM AS SELECTION_NUM,
+A.OBJECT_IDX, 
+O.NAME AS OBJECT_NM,
+DATE_FORMAT(A.TEST_DAY, '%Y-%m-%d') AS TEST_DAY,
+M.MRIID MRIID,
+DATE_FORMAT(SN.SNSB_DATE, '%Y-%m-%d') AS SNSBDATE,
+ DATE_FORMAT(D.TEST_DAY, '%Y-%m-%d') AS DIAG_DAY,
+ D.SUBJECT_ID ,
+ S.NAME AS SUBJECT_NM
+,CASE		 
+WHEN SN.pdf_path IS NOT NULL THEN 'Y'
+WHEN SN.pdf_path IS NULL THEN '' 
+END AS PDFPATH
+,CASE WHEN D.idx IS NULL THEN '' ELSE 'Y' END AS DIAGYN
+, D.REMARK REMARK
+, IFNULL(D.NORMAL,'N') AS NORMAL
+, IFNULL(D.SMI,'N') AS SMI
+, IFNULL(D.MCI,'N') AS MCI
+, CASE WHEN D.MCI_AMCI_SM = 'S' THEN 'Y' 
+       WHEN IFNULL(D.MCI_AMCI_SM,'N') = 'N' OR IFNULL(D.MCI_AMCI_SM,'') ='' THEN ''
+	   END aMCI_SD
+,CASE WHEN D.MCI_AMCI_SM = 'M' THEN 'Y'
+		WHEN IFNULL(D.MCI_AMCI_SM,'N') = 'N' OR IFNULL(D.MCI_AMCI_SM,'') ='' THEN ''	
+        END aMCI_MD
+,CASE WHEN sum(D.mci_namci1+D.mci_namci_atten1+D.mci_namci_fron1+D.mci_namci_lagu1+D.mci_namci_visu1) > 1 THEN  'Y'
+            ELSE ''
+            END naMCI_SD
+       ,CASE WHEN  sum(D.mci_namci1+D.mci_namci_atten1+D.mci_namci_fron1+D.mci_namci_lagu1+D.mci_namci_visu1) = 1 THEN 'Y'
+			ELSE ''
+            END naMCI_MD
+,CASE WHEN DG.dia_02_ck08 = 1 THEN 'Y' 
+	  WHEN IFNULL(DG.dia_02_ck08,'') = '' THEN ''
+      END VCI
+            
+				, IFNULL(D.DEMENTIA,'N') 		AS Dementia
+				,CASE WHEN D.DEMENTIA_AD = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_AD = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_AD = 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_AD = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_AD,'') = '' THEN '' 		
+                      END AD
+				,CASE WHEN D.DEMENTIA_VAD = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_VAD = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_VAD = 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_VAD = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_VAD,'')  = '' THEN '' 		
+                      END VAD
+				,CASE WHEN D.DEMENTIA_MIXED = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_MIXED = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_MIXED = 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_MIXED = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_MIXED,'')  = '' THEN '' 		
+                      END mixed
+				,CASE WHEN D.DEMENTIA_DLB = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_DLB = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_DLB= 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_DLB = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_DLB,'')  = '' THEN '' 		
+                      END LBD_DLB
+				,CASE WHEN D.DEMENTIA_PDD = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_PDD = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_PDD= 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_PDD = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_PDD,'')  = '' THEN '' 		
+                      END LBD_PDD
+				,CASE WHEN D.DEMENTIA_PNFA = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_PNFA = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_PNFA = 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_PNFA = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_PNFA,'')  = '' THEN '' 		
+                      END FTD_PNFA
+               
+               
+               
+               
+                ,CASE WHEN D.DEMENTIA_SD = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_SD = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_SD= 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_SD = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_SD,'')  = '' THEN '' 		
+                      END FTD_SD     
+				,CASE WHEN D.DEMENTIA_BVFTD = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_BVFTD = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_BVFTD = 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_BVFTD = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_BVFTD,'')  = '' THEN '' 		
+                      END FTD_BvFTD
+				, CASE WHEN D.DEMENTIA_ALCOHOL = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_ALCOHOL = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_ALCOHOL = 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_ALCOHOL = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_ALCOHOL,'')  = '' THEN '' 		
+                      END Alcohol_D
+				,CASE WHEN D.DEMENTIA_NPH = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_NPH = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_NPH = 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_NPH = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_NPH,'')  = '' THEN '' 		
+                      END NPH
+				,CASE WHEN D.DEMENTIA_UNSPEC = 1 THEN 'Y'
+					  WHEN D.DEMENTIA_UNSPEC = 2 THEN 'Y'
+					  WHEN D.DEMENTIA_UNSPEC = 3 THEN 'Y'	
+				      WHEN D.DEMENTIA_UNSPEC = '-' THEN ''
+                      WHEN IFNULL(D.DEMENTIA_UNSPEC,'')  = '' THEN '' 		
+                      END unspecified
+				, IFNULL(D.DEPRESSION,'N') 		AS depression
+				, D.SNSB_REMARK					AS SNSBremark
+                , D.MRI_REMARK					AS MRIremark
+   FROM mb_dm A
+ JOIN mb_object O ON O.IDX = A.OBJECT_IDX
+  LEFT JOIN
+  (select *,CASE
+  WHEN mci_namci = 'N' OR IFNULL(mci_namci,'') = '' THEN 0
+  WHEN mci_namci = 'Y' THEN 1
+  END mci_namci1
+   ,CASE
+  WHEN  mci_namci_atten = 'N' OR IFNULL(mci_namci_atten,'') = '' THEN 0
+    WHEN mci_namci_atten = 'Y' THEN 1
+  END  mci_namci_atten1
+  ,CASE
+  WHEN  mci_namci_fron = 'N' OR IFNULL(mci_namci_fron,'') = '' THEN 0
+  WHEN mci_namci_fron = 'Y' THEN 1
+  END mci_namci_fron1
+  ,CASE
+  WHEN  mci_namci_lagu = 'N' OR IFNULL(mci_namci_lagu,'') ='' THEN 0
+    WHEN mci_namci_lagu = 'Y' THEN 1
+  END  mci_namci_lagu1
+ ,CASE
+  WHEN  mci_namci_visu = 'N' OR IFNULL(mci_namci_visu,0) = 0  THEN 0
+  WHEN mci_namci_visu = 'Y' THEN 1
+  END mci_namci_visu1 FROM csbrain2.mb_nrcd ) D  
+	ON D.object_idx = A.object_idx AND D.Selection_Num = A.selection_num AND D.flag = 'U'
+ 	  LEFT join mb_subject S ON S.ID = D.SUBJECT_ID
+			  LEFT JOIN mb_resemri M ON M.object_idx = A.object_idx AND M.selection_num = A.selection_num 
+			  LEFT JOIN mb_snsb SN ON SN.object_idx = A.object_idx AND SN.selection_num = A.selection_num AND SN.flag = 'U'
+              LEFT JOIN mb_dia DG ON DG.object_idx = A.object_idx AND DG.selection_num = A.selection_num AND DG.flag = 'U'   
+		   WHERE A.FLAG = 'U'
+			   AND DATE_FORMAT(A.TEST_DAY, '%Y%m%d') BETWEEN #{sd} AND #{ed}
+			   ${numQuery}
+			   AND O.NAME LIKE CONCAT('%', #{stName},'%')
+			   ${idxQuery}
+			  GROUP BY D.idx           
+			 ORDER BY SELECTION_NUM DESC, TEST_DAY DESC,OBJECT_NM
+			 
+	</select>
+
+
+
+
+<select id="select_csbr1050_search" parameterType="HashMap" resultType="csbrain.data.service.Csbr1050SearchVO">
+			  SELECT 
+				    A.OBJECT_IDX, A.SELECTION_NUM
+				    , DATE_FORMAT(A.TEST_DAY, '%Y-%m-%d') AS TEST_DAY
+				    , O.NAME AS OBJECT_NM, TEL1, TEL2, TEL3
+				    , MOBILE1, MOBILE2, MOBILE3
+				    , M.MRIID
+				    , DATE_FORMAT(SN.SNSB_DATE, '%Y-%m-%d') AS SNSBDATE
+				    , 'S' AUD
+				    , DATE_FORMAT(D.TEST_DAY, '%Y-%m-%d') AS DIAG_DAY
+				    , D.SUBJECT_ID
+				    , S.NAME AS SUBJECT_NM
+				    , CASE WHEN D.idx IS NULL THEN '' ELSE 'Y' END AS DIAGYN
+				    , IFNULL(D.NORMAL,'N') 			AS NORMAL
+					, IFNULL(D.SMI,'N') 			AS SMI
+					, IFNULL(D.MCI,'N') 			AS MCI
+					, IFNULL(D.DEMENTIA,'N') 		AS DEMENTIA
+					, 'N' AS DIAGNOSIS
+					, D.REMARK						AS REMARK
+					, DATE_FORMAT(TB.TESTDATE, '%Y-%m-%d') AS BLODDATE
+                    , DATE_FORMAT(MR.resedate, '%Y-%m-%d') AS RESESELDATE
+                    , DATE_FORMAT(D.UPDATE_DATE, '%Y-%m-%d') AS diagnosisDate  
+			 FROM mb_dm A
+			  JOIN mb_object O ON O.IDX = A.OBJECT_IDX
+			  LEFT JOIN mb_nrcd D ON D.object_idx = A.object_idx AND D.Selection_Num = A.selection_num AND D.flag = 'U'
+			  LEFT join mb_subject S ON S.ID = D.SUBJECT_ID
+			  LEFT JOIN mb_resemri M ON M.object_idx = A.object_idx AND M.selection_num = A.selection_num and M.testyn=1
+			  LEFT JOIN mb_snsb SN ON SN.object_idx = A.object_idx AND SN.selection_num = A.selection_num AND SN.Flag = 'U'
+			  LEFT JOIN mb_testblod TB ON TB.object_idx = A.object_idx and TB.testdate=A.test_day
+              LEFT JOIN mb_resesel MR ON MR.resename = O.name and MR.testyn=1
+			 WHERE A.FLAG = 'U'
+			   AND DATE_FORMAT(A.TEST_DAY, '%Y%m%d') BETWEEN #{sd} AND #{ed}
+			   ${numQuery}
+			   AND O.NAME LIKE CONCAT('%', #{stName},'%')
+			   ${idxQuery}
+			 ORDER BY OBJECT_IDX, SELECTION_NUM DESC, TEST_DAY DESC, OBJECT_NM
+	</select>
+
+	<select id="select_csbr1050_info" parameterType="HashMap" resultType="csbrain.data.service.Csbr1050InfoVO">
+		<![CDATA[
+		SELECT A.OBJECT_IDX, A.SELECTION_NUM
+				, DATE_FORMAT(A.TEST_DAY, '%Y-%m-%d') AS TEST_DAY
+			  , O.NAME AS OBJECT_NM, TEL1, TEL2, TEL3
+				, MOBILE1, MOBILE2, MOBILE3
+				, JUMIN1, JUMIN2, JUMIN3
+				, BIRTH1, BIRTH2, BIRTH3
+				, (YEAR(CURDATE())-YEAR(CONCAT(BIRTH1,BIRTH2,CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END))
+				- (RIGHT(CURDATE(),5)<RIGHT(CONCAT(BIRTH1,BIRTH2,CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END),4))) AGE
+				, CASE WHEN GENDER = 1 THEN 'M' ELSE 'F' END GENDER
+				, YEAR_ANI, EDU
+				, ADDRESS1, ADDRESS2, ADDRESS3, ADDRESS4, PHOTOPATH
+				, CONCAT(JUMIN1,'-',JUMIN2,JUMIN3) JUMIN
+				, CONCAT(TEL1,'-',TEL2,'-',TEL3) TELNO
+				, CONCAT(MOBILE1,'-',MOBILE2,'-',MOBILE3) MOBILE
+			  , M.MRIID
+			  , DATE_FORMAT(SN.SNSB_DATE, '%Y-%m-%d') AS SNSBDATE
+			  , 'S' AUD
+			  , DATE_FORMAT(D.TEST_DAY, '%Y-%m-%d') AS DIAG_DAY
+			  , D.SUBJECT_ID
+			  , S.NAME AS SUBJECT_NM
+				, CASE WHEN D.idx IS NULL THEN '' ELSE 'Y' END AS DIAGYN
+			  , IFNULL(D.IDX, -1) 			AS IDX
+			  , IFNULL(D.NORMAL,'N') 			AS NORMAL
+				, IFNULL(D.ONE_SD_MCI,'N') 		AS ONE_SD_MCI
+				, IFNULL(D.SMI,'N') 			AS SMI
+				, IFNULL(D.MCI,'N') 			AS MCI
+				, IFNULL(D.MCI_AMCI,'N') 		AS MCI_AMCI
+				, IFNULL(D.MCI_AMCI_SM,'N') 	AS MCI_AMCI_SM
+				, IFNULL(D.MCI_NAMCI,'N') 		AS MCI_NAMCI
+				, IFNULL(D.MCI_NAMCI_ATTEN,'N') AS MCI_NAMCI_ATTEN
+				, IFNULL(D.MCI_NAMCI_LAGU,'N') 	AS MCI_NAMCI_LAGU
+				, IFNULL(D.MCI_NAMCI_VISU,'N') 	AS MCI_NAMCI_VISU
+				, IFNULL(D.MCI_NAMCI_FRON,'N') 	AS MCI_NAMCI_FRON
+				, IFNULL(D.MCI_WMH,'N') 		AS MCI_WMH
+				, IFNULL(D.MCI_WMH_CBO,'') 		AS MCI_WMH_CBO
+				, IFNULL(D.DEMENTIA,'N') 		AS DEMENTIA
+				, IFNULL(D.DEMENTIA_AD,'') 		AS DEMENTIA_AD
+				, IFNULL(D.DEMENTIA_VAD,'') 	AS DEMENTIA_VAD
+				, IFNULL(D.DEMENTIA_MIXED,'')	AS DEMENTIA_MIXED
+				, IFNULL(D.DEMENTIA_DLB,'') 	AS DEMENTIA_DLB
+				, IFNULL(D.DEMENTIA_PDD,'') 	AS DEMENTIA_PDD
+				, IFNULL(D.DEMENTIA_PNFA,'') 	AS DEMENTIA_PNFA
+				, IFNULL(D.DEMENTIA_SD,'') 		AS DEMENTIA_SD
+				, IFNULL(D.DEMENTIA_BVFTD,'') 	AS DEMENTIA_BVFTD
+				, IFNULL(D.DEMENTIA_ALCOHOL,'') AS DEMENTIA_ALCOHOL
+				, IFNULL(D.DEMENTIA_NPH,'') 	AS DEMENTIA_NPH
+				, IFNULL(D.DEMENTIA_UNSPEC,'') 	AS DEMENTIA_UNSPEC
+				, D.DEMENTIA_ETC				AS DEMENTIA_ETC
+				, IFNULL(D.DEPRESSION,'N') 		AS DEPRESSION
+				, IFNULL(D.DEPRESSION_GDS_YN,'') AS DEPRESSION_GDS_YN
+				, IFNULL(D.COMP_YN,'') 			AS COMP_YN
+				, IFNULL(D.COMP_RSN_SEL,'') 	AS COMP_RSN_SEL
+				, D.COMP_RSN_ETC				AS COMP_RSN_ETC
+				, D.REMARK						AS REMARK
+				, IFNULL(D.MCI_WMH_GRADE,'0') 	AS MCI_WMH_GRADE
+                , IFNULL(D.MRI_YN,'N') 		    AS MRI_YN
+                , D.SNSB_REMARK					AS SNSB_REMARK
+                , D.MRI_REMARK					AS MRI_REMARK
+                , D.NOS_YN						AS NOS_YN
+                , D.NOS_REMARK					AS NOS_REMARK
+			  FROM mb_dm A
+			  JOIN mb_object O ON O.IDX = A.OBJECT_IDX
+			  LEFT JOIN mb_nrcd D
+					  ON D.object_idx = A.object_idx AND D.Selection_Num = A.selection_num AND D.flag = 'U'
+			  LEFT join mb_subject S ON S.ID = D.SUBJECT_ID
+			  LEFT JOIN mb_resemri M ON M.object_idx = A.object_idx AND M.selection_num = A.selection_num
+			  LEFT JOIN mb_snsb SN ON SN.object_idx = A.object_idx AND SN.selection_num = A.selection_num AND SN.Flag = 'U'
+			 WHERE A.FLAG = 'U'
+			   AND A.SELECTION_NUM = #{selectionNum}
+			   AND  O.IDX = #{objectIdx}
+			 ORDER BY SELECTION_NUM DESC, TEST_DAY DESC, OBJECT_NM
+		]]>
+	</select>
+
+	<delete id="delete_csbr1050_mb_nrcd" parameterType="HashMap">
+		delete from mb_nrcd where object_idx = #{objectIdx} and selection_num = #{selectionNum} and 1=1
+	</delete>
+
+	<insert id="insert_csbr1050_mb_nrcd" parameterType="MbNrcdVO">
+		insert into mb_nrcd(subject_id,object_idx,selection_num,normal,one_sd_mci,smi,mci,mci_amci,mci_amci_sm,mci_namci,mci_namci_atten
+				  ,mci_namci_lagu,mci_namci_visu,mci_namci_fron,mci_wmh,mci_wmh_cbo,dementia,dementia_ad,dementia_vad,dementia_mixed,dementia_dlb
+				  ,dementia_pdd,dementia_pnfa,dementia_sd,dementia_bvftd,dementia_alcohol,dementia_nph,dementia_unspec,dementia_etc
+				  ,depression,depression_gds_yn,comp_yn,comp_rsn_sel,comp_rsn_etc,remark,test_day,flag,insert_date,insert_userid,update_date
+				  ,update_userid,mci_wmh_grade,mri_yn,snsb_remark,mri_remark,nos_yn,nos_remark)
+				  values(#{subjectId},#{objectIdx},#{selectionNum},#{normal},#{oneSdMci},#{smi},#{mci},#{mciAmci},#{mciAmciSm},#{mciNamci},#{mciNamciAtten}
+				  ,#{mciNamciLagu},#{mciNamciVisu},#{mciNamciFron},#{mciWmh},#{mciWmhCbo},#{dementia},#{dementiaAd},#{dementiaVad},#{dementiaMixed},#{dementiaDlb}
+				  ,#{dementiaPdd},#{dementiaPnfa},#{dementiaSd},#{dementiaBvftd},#{dementiaAlcohol},#{dementiaNph},#{dementiaUnspec},#{dementiaEtc}
+				  ,#{depression},#{depressionGdsYn},#{compYn},#{compRsnSel},#{compRsnEtc},#{remark},#{testDay},'U',sysdate(),#{userId},sysdate()
+				  ,#{userId},#{mciWmhGrade},#{mriYn},#{snsbRemark},#{mriRemark},#{nosYn},#{nosRemark})
+	</insert>
+	
+	<update id="update_csbr1050_pdfPath" parameterType="HashMap">
+		UPDATE mb_snsb
+		SET pdf_path = #{pdfPath}
+		WHERE object_idx = #{objectIdx} and selection_num = #{selectionNum}
+	</update>
+	
+	<select id="select_csbr1050_object" parameterType="HashMap" resultType="HashMap">
+		<![CDATA[
+		select 
+			a.name, a.birth1, a.birth2, a.age, a.gender, a.edu,
+			CONCAT(a.birth1,'-',a.birth2,'-', (case when a.birth3 = '' then '01' else a.birth3 end)) rbirth
+		from csbrain2.mb_object a
+		where a.idx=#{object_idx}
+		]]>
+	</select>
+	
+	<select id="select_csbr1050_cdr" parameterType="HashMap" resultType="HashMap">
+		<![CDATA[
+		select 
+			m.idx,m.subject_idx,m.object_idx,m.selection_num,m.cdr_m,m.cdr_o,m.cdr_j,
+		    m.cdr_s,m.cdr_h,m.cdr_p,m.cdr_step,DATE_FORMAT(m.test_day, '%Y-%m-%d') as test_day,m.flag,d.cdr_m_01,d.cdr_m_02,
+		    d.cdr_j_01,d.cdr_j_02,d.cdr_j_03,d.cdr_j_04,d.cdr_j_05,d.cdr_j_06,d.cdr_j_07,
+		    d.cdr_j_08,d.cdr_j_09,d.cdr_s_01,d.cdr_s_02,d.cdr_s_03,d.cdr_h_01,d.cdr_h_02
+		from mb_cdr m
+		left join mb_cdr_detail d on m.object_idx=d.object_idx and m.selection_num=d.selection_num and m.Flag='U' and d.Flag='U'
+		where m.object_idx=#{object_idx} and m.selection_num=#{selection_num}
+		]]>
+	</select>
+	
+	<insert id="insert_csbr1050_cdr" parameterType="HashMap">
+		<![CDATA[
+		insert into mb_cdr(
+			subject_idx,object_idx,selection_num,cdr_m,cdr_o,cdr_j,cdr_s,
+			cdr_h,cdr_p,cdr_step,test_day,flag,insert_date,insert_userid
+		) values(
+			#{subject_idx},#{object_idx},#{selection_num},#{cdr_m},#{cdr_o},#{cdr_j},#{cdr_s},
+			#{cdr_h},#{cdr_p},#{cdr_step},#{test_day},'U',sysdate(),#{subject_idx}
+		)
+		]]>
+	</insert>
+	
+	<insert id="insert_csbr1050_cdr_detail" parameterType="HashMap">
+		<![CDATA[
+		insert into mb_cdr_detail(
+			subject_idx,object_idx,selection_num,cdr_m_01,cdr_m_02,cdr_j_01,cdr_j_02,
+			cdr_j_03,cdr_j_04,cdr_j_05,cdr_j_06,cdr_j_07,cdr_j_08,cdr_j_09,cdr_s_01,
+			cdr_s_02,cdr_s_03,cdr_h_01,cdr_h_02,test_day,flag,insert_date,insert_userid
+		) values(
+			#{subject_idx},#{object_idx},#{selection_num},#{cdr_m_01},#{cdr_m_02},#{cdr_j_01},#{cdr_j_02},
+			#{cdr_j_03},#{cdr_j_04},#{cdr_j_05},#{cdr_j_06},#{cdr_j_07},#{cdr_j_08},#{cdr_j_09},#{cdr_s_01},
+			#{cdr_s_02},#{cdr_s_03},#{cdr_h_01},#{cdr_h_02},#{test_day},'U',sysdate(),#{subject_idx}
+		)
+		]]>
+	</insert>
+	
+	<update id="update_csbr1050_cdr" parameterType="HashMap">
+		<![CDATA[
+		update mb_cdr set 
+			subject_idx=#{subject_idx},cdr_m=#{cdr_m},cdr_o=#{cdr_o},cdr_j=#{cdr_j},cdr_s=#{cdr_s},
+			cdr_h=#{cdr_h},cdr_p=#{cdr_p},cdr_step=#{cdr_step},test_day=#{test_day},update_date=sysdate(),update_userid=#{subject_idx}
+		where object_idx=#{object_idx} and selection_num=#{selection_num} and Flag='U'
+		]]>
+	</update>
+	
+	<update id="update_csbr1050_cdr_detail" parameterType="HashMap">
+		<![CDATA[
+		update mb_cdr_detail set
+			subject_idx=#{subject_idx},cdr_m_01=#{cdr_m_01},cdr_m_02=#{cdr_m_02},cdr_j_01=#{cdr_j_01},cdr_j_02=#{cdr_j_02},cdr_j_03=#{cdr_j_03},
+			cdr_j_04=#{cdr_j_04},cdr_j_05=#{cdr_j_05},cdr_j_06=#{cdr_j_06},cdr_j_07=#{cdr_j_07},cdr_j_08=#{cdr_j_08},cdr_j_09=#{cdr_j_09},cdr_s_01=#{cdr_s_01},
+			cdr_s_02=#{cdr_s_02},cdr_s_03=#{cdr_s_03},cdr_h_01=#{cdr_h_01},cdr_h_02=#{cdr_h_02},test_day=#{test_day},update_date=sysdate(),update_userid=#{subject_idx}
+		where object_idx=#{object_idx} and selection_num=#{selection_num} and Flag='U'
+		]]>
+	</update>
+	
+	<insert id="insert_csbr1010_objIdx" parameterType="TargetVO">
+		INSERT INTO mb_object(name, jumin1, jumin2, jumin3,birth1, birth2, birth3, year_ani, age, gender, edu,
+							  tel1, tel2, tel3, mobile1, mobile2, mobile3, address1, address2, address3, address4, reg_date,chartno)							  
+				VALUES(#{name},#{jumin1},#{jumin2},#{jumin3},#{birth1},#{birth2}
+				,#{birth3},#{year_ani},#{age},#{gender},#{edu},#{tel1},#{tel2},#{tel3},#{mobile1},#{mobile2},#{mobile3},#{address1}
+				,#{address2},#{address3},#{address4},now(),#{chartno})    			  	 
+
+	</insert>
+	
+	<update id="update_mb_object_editlist" parameterType="HashMap">
+		
+			UPDATE                                                                                                     
+				 mb_object                                                  
+			SET
+				 NAME  = #{name , jdbcType=VARCHAR},
+				 JUMIN1 = #{jumin1 , jdbcType=VARCHAR},
+				 JUMIN2 = #{jumin2 , jdbcType=VARCHAR},
+				 JUMIN3 = #{jumin3 , jdbcType=VARCHAR},
+				 BIRTH1 = #{birth1 , jdbcType=VARCHAR},
+				 BIRTH2 = #{birth2 , jdbcType=VARCHAR},
+				 BIRTH3 = #{birth3 , jdbcType=VARCHAR},
+				 YEAR_ANI = #{year_ani, jdbcType=VARCHAR},
+				 AGE = #{age , jdbcType=NUMERIC},
+				 GENDER  = #{gender , jdbcType=VARCHAR},
+				 EDU = #{edu , jdbcType=VARCHAR},
+				 TEL1 = #{tel1 , jdbcType=VARCHAR},
+				 TEL2 = #{tel2 , jdbcType=VARCHAR},
+				 TEL3 = #{tel3 , jdbcType=VARCHAR},
+				 MOBILE1 = #{mobile1 , jdbcType=VARCHAR},
+				 MOBILE2 = #{mobile2 , jdbcType=VARCHAR},
+				 MOBILE3 = #{mobile3 , jdbcType=VARCHAR},
+				 ADDRESS1 = #{address1, jdbcType=VARCHAR},
+				 ADDRESS2 = #{address2, jdbcType=VARCHAR},
+				 ADDRESS3 = #{address3, jdbcType=VARCHAR},
+				 ADDRESS4 = #{address4, jdbcType=VARCHAR},
+		 		 UPDATE_DATE = now(),                        		           	                                   
+ 			 	 UPDATE_USERID =  #{updateUserid}         
+			 WHERE                                       
+ 			 	IDX = #{objectIdx ,jdbcType=NUMERIC} 	
+	
+	</update>
+	
+	
+	
+	<select id="select_csbr1010_Chk_objIdx" parameterType="HashMap" resultType="csbrain.target.service.TargetVO">
+	  
+		SELECT idx FROM mb_object where name = #{name} and jumin1 = #{jumin1} and jumin2 = #{jumin2};		
+							  	 
+	</select>
+	
+	
+	
+	
+</mapper>
+

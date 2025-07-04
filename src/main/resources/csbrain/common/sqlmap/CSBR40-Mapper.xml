@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CSBR40">
+
+	<delete id="delete_csbr4010_mb_testblod" parameterType="HashMap">
+		delete from mb_testblod where TESTDATE=#{testdate} and OBJECT_IDX=#{objectIdx} and 1=1
+	</delete>
+
+	<select id="select_csbr4010_content" parameterType="HashMap" resultType="MbMriTestblodVO">
+		<![CDATA[
+				SELECT 'S' AUD, IFNULL(C.OBJECT_IDX,'A') AUD2
+		   , A.RESEDATE, A.RESETIME, A.OBJECT_IDX, A.TESTYN, A.MODIFYUSID, A.MODIFYDATE
+			 , B.NAME AS RESENAME
+		   , CONCAT(B.JUMIN1,'-',B.JUMIN2,B.JUMIN3) JUMIN
+		   , CONCAT(B.TEL1,'-',B.TEL2,'-',B.TEL3) TELNO
+		   , CONCAT(B.MOBILE1,'-',B.MOBILE2,'-',B.MOBILE3) MOBILE
+		   , CASE WHEN GENDER = 1 THEN 'M' ELSE 'F' END GENDER
+		   , (YEAR(A.RESEDATE)-YEAR(CONCAT(BIRTH1,BIRTH2,CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END))
+			 - (RIGHT(A.RESEDATE,4)<RIGHT(CONCAT(BIRTH1,BIRTH2,CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END),4))) AGE 	#검사시 실제나이
+		   , B.CHARTNO
+		   , IFNULL(C.MRIID,A.MRIID) MRIID, IFNULL(C.REMARK, A.REMARK) REMARK
+		   -- , CASE WHEN IFNULL(C.HEIGHT,0) = 0 THEN D.b_01 ELSE C.HEIGHT END HEIGHT
+		   -- , CASE WHEN IFNULL(C.WEIGHT,0) = 0 THEN D.b_02 ELSE C.WEIGHT END WEIGHT
+		   -- , CASE WHEN IFNULL(C.BPRESSURE1,0) = 0 THEN SUBSTR(D.b_03, 1, LOCATE('/', D.b_03) - 1) ELSE C.BPRESSURE1 END BPRESSURE1
+		   -- , CASE WHEN IFNULL(C.BPRESSURE2,0) = 0 THEN SUBSTR(D.b_03, LOCATE('/', D.b_03) + 1)  ELSE C.BPRESSURE2 END BPRESSURE2
+		   , CASE WHEN IFNULL(C.HEIGHT,0) = 0 THEN CASE WHEN csbrain2.IsNumeric(D.b_01) = 1 THEN D.b_01 ELSE 0 END ELSE
+											  CASE WHEN csbrain2.IsNumeric(C.HEIGHT) = 1 THEN C.HEIGHT ELSE 0 END END HEIGHT
+                                              
+		   , CASE WHEN IFNULL(C.WEIGHT,0) = 0 THEN CASE WHEN csbrain2.IsNumeric(D.b_02) = 1 THEN D.b_02 ELSE 0 END ELSE
+											  CASE WHEN csbrain2.IsNumeric(C.WEIGHT) = 1 THEN C.WEIGHT ELSE 0 END END WEIGHT
+		   , CASE WHEN IFNULL(C.BPRESSURE1,0) = 0 THEN CASE WHEN csbrain2.IsNumeric(SUBSTR(D.b_03, 1, LOCATE('/', D.b_03) - 1)) = 1 THEN SUBSTR(D.b_03, 1, LOCATE('/', D.b_03) - 1) ELSE 0 END ELSE
+												  CASE WHEN csbrain2.IsNumeric(C.BPRESSURE1) = 1 THEN C.BPRESSURE1 ELSE 0 END END BPRESSURE1
+		   , CASE WHEN IFNULL(C.BPRESSURE2,0) = 0 THEN CASE WHEN csbrain2.IsNumeric(SUBSTR(D.b_03, LOCATE('/', D.b_03) + 1)) = 1 THEN SUBSTR(D.b_03, LOCATE('/', D.b_03) + 1) ELSE 0 END  ELSE
+												  CASE WHEN csbrain2.IsNumeric(C.BPRESSURE2) = 1 THEN C.BPRESSURE2 ELSE 0 END END BPRESSURE2
+		   , C.BPRESSURE3
+		   , C.BPRESSURE4
+		   , C.ABO
+		   , C.WHITEBLOOD, C.REDBLOOD, C.THROMBOCYT, C.HEMOGLOBIN, C.HEMATOCRIT
+		   , C.WBCDIFF1, C.WBCDIFF2, C.WBCDIFF3, C.WBCDIFF4, C.WBCDIFF5, C.WBCDIFF6, C.PROTEIN, C.ALBUMIN, C.CHOLESTERO, C.TRIGLYCERI, C.ASTSGOT, C.ALTSGPT
+		   , C.BUN, C.CREATININE, C.HBAIC, C.T3, C.T4, C.TSH, C.MRIDIAG, C.PETDIAG, C.LDLCHOLE, C.HDLCHOLE, C.GLUCOSE
+		   ,C.MCV ,C.NEUTROPHIL ,C.LYMPHOCYTE ,C.MONOCYTE ,C.EOSINOPHIL ,C.BASOPHIL ,C.LUC 
+		   ,C.METAL_CU ,C.METAL_ZN ,C.HBA1C_NGSP ,C.HBA1C_IFCC ,C.HBA1C_EAG 
+		   ,C.APOE1 ,C.APOE2 ,C.ETC_TEST1 ,C.ETC_TEST2 ,C.ETC_TEST3 
+		   ,C.ETC_TEST4 ,C.ETC_TEST5 ,C.ETC_TEST6 ,C.ETC_TEST7 ,C.ETC_TEST8
+			  FROM csbrain2.mb_resemri A
+		  JOIN csbrain2.mb_object B ON A.OBJECT_IDX = B.IDX
+		  LEFT JOIN csbrain2.mb_testblod C ON A.RESEDATE = C.TESTDATE AND A.OBJECT_IDX = C.OBJECT_IDX
+		  LEFT JOIN csbrain2.mb_mb D ON D.object_idx = A.object_idx AND D.FLAG = 'U'
+				AND D.selection_num = (SELECT MAX(x.selection_num)
+														 FROM csbrain2.mb_mb x
+										WHERE x.FLAG = 'U'
+										  AND x.object_idx = D.object_idx
+										  AND x.TEST_DAY <= DATE_ADD(A.RESEDATE, INTERVAL 2 DAY))
+		 WHERE 1=1
+		 AND A.RESEDATE = #{resedate}
+		 ]]>
+		 <if test="objectIdx !=null and objectIdx != '' ">
+		 AND A.OBJECT_IDX=#{objectIdx}
+		 </if>
+		 <if test="orderBy !=null and orderBy != '' ">
+		 ${orderBy}
+		 </if>
+
+	</select>
+
+	<select id="select_count_mb_testblod" parameterType="HashMap" resultType="int">
+		select count(*) from mb_testblod where testdate=#{testdate} and object_idx=#{objectIdx}
+	</select>
+
+	<update id="update_csbr4010_mb_testblod" parameterType="MbMriTestblodVO">
+		UPDATE mb_testblod
+				   SET REMARK = #{remark}
+					,  HEIGHT = #{height}
+					,  WEIGHT = #{weight}
+					,  ABO = #{abo}
+					,  BPRESSURE1 = #{bpressure1}
+					,  BPRESSURE2 = #{bpressure2}
+				  	,  BPRESSURE3 = #{bpressure3}
+					,  BPRESSURE4 = #{bpressure4}
+					,  WHITEBLOOD = #{whiteblood}
+					,  REDBLOOD = #{redblood}
+					,  THROMBOCYT = #{thrombocyt}
+					,  HEMOGLOBIN = #{hemoglobin}
+					,  HEMATOCRIT = #{hematocrit}
+					,  WBCDIFF1 = #{wbcdiff1}
+					,  WBCDIFF2 = #{wbcdiff2}
+					,  WBCDIFF3 = #{wbcdiff3}
+					,  WBCDIFF4 = #{wbcdiff4}
+					,  WBCDIFF5 = #{wbcdiff5}
+					,  WBCDIFF6 = #{wbcdiff6}
+					,  PROTEIN = #{protein}
+					,  ALBUMIN = #{albumin}
+					,  CHOLESTERO = #{cholestero}
+					,  TRIGLYCERI = #{triglyceri}
+					,  ASTSGOT = #{astsgot}
+					,  ALTSGPT = #{altsgpt}
+					,  BUN = #{bun}
+					,  CREATININE = #{creatinine}
+					,  HBAIC = #{hbaic}
+					,  T3 = #{t3}
+					,  T4 = #{t4}
+					,  TSH = #{tsh}
+					,  MRIDIAG = #{mridiag}
+					,  PETDIAG = #{petdiag}
+					,  MODIFYUSID = #{userId}
+					,  MODIFYDATE = DATE_FORMAT(sysdate(), '%Y%m%d%h%i%s%p')
+					,  MRIID = #{mriid}
+					,  LDLCHOLE = #{ldlchole}
+					,  HDLCHOLE = #{hdlchole}
+				    ,  GLUCOSE = #{glucose}
+				    ,  mcv= #{mcv}
+					,  neutrophil= #{neutrophil}
+					,  lymphocyte= #{lymphocyte}
+					,  monocyte= #{monocyte}
+					,  eosinophil= #{eosinophil}
+					,  basophil= #{basophil}
+					,  luc= #{luc}
+					,  metal_cu= #{metalCu}
+					,  metal_zn= #{metalZn}
+					,  hba1c_ngsp= #{hba1cNgsp}
+					,  hba1c_ifcc= #{hba1cIfcc}
+					,  hba1c_eag= #{hba1cEag}
+					,  apoe1= #{apoe1}
+					,  apoe2= #{apoe2}
+					,  etc_test1= #{etcTest1}
+					,  etc_test2= #{etcTest2}
+					,  etc_test3= #{etcTest3}
+					,  etc_test4= #{etcTest4}
+					,  etc_test5= #{etcTest5}
+					,  etc_test6= #{etcTest6}
+					,  etc_test7= #{etcTest7}
+					,  etc_test8 = #{etcTest8}
+				 WHERE TESTDATE = #{testdate}
+				   AND OBJECT_IDX = #{objectIdx}
+				   AND 1=1
+	</update>
+	<insert id="insert_csbr4010_mb_testblod" parameterType="MbMriTestblodVO">
+		INSERT INTO mb_testblod (TESTDATE,OBJECT_IDX,REMARK,CHARTNO,HEIGHT,WEIGHT,ABO,BPRESSURE1,BPRESSURE2,BPRESSURE3,BPRESSURE4,WHITEBLOOD,REDBLOOD,THROMBOCYT,HEMOGLOBIN,HEMATOCRIT,WBCDIFF1,WBCDIFF2,WBCDIFF3,WBCDIFF4,WBCDIFF5,WBCDIFF6,PROTEIN,ALBUMIN,CHOLESTERO,TRIGLYCERI,ASTSGOT,ALTSGPT,BUN,CREATININE,HBAIC,T3,T4,TSH,MRIDIAG,PETDIAG,MODIFYUSID,MODIFYDATE,MRIID,LDLCHOLE,HDLCHOLE,GLUCOSE,mcv ,neutrophil ,lymphocyte ,monocyte ,eosinophil ,basophil ,luc ,metal_cu ,metal_zn ,hba1c_ngsp ,hba1c_ifcc ,hba1c_eag ,apoe1 ,apoe2 ,etc_test1 ,etc_test2 ,etc_test3 ,etc_test4 ,etc_test5 ,etc_test6 ,etc_test7 ,etc_test8)
+		VALUES(#{testdate},#{objectIdx},#{remark},'',#{height},#{weight},#{abo},#{bpressure1},#{bpressure2},#{bpressure3},#{bpressure4},#{whiteblood},#{redblood},#{thrombocyt},#{hemoglobin},#{hematocrit},#{wbcdiff1},#{wbcdiff2},#{wbcdiff3},#{wbcdiff4},#{wbcdiff5},#{wbcdiff6},#{protein},#{albumin},#{cholestero},#{triglyceri},#{astsgot},#{altsgpt},#{bun},#{creatinine},#{hbaic},#{t3},#{t4},#{tsh},#{mridiag},#{petdiag},#{userId},DATE_FORMAT(sysdate(), '%y%m%d%h%i%s%p'),#{mriid},#{ldlchole},#{hdlchole},#{glucose},#{mcv},#{neutrophil},#{lymphocyte},#{monocyte},#{eosinophil},#{basophil},#{luc},#{metalCu},#{metalZn},#{hba1cNgsp},#{hba1cIfcc},#{hba1cEag},#{apoe1},#{apoe2},#{etcTest1},#{etcTest2},#{etcTest3},#{etcTest4},#{etcTest5},#{etcTest6},#{etcTest7},#{etcTest8})
+	</insert>
+</mapper>
+

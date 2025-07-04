@@ -1,0 +1,1076 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CSBR70">
+
+	<select id="select_csbr7001_search" parameterType="HashMap" resultType="LinkedHashMap">
+		<![CDATA[
+		SELECT A.IDX OBJECT_IDX, A.NAME AS OBJECT_NAME, N.NUM SELECTION_NUM
+					 ,DATE_FORMAT(DM_01, '%Y-%m-%d') DM_01, DATE_FORMAT(B.TEST_DAY, '%Y-%m-%d') 선별검진
+					 ,DM_06,DM_10,DM_11
+			   ,DIA_01,DIA_02_CK01,DIA_02_CK02,DIA_02_CK03,DIA_02_CK08,DIA_02_CK09,DIA_02_CK07,DIA_02_CK07_TXT,DIA_03_CK,DIA_03_CK_TXT,DIA_04_TXT
+					 ,CDR_M,CDR_O,CDR_J,CDR_S,CDR_H,CDR_P,CDR_STEP
+			   ,CASE WHEN C.TEST_DAY IS NULL THEN 'N' ELSE 'Y' END '진단검진유무'
+					,DATE_FORMAT(C.TEST_DAY, '%Y-%m-%d') '진단검진날짜'
+					 ,F.MEMO
+				   ,Z.NAME TESTER
+				  from mb_object A
+				  JOIN mb_dummy N ON N.NUM <= 10
+				  JOIN mb_dm B ON A.IDX = B.OBJECT_IDX AND B.FLAG = 'U' AND N.num = B.SELECTION_NUM
+				  LEFT JOIN mb_dia C ON A.IDX = C.OBJECT_IDX AND C.FLAG = 'U' AND N.num = C.SELECTION_NUM
+				  LEFT JOIN mb_cdr D ON A.IDX = D.OBJECT_IDX AND D.FLAG = 'U' AND N.num = D.SELECTION_NUM
+				  LEFT JOIN mb_memo F ON A.IDX = F.OBJECT_IDX AND F.FLAG = 'U' AND N.num = F.SELECTION_NUM
+			  LEFT JOIN mb_subject Z ON Z.IDX = C.SUBJECT_IDX
+		 WHERE B.test_day >= #{sd}
+		   AND B.Test_day <= #{ed}
+		 ORDER BY OBJECT_NAME, SELECTION_NUM
+		 ]]>
+	</select>
+	
+	<select id="select_csbr7001_search2" parameterType="HashMap" resultType="LinkedHashMap">
+		<![CDATA[
+		SELECT A.IDX OBJECT_IDX, A.NAME AS OBJECT_NAME, N.NUM SELECTION_NUM
+					 ,DATE_FORMAT(DM_01, '%Y-%m-%d') DM_01, DATE_FORMAT(B.TEST_DAY, '%Y-%m-%d') AS SCREENING
+					 ,DM_06,DM_10,DM_11
+			   ,DIA_01,DIA_02_CK01,DIA_02_CK02,DIA_02_CK03,DIA_02_CK08,DIA_02_CK09,DIA_02_CK07,DIA_02_CK07_TXT,DIA_03_CK,DIA_03_CK_TXT,DIA_04_TXT
+					 ,CDR_M,CDR_O,CDR_J,CDR_S,CDR_H,CDR_P,CDR_STEP
+			   ,CASE WHEN C.TEST_DAY IS NULL THEN 'N' ELSE 'Y' END 'DIAGNOSTIC_SCREENING_YN'
+					,DATE_FORMAT(C.TEST_DAY, '%Y-%m-%d') 'DIAGNOSTIC_SCREENING_DATE'
+					 ,F.MEMO
+			   ,Z.NAME TESTER
+				  from mb_object A
+				  JOIN mb_dummy N ON N.NUM <= 10
+				  JOIN mb_dm B ON A.IDX = B.OBJECT_IDX AND B.FLAG = 'U' AND N.num = B.SELECTION_NUM
+				  LEFT JOIN mb_dia C ON A.IDX = C.OBJECT_IDX AND C.FLAG = 'U' AND N.num = C.SELECTION_NUM
+				  LEFT JOIN mb_cdr D ON A.IDX = D.OBJECT_IDX AND D.FLAG = 'U' AND N.num = D.SELECTION_NUM
+				  LEFT JOIN mb_memo F ON A.IDX = F.OBJECT_IDX AND F.FLAG = 'U' AND N.num = F.SELECTION_NUM
+			  LEFT JOIN mb_subject Z ON Z.IDX = C.SUBJECT_IDX
+		 WHERE B.test_day >= #{sd}
+		   AND B.Test_day < #{ed}
+		 ORDER BY OBJECT_NAME, SELECTION_NUM
+		 ]]>
+	</select>
+
+	<select id="select_csbr7003_search" resultType="LinkedHashMap">
+		<![CDATA[
+		SELECT AGE
+			   , SUM(CASE WHEN GENDER = '1' THEN TOTAL ELSE 0 END) M
+			   , SUM(CASE WHEN GENDER = '2' THEN TOTAL ELSE 0 END) F
+			 , SUM(CASE WHEN GENDER = '1' THEN CNT ELSE 0 END) CNT_M
+			 , SUM(CASE WHEN GENDER = '2' THEN CNT ELSE 0 END) CNT_F
+		  FROM (
+				  SELECT AGE
+					 , GENDER
+					 , ROUND(SUM(TOTAL) / COUNT(*),1) TOTAL
+			   , COUNT(*) CNT
+				  FROM mb_mmse A
+				  JOIN mb_object O ON A.OBJECT_IDX = O.IDX
+				 WHERE A.FLAG = 'U'
+			   AND O.AGE >= 60
+				 GROUP BY AGE, GENDER
+				)A
+		 GROUP BY AGE
+		 ORDER BY AGE
+		 ]]>
+	</select>
+
+	<select id="select_count_csbr7004_mb_specimhd" resultType="int">
+		SELECT count(o.name)
+		  FROM mb_specimhd a
+		  JOIN mb_specimdt b on a.specdate = b.specdate and a.object_idx = b.object_idx
+		  JOIN mb_object o ON o.idx = a.object_idx
+		  LEFT JOIN mb_subject s ON s.id = a.modifyusid
+	</select>
+
+	<select id="select_csbr7004_search" parameterType="String" resultType="LinkedHashMap">
+		SELECT o.name as object_name, s.name as subject_name, a.*, b.*
+		  FROM mb_specimhd a
+		  JOIN mb_specimdt b on a.specdate = b.specdate and a.object_idx = b.object_idx
+		  JOIN mb_object o ON o.idx = a.object_idx
+		  LEFT JOIN mb_subject s ON s.id = a.modifyusid
+		 ORDER BY a.specdate, a.object_idx, b.spdtsqno
+		 <if test="value != null and value != '' ">
+		 	${value}
+		 </if>
+
+	</select>
+
+	<select id="select_count_csbr7005_mb_object" parameterType="HashMap" resultType="int">
+		<![CDATA[
+		SELECT count(a.OBJECT_IDX)
+		  FROM (
+				SELECT A.IDX OBJECT_IDX
+				  from mb_object A
+				  JOIN mb_dummy N ON N.NUM <= 10
+				  JOIN mb_dm B ON A.IDX = B.OBJECT_IDX AND B.FLAG = 'U' AND N.num = B.SELECTION_NUM
+				 WHERE B.test_day >= #{sd}
+				   AND B.Test_day < #{ed}
+			) a
+		]]>
+	</select>
+
+	<select id="select_csbr7005_search" parameterType="HashMap" resultType="LinkedHashMap">
+
+		SELECT a.OBJECT_IDX, OBJECT_NAME, SELECTION_NUM, a.TEST_DAY
+			  ,DM_04,DM_11,DM_06,DM_10,DM_13
+			  , ROUND(CASE WHEN (a.TOTAL - ifnull(X.MEAN,a.TOTAL))/ifnull(X.SD,1) > 0 THEN FLOOR((a.TOTAL - ifnull(X.MEAN,a.TOTAL))/ifnull(X.SD,1)*100)/100
+					  ELSE CEIL((a.TOTAL - ifnull(X.MEAN,a.TOTAL))/ifnull(X.SD,1)*100)/100 END,2) AS STANDARD
+			  ,MH_10_P,MH_14_P,MH_06_N,MH_07_N,MH_08_N,MH_13_N,MH_14_N,MH_18_N
+			,S_A_02,DG_03_9,DG_03_10,MH_04_N,MH_05_N,MH_09_P
+			  ,GDS_TOTAL, KDSQ_TOTAL, KIADL_KSCORE, REMARK
+		  FROM (
+				SELECT A.IDX OBJECT_IDX, A.NAME AS OBJECT_NAME, N.NUM SELECTION_NUM
+					  ,DATE_FORMAT(B.TEST_DAY, '%Y-%m-%d') TEST_DAY
+					  ,DM_04,DM_11,DM_06,DM_10,DM_13
+					  ,MH_10_P,MH_14_P,MH_06_N,MH_07_N,MH_08_N,MH_13_N,MH_14_N,MH_18_N
+				,CASE WHEN length(S_A_02_C) > 0 THEN CONCAT(S_A_02_A,' X ',S_A_02_B,' = ',S_A_02_C) ELSE S_A_02 END S_A_02
+				,DG_03_9,DG_03_10,MH_04_N,MH_05_N,MH_09_P
+					  ,GDS_TOTAL, KDSQ_TOTAL, KIADL_KSCORE, J.REMARK
+					  , (YEAR(K.TEST_DAY)-YEAR(CONCAT(BIRTH1,LPAD(BIRTH2,2,'0'),CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END))
+					  - (RIGHT(DATE_FORMAT(K.TEST_DAY,'%Y%m%d'),4) <![CDATA[ < ]]> RIGHT(CONCAT(BIRTH1,LPAD(BIRTH2,2,'0'),CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END),4))) AGE
+					  , EDU, GENDER
+					  ,mmse_kind, mmse_num, total
+				  from mb_object A
+				  JOIN mb_dummy N ON N.NUM <![CDATA[ <= ]]> 10
+				  JOIN mb_dm B ON A.IDX = B.OBJECT_IDX AND B.FLAG = 'U' AND N.num = B.SELECTION_NUM
+				  LEFT JOIN mb_dg D ON A.IDX = D.OBJECT_IDX AND D.FLAG = 'U' AND N.num = D.SELECTION_NUM
+				  LEFT JOIN mb_mh E ON A.IDX = E.OBJECT_IDX AND E.FLAG = 'U' AND N.num = E.SELECTION_NUM
+				  LEFT JOIN mb_sh F ON A.IDX = F.OBJECT_IDX AND F.FLAG = 'U' AND N.num = F.SELECTION_NUM
+				  LEFT JOIN mb_gds G ON A.IDX = G.OBJECT_IDX AND G.FLAG = 'U' AND N.Num = G.SELECTION_NUM
+				  LEFT JOIN mb_kdsq H ON A.IDX = H.OBJECT_IDX AND H.FLAG = 'U' AND N.Num = H.SELECTION_NUM
+				  LEFT JOIN mb_kiadl I ON A.IDX = I.OBJECT_IDX AND I.FLAG = 'U' AND N.Num = I.SELECTION_NUM
+				  LEFT JOIN mb_remark J ON A.IDX = J.OBJECT_IDX AND J.FLAG = 'U' AND N.Num = J.SELECTION_NUM
+				  LEFT JOIN mb_mmse K ON A.IDX = K.OBJECT_IDX AND K.FLAG = 'U' AND N.NUM = K.MMSE_NUM
+				 WHERE B.test_day <![CDATA[ >= ]]> #{sd}
+				   AND B.Test_day <![CDATA[ <= ]]> #{ed}
+			) a
+		   LEFT JOIN mb_mmse_nor X
+				  ON X.MMSE_KIND = a.MMSE_KIND
+				 aND X.GENDER = CaSE WHEN a.MMSE_KIND IN ('1','3') aND a.GENDER = '1' THEN 'M'
+									 WHEN a.MMSE_KIND IN ('1','3') aND a.GENDER = '2' THEN 'F'  ELSE X.GENDER END
+				 aND a.EDU BETWEEN X.EDU_MIN aND X.EDU_MaX
+				 aND CASE WHEN a.MMSE_KIND = '2' aND a.aGE <![CDATA[ < ]]> 45 THEN 45
+						  WHEN a.MMSE_KIND IN ('1','3') AND a.AGE  <![CDATA[ < ]]> 60 THEN 60
+						  ELSE a.AGE END BETWEEN X.AGE_MIN aND X.AGE_MAX
+		 ORDER BY OBJECT_NAME, SELECTION_NUM
+		 ${limitQuery}
+
+	</select>
+
+	<select id="select_count_csbr7006_mb_object" resultType="int">
+		<![CDATA[
+		SELECT count(A.IDX)
+				  from mb_object A
+				  JOIN mb_dummy N ON N.NUM <= 2
+				  JOIN mb_dm B ON A.IDX = B.OBJECT_IDX AND B.FLAG = 'U' AND N.num = B.SELECTION_NUM
+				 WHERE EXISTS (SELECT *
+								 FROM mb_dm x
+								WHERE x.object_idx = A.idx
+								  AND x.FLAG = 'U'
+						)
+		]]>
+	</select>
+
+	<select id="select_csbr7006_search" parameterType="String" resultType="LinkedHashMap">
+		<![CDATA[
+		SELECT OBJECT_IDX,OBJECT_NAME, SELECTION_NUM, DM_01
+			 , SNSB_TEST_DATE, MRI_TEST_DATE, DIA_TEST_DATE
+			 , DM_06, DM_10, DM_11
+			 , ROUND(CASE WHEN (a.TOTAL - ifnull(X.MEAN,a.TOTAL))/ifnull(X.SD,1) > 0 THEN FLOOR((a.TOTAL - ifnull(X.MEAN,a.TOTAL))/ifnull(X.SD,1)*100)/100
+					  ELSE CEIL((a.TOTAL - ifnull(X.MEAN,a.TOTAL))/ifnull(X.SD,1)*100)/100 END,2) AS MMSE_STANDARD
+			 ,DIA_01,DIA_02_CK01,DIA_02_CK02,DIA_02_CK03,DIA_02_CK07,DIA_02_CK07_TXT,DIA_02_CK08,DIA_02_CK09,DIA_03_CK,DIA_03_CK_TXT,DIA_04_TXT
+			 ,CDR_M,CDR_O,CDR_J,CDR_S,CDR_H,CDR_P,CDR_STEP
+			 ,MEMO
+			 ,TESTER
+		  FROM (
+				SELECT A.IDX	OBJECT_IDX, A.NAME AS OBJECT_NAME
+					 , B.SELECTION_NUM, B.DM_01
+					 , IFNULL(S.SNSB_DATE,'')	SNSB_TEST_DATE
+					 , IFNULL(M.MRI_DATE,'') 	MRI_TEST_DATE
+					 , IFNULL(C.TEST_DAY,'')	DIA_TEST_DATE
+					 , B.DM_06, B.DM_10, B.DM_11
+			   ,DIA_01,DIA_02_CK01,DIA_02_CK02,DIA_02_CK03,DIA_02_CK07,DIA_02_CK07_TXT,DIA_02_CK08,DIA_02_CK09,DIA_03_CK,DIA_03_CK_TXT,DIA_04_TXT
+					 ,CDR_M,CDR_O,CDR_J,CDR_S,CDR_H,CDR_P,CDR_STEP
+					 ,F.MEMO
+					 ,Z.NAME TESTER
+					 , (YEAR(K.TEST_DAY)-YEAR(CONCAT(BIRTH1,LPAD(BIRTH2,2,'0'),CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END))
+					  - (RIGHT(DATE_FORMAT(K.TEST_DAY,'%Y%m%d'),4)<RIGHT(CONCAT(BIRTH1,LPAD(BIRTH2,2,'0'),CASE WHEN BIRTH3='' THEN '01' ELSE BIRTH3 END),4))) AGE
+					  , EDU, GENDER
+					  ,mmse_kind, mmse_num, total
+				  from mb_object A
+				  JOIN mb_dummy N ON N.NUM <= 2
+				  JOIN mb_dm B ON A.IDX = B.OBJECT_IDX AND B.FLAG = 'U' AND N.num = B.SELECTION_NUM
+				  LEFT JOIN mb_dia C ON A.IDX = C.OBJECT_IDX AND C.FLAG = 'U' AND N.num = C.SELECTION_NUM
+				  LEFT JOIN mb_subject Z ON Z.IDX = C.SUBJECT_IDX
+				  LEFT JOIN mb_cdr D ON A.IDX = D.OBJECT_IDX AND D.FLAG = 'U' AND N.num = D.SELECTION_NUM
+				  LEFT JOIN mb_memo F ON A.IDX = F.OBJECT_IDX AND F.FLAG = 'U' AND N.num = F.SELECTION_NUM
+				  LEFT JOIN mb_mmse K ON A.IDX = K.OBJECT_IDX AND K.FLAG = 'U' AND N.NUM = K.MMSE_NUM
+				  LEFT JOIN mb_snsb S ON A.IDX = S.object_idx AND S.FLAG = 'U' AND N.num = S.SELECTION_NUM
+				  LEFT JOIN mb_mri1 M ON A.IDX = M.object_idx AND M.FLAG = 'U' AND N.num = M.SELECTION_NUM
+				 WHERE EXISTS (SELECT *
+								 FROM mb_dm x
+								WHERE x.object_idx = A.idx
+								  AND x.FLAG = 'U'
+								  AND x.selection_num = 2)
+				) a
+		   LEFT JOIN mb_mmse_nor X
+				  ON X.MMSE_KIND = a.MMSE_KIND
+				 aND X.GENDER = CaSE WHEN a.MMSE_KIND IN ('1','3') aND a.GENDER = '1' THEN 'M'
+									 WHEN a.MMSE_KIND IN ('1','3') aND a.GENDER = '2' THEN 'F'  ELSE X.GENDER END
+				 aND a.EDU BETWEEN X.EDU_MIN aND X.EDU_MaX
+				 aND CASE WHEN a.MMSE_KIND = '2' aND a.aGE < 45 THEN 45
+						  WHEN a.MMSE_KIND IN ('1','3') AND a.AGE  < 60 THEN 60
+						  ELSE a.AGE END BETWEEN X.AGE_MIN aND X.AGE_MAX
+		 ORDER BY OBJECT_NAME, SELECTION_NUM
+		 ]]>
+		 <if test="value != null and value != '' ">
+		 	${value}
+		 </if>
+
+	</select>
+
+	<select id="select_csbr7007_search" parameterType="HashMap" resultType="LinkedHashMap">
+		SELECT A.IDX OBJECT_IDX
+				  ,A.NAME AS OBJECT_NAME
+				  ,Y.idx  SUBJECT_IDX
+				  ,Y.NAME SUBJECT_NAME
+				  ,N.NUM SELECTION_NUM
+				  ,DATE_FORMAT(DM_01, '%Y-%m-%d') DM_01
+				  ,DATE_FORMAT(B.TEST_DAY, '%Y-%m-%d') TEST_DAY
+				  ,DM_06
+				  ,DM_10
+				  ,DM_11
+				  ,CASE WHEN B.TEST_DAY IS NULL THEN 'N' ELSE 'Y' END '선별검진유무'
+				  ,DATE_FORMAT(B.TEST_DAY, '%Y-%m-%d') '선별검진날짜'
+				  ,CASE WHEN I.TEST_DAY IS NULL THEN 'N' ELSE 'Y' END '정밀검진유무'
+				  ,DATE_FORMAT(I.TEST_DAY, '%Y-%m-%d') '정밀검진날짜'
+				  ,J.MRIID
+				  ,CASE WHEN IFNULL(J.MRIYN,'0') = '1' THEN 'Y' ELSE 'N' END 'MRI촬영여부'
+				  ,J.RESEDATE AS 'MRI촬영일자'
+				  ,K.BLOODID
+				  ,CASE WHEN IFNULL(J.BLOODYN,'0') = '1' THEN 'Y' ELSE 'N' END '혈액채취여부'
+				  ,J.RESEDATE AS '혈액채취일자'
+				  ,CASE WHEN H.TESTDATE IS NULL THEN 'N' ELSE 'Y' END '혈액채취검진유무'
+				  ,DATE_FORMAT(H.TESTDATE, '%Y-%m-%d') '혈액채취검진날짜'
+				  ,CASE WHEN C.TEST_DAY IS NULL THEN 'N' ELSE 'Y' END '진단검진유무'
+				  ,DATE_FORMAT(C.TEST_DAY, '%Y-%m-%d') '진단검진날짜'
+				  ,DIA_01
+				  ,CASE WHEN G.TEST_DAY IS NULL THEN 'N' ELSE 'Y' END 'MRI검진유무'
+				  ,DATE_FORMAT(G.TEST_DAY, '%Y-%m-%d') 'MRI검진날짜'
+				  FROM mb_object A
+				  JOIN mb_dummy N ON N.NUM <![CDATA[ <= ]]> 10
+				  JOIN mb_dm B ON A.IDX = B.OBJECT_IDX AND B.FLAG = 'U' AND N.num = B.SELECTION_NUM
+			  LEFT JOIN mb_dia C ON A.IDX = C.OBJECT_IDX AND C.FLAG = 'U' AND N.num = C.SELECTION_NUM
+			  LEFT JOIN mb_cdr D ON A.IDX = D.OBJECT_IDX AND D.FLAG = 'U' AND N.num = D.SELECTION_NUM
+			  LEFT JOIN mb_memo F ON A.IDX = F.OBJECT_IDX AND F.FLAG = 'U' AND N.num = F.SELECTION_NUM
+			  LEFT JOIN mb_subject Y ON Y.IDX = C.SUBJECT_IDX
+			  LEFT JOIN mb_mri1 G ON A.IDX = G.object_idx AND G.FLAG = 'U' AND N.num = G.SELECTION_NUM
+			  LEFT JOIN mb_testblod H ON A.IDX = H.object_idx AND H.TESTDATE = DATE_FORMAT(G.TEST_DAY, '%Y%m%d')
+			  LEFT JOIN mb_c1 I ON A.IDX = I.object_idx AND I.FLAG = 'U' AND N.num = I.SELECTION_NUM
+			  LEFT JOIN mb_resemri J ON A.IDX = J.object_idx AND N.num = J.SELECTION_NUM
+			  LEFT JOIN mb_specimhd K ON K.object_idx = J.object_idx AND K.specdate = J.resedate
+		  WHERE B.test_day <![CDATA[ >= ]]> #{sd}
+		   AND B.Test_day <![CDATA[ <= ]]> #{ed}
+		 ORDER BY SELECTION_NUM,OBJECT_NAME
+
+	</select>
+
+	<select id="select_count_csbr7008_mb_snsb" parameterType="HashMap" resultType="int">
+		select count(a.object_idx)
+			 from mb_snsb a
+			 JOIN mb_object o on o.idx = a.object_idx
+			LEFT JOIN mb_snsb2data_excel1 b ON a.snsb_unum = b.unum
+			LEFT JOIN mb_snsb2data_excel2 c ON a.snsb_unum = c.unum
+			where flag = 'U'
+			and snsb_date between #{sd} and #{ed}
+	</select>
+
+	<select id="select_csbr7008_search" parameterType="HashMap" resultType="LinkedHashMap">
+		select a.object_idx, o.name, selection_num, DATE_FORMAT(snsb_date,  '%Y-%m-%d') snsb_date, a.snsb_unum
+			,Digit_span_Forward,Digit_span_Forward_z,Digit_span_Forward_p,Digit_span_Backward,Digit_span_Backward_z,Digit_span_Backward_p
+		,Rey_CFT_copy_score,Rey_CFT_copy_score_z,Rey_CFT_copy_score_p,SVLT_recall_trial1,SVLT_recall_trial2,SVLT_recall_trial3
+		,SVLT_recall_total_score,SVLT_recall_total_score_p,SVLT_recall_total_score_z,SVLT_Delayed_recall,SVLT_Delayed_recall_p
+		,SVLT_Delayed_recall_z,SVLT_recognition_score,SVLT_recognition_score_p,SVLT_recognition_score_z,RCFT_immediate_recall
+		,RCFT_immediate_recall_p,RCFT_immediate_recall_z,RCFT_delayed_recall,RCFT_delayed_recall_p,RCFT_delayed_recall_z
+		,RCFT_recognition_score,RCFT_recognition_score_p,RCFT_recognition_score_z,COWAT_animal,COWAT_animal_p,COWAT_animal_z
+		,StroopTest_Wordreading_Time_per_item,StroopTest_Wordreading_Time_per_item_p,StroopTest_Wordreading_Time_per_item_z
+		,StroopTest_Colorreading_correct,StroopTest_Colorreading_correct_p,StroopTest_Colorreading_correct_z,K_MMSE_total_score
+		,K_MMSE_total_score_p,K_MMSE_total_score_z,Naming_S_K_BNT,Naming_S_K_BNT_z,Naming_S_K_BNT_p
+		,DSC_correct,DSC_correct_p,DSC_correct_z,K_TMT_E_A_success,K_TMT_E_A_time,K_TMT_E_A_time_p,K_TMT_E_A_time_z,K_TMT_E_B_success
+		,K_TMT_E_B_time,K_TMT_E_B_time_p,K_TMT_E_B_time_z,SNSB_II_Domain_Attention,SNSB_II_Domain_Attention_p,SNSB_II_Domain_Attention_z
+		, FORMAT(SNSB_II_Domain_Language, 2)    AS SNSB_II_Domain_Language,   SNSB_II_Domain_Language_p,    SNSB_II_Domain_Language_z
+		, FORMAT(SNSB_II_Domain_Visuospatial, 2) AS SNSB_II_Domain_Visuospatial, SNSB_II_Domain_Visuospatial_p, SNSB_II_Domain_Visuospatial_z
+		, FORMAT(SNSB_II_Domain_Memory, 2)      AS SNSB_II_Domain_Memory,     SNSB_II_Domain_Memory_p,      SNSB_II_Domain_Memory_z
+		, FORMAT(SNSB_II_Domain_Frontal, 2)        AS SNSB_II_Domain_Frontal,       SNSB_II_Domain_Frontal_p,        SNSB_II_Domain_Frontal_z
+		, a.LM_TEST_I_A AS LM_I_A , a.LM_TEST_I_B AS LM_I_B, (a.LM_TEST_I_A + a.LM_TEST_I_B) AS LM_I_TOTAL
+        , a.LM_TEST_II_A AS LM_II_A, a.LM_TEST_II_B AS LM_II_B, (a.LM_TEST_II_A + a.LM_TEST_II_B) AS LM_II_TOTAL
+        , a.LM_TEST_RECOG AS LM_Recog
+			 from mb_snsb a
+			 JOIN mb_object o on o.idx = a.object_idx
+			LEFT JOIN mb_snsb2data_excel1 b ON a.snsb_unum = b.unum
+			LEFT JOIN mb_snsb2data_excel2 c ON a.snsb_unum = c.unum
+			where flag = 'U'
+			and snsb_date between #{sd} and #{ed}
+			${limit_query}
+	</select>
+
+	<select id="select_count_csbr7009_mb_dm" parameterType="HashMap" resultType="int">
+		SELECT count(A.IDX)
+		  FROM mb_dm B
+		  JOIN mb_object A ON A.IDX = B.OBJECT_IDX
+		  LEFT JOIN mb_mmse M ON M.object_idx = B.object_idx AND M.mmse_num	= B.selection_num AND M.Flag = 'U'
+		  LEFT JOIN mb_kdsq N ON N.object_idx = B.object_idx AND N.selection_num = B.selection_num AND N.Flag = 'U'
+		  LEFT JOIN mb_kdsqv L ON L.object_idx = B.object_idx AND L.selection_num = B.selection_num AND L.Flag = 'U'
+		  LEFT JOIN mb_smcq O ON O.object_idx = B.object_idx AND O.selection_num = B.selection_num AND O.Flag = 'U'
+		  LEFT JOIN mb_gds P ON P.object_idx = B.object_idx AND P.selection_num = B.selection_num AND P.Flag = 'U'
+		  LEFT JOIN mb_kiadl Q ON Q.object_idx = B.object_idx AND Q.selection_num = B.selection_num AND Q.Flag = 'U'
+		  LEFT JOIN mb_dia C ON B.object_idx = C.OBJECT_IDX AND C.FLAG = 'U' AND B.SELECTION_NUM = C.SELECTION_NUM
+		  LEFT JOIN mb_cdr D ON B.object_idx = D.OBJECT_IDX AND D.FLAG = 'U' AND B.SELECTION_NUM = D.SELECTION_NUM
+		  LEFT JOIN mb_memo F ON B.object_idx = F.OBJECT_IDX AND F.FLAG = 'U' AND B.SELECTION_NUM = F.SELECTION_NUM
+		   WHERE B.test_day <![CDATA[ >= ]]> #{sd}
+		     AND B.Test_day <![CDATA[ < ]]> #{ed}
+			 AND B.FLAG = 'U'
+	</select>
+
+	<select id="select_csbr7009_search" parameterType="HashMap" resultType="LinkedHashMap">
+		SELECT A.IDX OBJECT_IDX, A.NAME AS '환자이름'
+				   , CONCAT(A.Jumin1,'-', A.JUMIN2,A.JUMIN3) AS '주민번호'
+				 , CASE WHEN A.gender = '1' THEN 'M' ELSE 'F' END '성별'
+				 , CONCAT(A.BIRTH1,A.BIRTH2,A.BIRTH3) '실제생일'
+				 , DATE_FORMAT(DM_01, '%Y-%m-%d') '선별검진일'
+				 , B.SELECTION_NUM '차수'
+				 , M.total	AS 'K-MMSE'
+				 , N.kdsq_total AS 'KDSQ'
+				 , L.kdsqv_total AS 'KDSQ-V'
+				 , O.smcq_total AS 'SMCQ'
+				 , P.gds_total	AS 'GDS-K'
+				 , CONCAT(Q.KIADL_TOTAL,'/',Q.KIADL_KSCORE) AS 'K-IADLsc'
+				 , DATE_FORMAT(D.test_day, '%Y-%m-%d') 'CDR검진일'
+				 , D.CDR_STEP CDR
+				 , DATE_FORMAT(C.test_day, '%Y-%m-%d') '진단검진일'
+				 , CASE C.Dia_01 WHEN '1' THEN '인지적 정상' WHEN '2' THEN '치매고위험' WHEN '3' THEN '치매' WHEN '4' THEN '기타' ELSE '' END '진단분류1'
+				 , CONCAT(
+				   CASE WHEN C.dia_02_ck01 = '1' THEN ' 퇴행성 치매위험' ELSE '' END
+				 , CASE WHEN C.dia_02_ck02 = '1' THEN ' 혈관성 치매 위험' ELSE '' END
+				 , CASE WHEN C.dia_02_ck03 = '1' THEN ' 우울증 관련 인지저하' ELSE '' END
+				 , CASE WHEN C.dia_02_ck04 = '1'
+						THEN CONCAT(' 기타 내과 질환 관련 인지저하',
+									CASE WHEN length(C.dia_02_ck04_txt) > 0 THEN concat('(',C.dia_02_ck04_txt,')') ELSE '' END )
+						ELSE '' END
+				 , CASE WHEN C.dia_02_ck05 = '1'
+						THEN CONCAT(' 기타 뇌 지로한/손상 관련 인지저하',
+									CASE WHEN length(C.dia_02_ck05_txt) > 0 THEN concat('(',C.dia_02_ck05_txt,')') ELSE '' END )
+						ELSE '' END
+				 , CASE WHEN C.dia_02_ck06 = '1'
+						THEN CONCAT(' 물질, 약물 관련 인지저하',
+									CASE WHEN length(C.dia_02_ck06_txt) > 0 THEN concat('(',C.dia_02_ck06_txt,')') ELSE '' END )
+						ELSE '' END
+				 , CASE WHEN C.dia_02_ck07 = '1'
+						THEN CONCAT(' 기타',
+									CASE WHEN length(C.dia_02_ck07_txt) > 0 THEN concat('(',C.dia_02_ck07_txt,')') ELSE '' END )
+						ELSE '' END
+				 , CASE C.dia_03_ck WHEN '1' THEN '알쯔하이머병'
+									WHEN '2' THEN '혈관성 치매'
+									WHEN '3' THEN '루이체 치매'
+									WHEN '4' THEN '전측두엽 치매'
+									WHEN '5' THEN '정상압 뇌수두증'
+									WHEN '6' THEN '갑사성 기능저하'
+									WHEN '7' THEN '경막하 혈종'
+									WHEN '8' THEN '물질, 약물'
+									WHEN '9' THEN '주요 우울증'
+									WHEN '10' THEN '파킨스병'
+									WHEN '11' THEN concat('기타원인', '(', dia_03_ck_txt,')')
+						ELSE '' END
+				 , CASE WHEN length(C.dia_04_txt) > 0 THEN C.dia_04_txt ELSE '' END) AS '진단분류2'
+				,F.MEMO   AS 'REMARK'
+		  FROM mb_dm B
+		  JOIN mb_object A ON A.IDX = B.OBJECT_IDX
+		  LEFT JOIN mb_mmse M ON M.object_idx = B.object_idx AND M.mmse_num	= B.selection_num AND M.Flag = 'U'
+		  LEFT JOIN mb_kdsq N ON N.object_idx = B.object_idx AND N.selection_num = B.selection_num AND N.Flag = 'U'
+		  LEFT JOIN mb_kdsqv L ON L.object_idx = B.object_idx AND L.selection_num = B.selection_num AND L.Flag = 'U'
+		  LEFT JOIN mb_smcq O ON O.object_idx = B.object_idx AND O.selection_num = B.selection_num AND O.Flag = 'U'
+		  LEFT JOIN mb_gds P ON P.object_idx = B.object_idx AND P.selection_num = B.selection_num AND P.Flag = 'U'
+		  LEFT JOIN mb_kiadl Q ON Q.object_idx = B.object_idx AND Q.selection_num = B.selection_num AND Q.Flag = 'U'
+		  LEFT JOIN mb_dia C ON B.object_idx = C.OBJECT_IDX AND C.FLAG = 'U' AND B.SELECTION_NUM = C.SELECTION_NUM
+		  LEFT JOIN mb_cdr D ON B.object_idx = D.OBJECT_IDX AND D.FLAG = 'U' AND B.SELECTION_NUM = D.SELECTION_NUM
+		  LEFT JOIN mb_memo F ON B.object_idx = F.OBJECT_IDX AND F.FLAG = 'U' AND B.SELECTION_NUM = F.SELECTION_NUM
+		   WHERE B.test_day <![CDATA[ >= ]]> #{sd}
+		     AND B.Test_day <![CDATA[ <= ]]> #{ed}
+			 AND B.FLAG = 'U'
+		   ORDER BY 환자이름, 차수
+		   ${limit_query}
+	</select>
+
+	<select id="select_count_csbr7010_mb_object" parameterType="HashMap" resultType="int">
+		SELECT  count(DM.`subject_idx`)
+		  FROM mb_object A
+		  JOIN mb_dummy N ON N.NUM <![CDATA[ <= ]]> 10
+		  JOIN mb_dm DM ON A.IDX = DM.OBJECT_IDX AND DM.FLAG = 'U' AND N.num = DM.SELECTION_NUM
+		WHERE DM.test_day <![CDATA[ >= ]]> #{sd}
+		   AND DM.Test_day <![CDATA[ < ]]> #{ed}
+	</select>
+
+	<select id="select_csbr7010_search" parameterType="HashMap" resultType="LinkedHashMap">
+		SELECT  DM.`subject_idx`,
+				DM.`object_idx`,
+				DM.`selection_num` dm_selection_num,
+				DM.`dm_01`,
+				DM.`dm_02`,
+				DM.`dm_03`,
+				DM.`dm_04`,
+				DM.`dm_05`,
+				DM.`dm_06`,
+				DM.`dm_07`,
+				DM.`dm_08`,
+				DM.`dm_09`,
+				DM.`dm_10`,
+				DM.`dm_11`,
+				DM.`dm_12`,
+				DM.`dm_13`,
+				DM.`dm_14`,
+				DM.`dm_15`,
+				DM.`dm_16`,
+				DM.`dm_17`,
+				DM.`dm_18`,
+				DM.`dm_19`,
+				DM.`dm_20`,
+				DM.`dm_21`,
+				DM.`dm_22`,
+				DM.`dm_23`,
+				DM.`dm_24`,
+				DM.`dm_25`,
+				DM.`dm_26`,
+				DM.`dm_27`,
+				DM.`dm_28`,
+				DM.`test_day` dm_test_day,
+				AH.`selection_num` ah_selection_num,
+				AH.`o_01`,
+				AH.`o_02_reason`,
+				AH.`o_02_year`,
+				AH.`o_02_season`,
+				AH.`test_day` ah_test_day,
+			DG.`selection_num` dg_selection_num,
+				DG.`dg_01`,
+				DG.`dg_02`,
+				DG.`dg_03_1`,
+				DG.`dg_03_2`,
+				DG.`dg_03_3`,
+				DG.`dg_03_4`,
+				DG.`dg_03_5`,
+				DG.`dg_03_6`,
+				DG.`dg_03_7`,
+				DG.`dg_03_8`,
+				DG.`dg_03_9`,
+				DG.`dg_03_10`,
+				DG.`dg_03_11`,
+				DG.`dg_03_12`,
+				DG.`dg_03_13`,
+				DG.`dg_03_14`,
+				DG.`dg_03_15`,
+			DG.`dg_04`,
+				DG.`test_day` dg_test_day,
+				FH.`selection_num` fh_selection_num,
+				FH.`f_01`,
+				FH.`f_02`,
+				FH.`f_03`,
+				FH.`f_04`,
+				FH.`test_day` fh_test_day,
+			GDS.`selection_num` gds_selection_num,
+				GDS.`gds_01`,
+				GDS.`gds_02`,
+				GDS.`gds_03`,
+				GDS.`gds_04`,
+				GDS.`gds_05`,
+				GDS.`gds_06`,
+				GDS.`gds_07`,
+				GDS.`gds_08`,
+				GDS.`gds_09`,
+				GDS.`gds_10`,
+				GDS.`gds_11`,
+				GDS.`gds_12`,
+				GDS.`gds_13`,
+				GDS.`gds_14`,
+				GDS.`gds_15`,
+				GDS.`gds_16`,
+				GDS.`gds_17`,
+				GDS.`gds_18`,
+				GDS.`gds_19`,
+				GDS.`gds_20`,
+				GDS.`gds_21`,
+				GDS.`gds_22`,
+				GDS.`gds_23`,
+				GDS.`gds_24`,
+				GDS.`gds_25`,
+				GDS.`gds_26`,
+				GDS.`gds_27`,
+				GDS.`gds_28`,
+				GDS.`gds_29`,
+				GDS.`gds_30`,
+				GDS.`gds_total`,
+				GDS.`test_day` gds_test_day,
+			KDSQ.`selection_num` kdsq_selection_num,
+				KDSQ.`kdsq_01`,
+				KDSQ.`kdsq_02`,
+				KDSQ.`kdsq_03`,
+				KDSQ.`kdsq_04`,
+				KDSQ.`kdsq_05`,
+				KDSQ.`kdsq_06`,
+				KDSQ.`kdsq_07`,
+				KDSQ.`kdsq_08`,
+				KDSQ.`kdsq_09`,
+				KDSQ.`kdsq_10`,
+				KDSQ.`kdsq_11`,
+				KDSQ.`kdsq_12`,
+				KDSQ.`kdsq_13`,
+				KDSQ.`kdsq_14`,
+				KDSQ.`kdsq_15`,
+				KDSQ.`kdsq_total`,
+				KDSQ.`test_day` kdsq_test_day,
+			KDSQV.`selection_num` kdsqv_selection_num,
+				KDSQV.`kdsqv_01`,
+				KDSQV.`kdsqv_02`,
+				KDSQV.`kdsqv_03`,
+				KDSQV.`kdsqv_04`,
+				KDSQV.`kdsqv_05`,
+				KDSQV.`kdsqv_total`,
+				KDSQV.`test_day` kdsqv_test_day,
+			KIADL.`selection_num` kiadl_selection_num,
+				KIADL.`kiadl_01`,
+				KIADL.`kiadl_02`,
+				KIADL.`kiadl_03`,
+				KIADL.`kiadl_04`,
+				KIADL.`kiadl_05`,
+				KIADL.`kiadl_06`,
+				KIADL.`kiadl_07`,
+				KIADL.`kiadl_08`,
+				KIADL.`kiadl_09`,
+				KIADL.`kiadl_10`,
+				KIADL.`kiadl_11`,
+				KIADL.`kiadl_total`,
+				KIADL.`test_day` kiadl_test_day,
+			MB.`selection_num` mb_selection_num,
+				MB.`b_01`,
+				MB.`b_02`,
+				MB.`b_03`,
+				MB.`b_04`,
+				MB.`b_05`,
+				MB.`b_06`,
+				MB.`b_07`,
+				MB.`b_08`,
+			MB.`test_day`mb_test_day,
+			MH.`selection_num` mh_selection_num,
+				MH.`mh_01_p`,
+				MH.`mh_01_a_p`,
+				MH.`mh_01_b_p`,
+				MH.`mh_01_c_p`,
+				MH.`mh_01_d_p`,
+				MH.`mh_01_e_p`,
+				MH.`mh_06_p`,
+				MH.`mh_07_p`,
+				MH.`mh_08_p`,
+				MH.`mh_09_p`,
+				MH.`mh_10_p`,
+				MH.`mh_11_p`,
+				MH.`mh_12_p`,
+				MH.`mh_13_p`,
+				MH.`mh_14_p`,
+				MH.`mh_15_p`,
+				MH.`mh_16_p`,
+				MH.`mh_17_p`,
+				MH.`mh_18_p`,
+				MH.`mh_19_p`,
+				MH.`mh_20_p`,
+				MH.`mh_01_n`,
+				MH.`mh_01_a_n`,
+				MH.`mh_01_b_n`,
+				MH.`mh_01_c_n`,
+				MH.`mh_01_d_n`,
+				MH.`mh_01_e_n`,
+				MH.`mh_02_n`,
+				MH.`mh_03_n`,
+				MH.`mh_04_n`,
+				MH.`mh_05_n`,
+				MH.`mh_06_n`,
+				MH.`mh_07_n`,
+				MH.`mh_08_n`,
+				MH.`mh_11_n`,
+				MH.`mh_12_n`,
+				MH.`mh_13_n`,
+				MH.`mh_14_n`,
+				MH.`mh_15_n`,
+				MH.`mh_16_n`,
+				MH.`mh_17_n`,
+				MH.`mh_18_n`,
+				MH.`mh_20`,
+				MH.`mh_21_n`,
+			MH.`test_day` mh_test_day,
+			SH.`selection_num` sh_selection_num,
+				SH.`s_a_01`,
+				SH.`s_a_02`,
+				SH.`s_s_01`,
+				SH.`s_s_02`,
+				SH.`s_s_03`,
+				SH.`s_s_04`,
+			SH.`s_a_02_a`,
+				SH.`s_a_02_b`,
+				SH.`s_a_02_c`,
+				SH.`test_day` sh_test_day,
+				SMCQ.`selection_num` smcq_selection_num,
+				SMCQ.`smcq_01`,
+				SMCQ.`smcq_02`,
+				SMCQ.`smcq_03`,
+				SMCQ.`smcq_04`,
+				SMCQ.`smcq_05`,
+				SMCQ.`smcq_06`,
+				SMCQ.`smcq_07`,
+				SMCQ.`smcq_08`,
+				SMCQ.`smcq_09`,
+				SMCQ.`smcq_10`,
+				SMCQ.`smcq_11`,
+				SMCQ.`smcq_12`,
+				SMCQ.`smcq_13`,
+				SMCQ.`smcq_14`,
+				SMCQ.`smcq_total`,
+				SMCQ.`test_day` smcq_test_day,
+			<if test="flag !=null and flag == 'xls'">
+			MMSE.`q01`,
+				MMSE.`q02`,
+				MMSE.`q03`,
+				MMSE.`q04`,
+				MMSE.`q05`,
+				MMSE.`q06`,
+				MMSE.`q07`,
+				MMSE.`q08`,
+				MMSE.`q09`,
+				MMSE.`q10`,
+				MMSE.`q11_1`,
+				MMSE.`q11_2`,
+				MMSE.`q11_3`,
+				MMSE.`q12_1`,
+				MMSE.`q12_2`,
+				MMSE.`q12_3`,
+				MMSE.`q12_3`,
+				MMSE.`q12_5`,
+				MMSE.`q12_total`,
+				MMSE.`q13_1`,
+				MMSE.`q13_2`,
+				MMSE.`q13_3`,
+				MMSE.`q14_1`,
+				MMSE.`q14_2`,
+				MMSE.`q15`,
+				MMSE.`q16_1`,
+				MMSE.`q16_2`,
+				MMSE.`q16_3`,
+				MMSE.`q17`,
+				MMSE.`q18`,
+				MMSE.`q19`,
+				MMSE.`total`,
+				ROUND(CASE WHEN (MMSE.TOTAL - ifnull(X.MEAN,MMSE.TOTAL))/ifnull(X.SD,1) > 0 THEN FLOOR((MMSE.TOTAL - ifnull(X.MEAN,MMSE.TOTAL))/ifnull(X.SD,1)*100)/100
+						  ELSE CEIL((MMSE.TOTAL - ifnull(X.MEAN,MMSE.TOTAL))/ifnull(X.SD,1)*100)/100 END,2) AS STANDARD,
+			</if>
+			REMARK.`selection_num` remark_selection_num,
+				REMARK.`remark`,
+				REMARK.`test_day` remark_test_day
+		  FROM mb_object A
+		  JOIN mb_dummy N ON N.NUM <![CDATA[ <= ]]> 10
+		  JOIN mb_dm DM ON A.IDX = DM.OBJECT_IDX AND DM.FLAG = 'U' AND N.num = DM.SELECTION_NUM
+		  LEFT JOIN mb_ah AH ON AH.object_idx = DM.object_idx AND AH.FLAG='U'  AND N.NUM = AH.SELECTION_NUM
+		  LEFT JOIN mb_dg DG ON DG.object_idx = DM.object_idx AND DG.FLAG='U' AND N.NUM = DG.SELECTION_NUM
+		  LEFT JOIN mb_fh FH ON FH.object_idx = DM.object_idx AND FH.FLAG='U' AND N.NUM = FH.SELECTION_NUM
+		  LEFT JOIN mb_gds GDS ON GDS.object_idx = DM.object_idx AND GDS.FLAG='U' AND N.NUM = GDS.SELECTION_NUM
+		  LEFT JOIN mb_kdsq KDSQ ON KDSQ.object_idx = DM.object_idx AND KDSQ.FLAG='U' AND N.NUM = KDSQ.SELECTION_NUM
+		  LEFT JOIN mb_kdsqv KDSQV ON KDSQV.object_idx = DM.object_idx AND KDSQV.FLAG='U' AND N.NUM = KDSQV.SELECTION_NUM
+		  LEFT JOIN mb_kiadl KIADL ON KIADL.object_idx = DM.object_idx AND KIADL.FLAG='U' AND N.NUM = KIADL.SELECTION_NUM
+		  LEFT JOIN mb_mb MB ON MB.object_idx = DM.object_idx AND MB.FLAG='U' AND N.NUM = MB.SELECTION_NUM
+		  LEFT JOIN mb_mh MH ON MH.object_idx = DM.object_idx AND MH.FLAG='U' AND N.NUM = MH.SELECTION_NUM
+		  LEFT JOIN mb_remark REMARK ON REMARK.object_idx = DM.object_idx AND REMARK.FLAG='U' AND N.NUM = REMARK.SELECTION_NUM
+		  LEFT JOIN mb_sh SH ON SH.object_idx = DM.object_idx AND SH.FLAG='U' AND N.NUM = SH.SELECTION_NUM
+		  LEFT JOIN mb_smcq SMCQ ON SMCQ.object_idx = DM.object_idx AND SMCQ.FLAG='U' AND N.NUM = SMCQ.SELECTION_NUM
+		<if test="flag != null and flag == 'xls'">
+		  LEFT JOIN mb_mmse MMSE ON MMSE.object_idx = DM.object_idx AND MMSE.FLAG='U' AND MMSE.MMSE_NUM=DM.SELECTION_NUM AND DM.SUBJECT_IDX=MMSE.SUBJECT_IDX
+		  LEFT JOIN mb_mmse_nor X ON X.MMSE_KIND = MMSE.MMSE_KIND 
+		  		AND X.GENDER = CASE WHEN MMSE.MMSE_KIND IN ('1','3') AND A.GENDER = '1' THEN 'M'
+					    WHEN MMSE.MMSE_KIND IN ('1','3') aND A.GENDER = '2' THEN 'F'  
+                        ELSE X.GENDER END
+                AND A.EDU BETWEEN X.EDU_MIN and X.EDU_MAX
+    			AND CASE WHEN MMSE.MMSE_KIND = '2' AND A.AGE <![CDATA[ < ]]>45 THEN 45
+						 WHEN MMSE.MMSE_KIND IN ('1','3') AND A.AGE  <![CDATA[ < ]]> 60 THEN 60
+						 ELSE A.AGE END BETWEEN X.AGE_MIN aND X.AGE_MAX
+		</if>
+		WHERE DM.test_day <![CDATA[ >= ]]> #{sd}
+		   AND DM.test_day <![CDATA[ <= ]]> #{ed}
+		${limit_query}
+	</select>
+
+	<select id="select_count_csbr7011_mb_object" parameterType="HashMap" resultType="int">
+		select count(A.IDX)
+		FROM mb_object A
+		  JOIN mb_dummy N ON N.NUM <![CDATA[ <= ]]> 10
+		  JOIN mb_c1 C1 on A.idx = C1.object_idx AND C1.FLAG = 'U' AND N.NUM = C1.SELECTION_NUM
+		  LEFT JOIN mb_c2 C2 on C2.object_idx = C1.object_idx AND C2.FLAG = 'U' AND C2.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_c3 C3 on C3.object_idx = C1.object_idx AND C3.FLAG = 'U' AND C3.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_cdr CDR on CDR.object_idx = C1.object_idx AND CDR.FLAG = 'U' AND CDR.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_cdr_detail CDRDT on CDRDT.object_idx = C1.object_idx AND CDRDT.FLAG = 'U' AND CDRDT.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_dia DIA on DIA.object_idx = C1.object_idx AND DIA.FLAG = 'U' AND DIA.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_hrsd HRSD on HRSD.object_idx = C1.object_idx AND HRSD.FLAG = 'U' AND HRSD.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_lab LAB on LAB.object_idx = C1.object_idx AND LAB.FLAG = 'U' AND LAB.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_memo MEMO on MEMO.object_idx = C1.object_idx AND MEMO.FLAG = 'U' AND MEMO.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_mri1 M1 on M1.object_idx = C1.object_idx AND M1.FLAG = 'U' AND M1.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_mri2 M2 on M2.object_idx = C1.object_idx AND M2.FLAG = 'U' AND M2.SELECTION_NUM = N.NUM
+		WHERE C1.test_day <![CDATA[ >= ]]> #{sd}
+		   AND C1.Test_day <![CDATA[ < ]]> #{ed}
+	</select>
+
+	<select id="select_csbr7011_search" parameterType="HashMap" resultType="LinkedHashMap">
+		SELECT A.IDX OBJECT_IDX, A.NAME AS OBJECT_NAME,
+				C1.`selection_num` c1_selection_num,
+				C1.`c_m_01`,
+				C1.`c_m_02`,
+				C1.`c_m_03`,
+				C1.`c_m_04`,
+				C1.`c_m_05`,
+				C1.`c_m_06`,
+				C1.`c_m_07`,
+				C1.`c_m_08`,
+				C1.`c_m_09`,
+				C1.`c_m_10`,
+				C1.`c_m_11`,
+				C1.`c_m_12`,
+				C1.`c_m_13`,
+				C1.`c_m_14`,
+				C1.`c_m_15`,
+				C1.`c_m_16`,
+				C1.`c_m_17`,
+				C1.`c_m_18`,
+				C1.`c_m_19`,
+				C1.`c_m_20`,
+				C1.`c_m_21`,
+				C1.`c_m_22`,
+				C1.`test_day` c1_test_day,
+				C2.`selection_num` c2_selection_num,
+				C2.`c_l_01`,
+				C2.`c_l_02`,
+				C2.`c_p_01`,
+				C2.`c_p_02`,
+				C2.`c_p_03`,
+				C2.`c_p_04`,
+				C2.`c_p_05`,
+				C2.`c_c_01`,
+				C2.`c_c_02`,
+				C2.`c_c_03`,
+				C2.`c_c_04`,
+				C2.`c_ad_01`,
+				C2.`c_ad_02`,
+				C2.`c_ad_03`,
+				C2.`c_ad_04`,
+				C2.`c_s_01`,
+				C2.`c_s_02`,
+				C2.`c_s_03`,
+				C2.`c_s_04`,
+				C2.`c_j_01`,
+				C2.`c_j_02`,
+				C2.`c_j_03`,
+				C2.`c_j_04`,
+				C2.`c_j_05`,
+				C2.`c_j_06`,
+				C2.`c_j_07`,
+				C2.`c_j_08`,
+				C2.`c_j_09`,
+				C2.`c_j_10`,
+				C2.`c_z_01`,
+				C2.`c_z_02`,
+				C2.`c2_z_test_day` c2_test_day,
+				C3.`selection_num` c3_selection_num,
+				C3.`c_o_01`,
+				C3.`c_o_02`,
+				C3.`c_ac_01`,
+				C3.`c_ac_02`,
+				C3.`c_h_01`,
+				C3.`c_h_02`,
+				C3.`test_day` c3_test_day,
+				CDR.`selection_num` cdr_selection_num,
+				CDR.`cdr_m`,
+				CDR.`cdr_o`,
+				CDR.`cdr_j`,
+				CDR.`cdr_s`,
+				CDR.`cdr_h`,
+				CDR.`cdr_p`,
+				CDR.`cdr_step`,
+				CDR.`test_day` cdr_test_day,
+				CDRDT.`selection_num` cdr_detail_selection_num,
+				CDRDT.`cdr_m_01`,
+				CDRDT.`cdr_m_02`,
+				CDRDT.`cdr_j_01`,
+				CDRDT.`cdr_j_02`,
+				CDRDT.`cdr_j_03`,
+				CDRDT.`cdr_j_04`,
+				CDRDT.`cdr_j_05`,
+				CDRDT.`cdr_j_06`,
+				CDRDT.`cdr_j_07`,
+				CDRDT.`cdr_j_08`,
+				CDRDT.`cdr_j_09`,
+				CDRDT.`cdr_s_01`,
+				CDRDT.`cdr_s_02`,
+				CDRDT.`cdr_s_03`,
+				CDRDT.`cdr_h_01`,
+				CDRDT.`cdr_h_02`,
+				CDRDT.`test_day` cdr_detail_test_day,
+				DIA.`selection_num` dia_selection_num,
+				DIA.`dia_01`,
+				DIA.`dia_02_ck01`,
+				DIA.`dia_02_ck02`,
+				DIA.`dia_02_ck03`,
+			DIA.`DIA_02_CK08`,
+			DIA.`DIA_02_CK09`,
+				DIA.`dia_02_ck07`,
+				DIA.`dia_02_ck07_txt`,
+				DIA.`dia_03_ck`,
+				DIA.`dia_03_ck_txt`,
+				DIA.`dia_04_txt`,
+				DIA.`test_day` dia_test_day,
+				HRSD.`selection_num` hrsd_selection_num,
+				HRSD.`hrsd_01`,
+				HRSD.`hrsd_02`,
+				HRSD.`hrsd_03`,
+				HRSD.`hrsd_04`,
+				HRSD.`hrsd_05`,
+				HRSD.`hrsd_06`,
+				HRSD.`hrsd_07`,
+				HRSD.`hrsd_08`,
+				HRSD.`hrsd_09`,
+				HRSD.`hrsd_10`,
+				HRSD.`hrsd_11`,
+				HRSD.`hrsd_12`,
+				HRSD.`hrsd_13`,
+				HRSD.`hrsd_14`,
+				HRSD.`hrsd_15`,
+				HRSD.`hrsd_16`,
+				HRSD.`hrsd_16_a`,
+				HRSD.`hrsd_16_b`,
+				HRSD.`hrsd_17`,
+				HRSD.`test_day` hrsd_test_day,
+				LAB.`selection_num` lab_selection_num,
+				LAB.`lab_cbc_01`,
+				LAB.`lab_cbc_02`,
+				LAB.`lab_cbc_03`,
+				LAB.`lab_cbc_04`,
+				LAB.`lab_cbc_05`,
+				LAB.`lab_cbc_06`,
+				LAB.`lab_cbc_txt_01`,
+				LAB.`lab_cbc_txt_02`,
+				LAB.`lab_cbc_txt_03`,
+				LAB.`lab_cbc_txt_04`,
+				LAB.`lab_cbc_txt_05`,
+				LAB.`lab_cbc_txt_06`,
+				LAB.`lab_cbc_sel_01`,
+				LAB.`lab_cbc_sel_02`,
+				LAB.`lab_cbc_sel_03`,
+				LAB.`lab_cbc_sel_04`,
+				LAB.`lab_cbc_sel_05`,
+				LAB.`lab_cbc_sel_06`,
+				LAB.`lab_cbc_etc_01`,
+				LAB.`lab_cbc_etc_02`,
+				LAB.`lab_cbc_etc_03`,
+				LAB.`lab_cbc_etc_04`,
+				LAB.`lab_cbc_etc_05`,
+				LAB.`lab_cbc_etc_06`,
+				LAB.`lab_blood_01`,
+				LAB.`lab_blood_02`,
+				LAB.`lab_blood_03`,
+				LAB.`lab_blood_04`,
+				LAB.`lab_blood_05`,
+				LAB.`lab_blood_06`,
+				LAB.`lab_blood_07`,
+				LAB.`lab_blood_08`,
+				LAB.`lab_blood_09`,
+				LAB.`lab_blood_10`,
+				LAB.`lab_blood_11`,
+				LAB.`lab_blood_12`,
+				LAB.`lab_blood_13`,
+				LAB.`lab_blood_14`,
+				LAB.`lab_blood_15`,
+				LAB.`lab_blood_16`,
+				LAB.`lab_blood_17`,
+				LAB.`lab_blood_18`,
+				LAB.`lab_blood_txt_01`,
+				LAB.`lab_blood_txt_02`,
+				LAB.`lab_blood_txt_03`,
+				LAB.`lab_blood_txt_04`,
+				LAB.`lab_blood_txt_05`,
+				LAB.`lab_blood_txt_06`,
+				LAB.`lab_blood_txt_07`,
+				LAB.`lab_blood_txt_08`,
+				LAB.`lab_blood_txt_09`,
+				LAB.`lab_blood_txt_10`,
+				LAB.`lab_blood_txt_11`,
+				LAB.`lab_blood_txt_12`,
+				LAB.`lab_blood_txt_13`,
+				LAB.`lab_blood_txt_14`,
+				LAB.`lab_blood_txt_15`,
+				LAB.`lab_blood_txt_16`,
+				LAB.`lab_blood_txt_17`,
+				LAB.`lab_blood_txt_18`,
+				LAB.`lab_blood_sel_01`,
+				LAB.`lab_blood_sel_02`,
+				LAB.`lab_blood_sel_03`,
+				LAB.`lab_blood_sel_04`,
+				LAB.`lab_blood_sel_05`,
+				LAB.`lab_blood_sel_06`,
+				LAB.`lab_blood_sel_07`,
+				LAB.`lab_blood_sel_08`,
+				LAB.`lab_blood_sel_09`,
+				LAB.`lab_blood_sel_10`,
+				LAB.`lab_blood_sel_11`,
+				LAB.`lab_blood_sel_12`,
+				LAB.`lab_blood_sel_13`,
+				LAB.`lab_blood_sel_14`,
+				LAB.`lab_blood_sel_15`,
+				LAB.`lab_blood_sel_16`,
+				LAB.`lab_blood_sel_17`,
+				LAB.`lab_blood_sel_18`,
+				LAB.`lab_blood_etc_01`,
+				LAB.`lab_blood_etc_02`,
+				LAB.`lab_blood_etc_03`,
+				LAB.`lab_blood_etc_04`,
+				LAB.`lab_blood_etc_05`,
+				LAB.`lab_blood_etc_06`,
+				LAB.`lab_blood_etc_07`,
+				LAB.`lab_blood_etc_08`,
+				LAB.`lab_blood_etc_09`,
+				LAB.`lab_blood_etc_10`,
+				LAB.`lab_blood_etc_11`,
+				LAB.`lab_blood_etc_12`,
+				LAB.`lab_blood_etc_13`,
+				LAB.`lab_blood_etc_14`,
+				LAB.`lab_blood_etc_15`,
+				LAB.`lab_blood_etc_16`,
+				LAB.`lab_blood_etc_17`,
+				LAB.`lab_blood_etc_18`,
+				LAB.`lab_bloods_01`,
+				LAB.`lab_bloods_02`,
+				LAB.`lab_bloods_03`,
+				LAB.`lab_bloods_04`,
+				LAB.`lab_bloods_txt_01`,
+				LAB.`lab_bloods_txt_02`,
+				LAB.`lab_bloods_txt_03`,
+				LAB.`lab_bloods_txt_04`,
+				LAB.`lab_bloods_sel_01`,
+				LAB.`lab_bloods_sel_02`,
+				LAB.`lab_bloods_sel_03`,
+				LAB.`lab_bloods_sel_04`,
+				LAB.`lab_bloods_etc_01`,
+				LAB.`lab_bloods_etc_02`,
+				LAB.`lab_bloods_etc_03`,
+				LAB.`lab_bloods_etc_04`,
+				LAB.`lab_tft_01`,
+				LAB.`lab_tft_02`,
+				LAB.`lab_tft_03`,
+				LAB.`lab_tft_txt_01`,
+				LAB.`lab_tft_txt_02`,
+				LAB.`lab_tft_txt_03`,
+				LAB.`lab_tft_sel_01`,
+				LAB.`lab_tft_sel_02`,
+				LAB.`lab_tft_sel_03`,
+				LAB.`lab_tft_etc_01`,
+				LAB.`lab_tft_etc_02`,
+				LAB.`lab_tft_etc_03`,
+				LAB.`lab_uri_01`,
+				LAB.`lab_uri_02`,
+				LAB.`lab_uri_03`,
+				LAB.`lab_uri_04`,
+				LAB.`lab_uri_05`,
+				LAB.`lab_uri_06`,
+				LAB.`lab_uri_07`,
+				LAB.`lab_uri_08`,
+				LAB.`lab_uri_09`,
+				LAB.`lab_uri_10`,
+				LAB.`lab_uri_11`,
+				LAB.`lab_uri_12`,
+				LAB.`lab_uri_13`,
+				LAB.`lab_uri_14`,
+				LAB.`lab_uri_txt_01`,
+				LAB.`lab_uri_txt_02`,
+				LAB.`lab_uri_txt_03`,
+				LAB.`lab_uri_txt_04`,
+				LAB.`lab_uri_txt_05`,
+				LAB.`lab_uri_txt_06`,
+				LAB.`lab_uri_txt_07`,
+				LAB.`lab_uri_txt_08`,
+				LAB.`lab_uri_txt_09`,
+				LAB.`lab_uri_txt_10`,
+				LAB.`lab_uri_txt_11`,
+				LAB.`lab_uri_txt_12`,
+				LAB.`lab_uri_txt_13`,
+				LAB.`lab_uri_txt_14`,
+				LAB.`lab_uri_sel_01`,
+				LAB.`lab_uri_sel_02`,
+				LAB.`lab_uri_sel_03`,
+				LAB.`lab_uri_sel_04`,
+				LAB.`lab_uri_sel_05`,
+				LAB.`lab_uri_sel_06`,
+				LAB.`lab_uri_sel_07`,
+				LAB.`lab_uri_sel_08`,
+				LAB.`lab_uri_sel_09`,
+				LAB.`lab_uri_sel_10`,
+				LAB.`lab_uri_sel_11`,
+				LAB.`lab_uri_sel_12`,
+				LAB.`lab_uri_sel_13`,
+				LAB.`lab_uri_sel_14`,
+				LAB.`lab_uri_etc_01`,
+				LAB.`lab_uri_etc_02`,
+				LAB.`lab_uri_etc_03`,
+				LAB.`lab_uri_etc_04`,
+				LAB.`lab_uri_etc_05`,
+				LAB.`lab_uri_etc_06`,
+				LAB.`lab_uri_etc_07`,
+				LAB.`lab_uri_etc_08`,
+				LAB.`lab_uri_etc_09`,
+				LAB.`lab_uri_etc_10`,
+				LAB.`lab_uri_etc_11`,
+				LAB.`lab_uri_etc_12`,
+				LAB.`lab_uri_etc_13`,
+				LAB.`lab_uri_etc_14`,
+				LAB.`test_day` lab_test_day,
+				MEMO.`selection_num` memo_selection_num,
+				MEMO.`memo`,
+				MEMO.`test_day` memo_test_day,
+				M1.`selection_num` mri1_selection_num,
+				M1.`mri_no` mri1_no,
+				M1.`mri_date` mri1_date,
+				M1.`mri_starttime` mri1_starttime,
+				M1.`mri_remark` mri1_remark,
+				M1.`test_day` mri1_test_day,
+				M2.`selection_num` mri2_selection_num,
+				M2.`mri_no` mri2_no,
+				M2.`mri_date` mri2_date,
+				M2.`mri_rater` mri2_rater,
+				M2.`mri_mta` mri2_mta,
+				M2.`mri_pvwm` mri2_pvwm,
+				M2.`mri_dwh` mri2_dwh,
+				M2.`mri_gca` mri2_gca,
+				M2.`mri_ra` mri2_ra,
+				M2.`mri_remark` mri2_remark,
+				M2.`test_day` mri2_test_day
+		  FROM mb_object A
+		  JOIN mb_dummy N ON N.NUM <![CDATA[ <= ]]> 10
+		  JOIN mb_c1 C1 on A.idx = C1.object_idx AND C1.FLAG = 'U' AND N.NUM = C1.SELECTION_NUM
+
+		  LEFT JOIN mb_c2 C2 on C2.object_idx = C1.object_idx AND C2.FLAG = 'U' AND C2.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_c3 C3 on C3.object_idx = C1.object_idx AND C3.FLAG = 'U' AND C3.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_cdr CDR on CDR.object_idx = C1.object_idx AND CDR.FLAG = 'U' AND CDR.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_cdr_detail CDRDT on CDRDT.object_idx = C1.object_idx AND CDRDT.FLAG = 'U' AND CDRDT.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_dia DIA on DIA.object_idx = C1.object_idx AND DIA.FLAG = 'U' AND DIA.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_hrsd HRSD on HRSD.object_idx = C1.object_idx AND HRSD.FLAG = 'U' AND HRSD.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_lab LAB on LAB.object_idx = C1.object_idx AND LAB.FLAG = 'U' AND LAB.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_memo MEMO on MEMO.object_idx = C1.object_idx AND MEMO.FLAG = 'U' AND MEMO.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_mri1 M1 on M1.object_idx = C1.object_idx AND M1.FLAG = 'U' AND M1.SELECTION_NUM = N.NUM
+		  LEFT JOIN mb_mri2 M2 on M2.object_idx = C1.object_idx AND M2.FLAG = 'U' AND M2.SELECTION_NUM = N.NUM
+		WHERE C1.test_day <![CDATA[ >= ]]> #{sd}
+		   AND C1.test_day <![CDATA[ <= ]]> #{ed}
+		${limit_query}
+	</select>
+
+
+</mapper>
+

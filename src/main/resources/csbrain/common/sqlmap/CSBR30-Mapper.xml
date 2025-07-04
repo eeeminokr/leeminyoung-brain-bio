@@ -1,0 +1,710 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CSBR30">
+	<select id="select_count_mb_snsb2data_excel1" parameterType="HashMap" resultType="int">
+		<![CDATA[
+		SELECT count(*)
+		  FROM mb_snsb2data_excel1 a
+		 WHERE a.TEST_DAY >= #{sd} AND a.TEST_DAY <= #{ed}
+		 ]]>
+	</select>
+
+	<select id="select_csbr3010_search_1" parameterType="HashMap" resultType="LinkedHashMap">
+		<![CDATA[
+		 SELECT s.object_idx, a.*
+		 FROM mb_snsb2data_excel1 a
+		 LEFT JOIN mb_snsb s ON a.unum = s.snsb_unum AND Flag = 'U'
+		 WHERE a.TEST_DAY >= #{sd} AND a.TEST_DAY <= #{ed}
+		 ORDER BY a.UNUM DESC
+		 ${limit_query}
+		 ]]>
+	</select>
+
+	<select id="select_count_mb_snsb2data_excel2" parameterType="HashMap" resultType="int">
+		<![CDATA[
+		SELECT count(*)
+		  FROM mb_snsb2data_excel1 a
+		  JOIN mb_snsb2data_excel2 b ON a.UNUM = b.UNUM
+		 LEFT JOIN mb_snsb s ON a.unum = s.snsb_unum AND s.Flag = 'U'
+		 WHERE a.TEST_DAY BETWEEN #{sd} AND #{ed}
+		 ]]>
+	</select>
+
+	<select id="select_csbr3010_search_2" parameterType="HashMap" resultType="LinkedHashMap">
+		<![CDATA[
+		 SELECT s.object_idx, b.*
+		 FROM mb_snsb2data_excel1 a
+		 JOIN mb_snsb2data_excel2 b ON a.UNUM = b.UNUM
+		 LEFT JOIN mb_snsb s ON a.unum = s.snsb_unum AND s.Flag = 'U'
+		 WHERE a.TEST_DAY BETWEEN #{sd} AND #{ed}
+		 ORDER BY a.UNUM DESC
+		 ${limit_query}
+		 ]]>
+	</select>
+	
+	<select id="select_count_csbr3010_search_3" parameterType="HashMap" resultType="int">
+		<![CDATA[
+		 SELECT count(*)
+		  FROM csbrain2.mb_snsb s
+		  inner join csbrain2.mb_object o on o.idx=s.object_idx
+		 WHERE s.flag='U' and s.snsb_date >= #{sd} AND s.snsb_date <= #{ed}
+		 ]]>
+	</select>
+
+	<select id="select_csbr3010_search_3" parameterType="HashMap" resultType="LinkedHashMap">
+		<![CDATA[
+		select o.idx as ID, o.name as 이름, s.selection_num as 차수, 
+			DATE_FORMAT(s.snsb_date, '%Y%m%d') as 검사일,
+		    case 
+		    when s.snsb_hand='L' then 'Left'
+		    when s.snsb_hand='R' then 'Right'
+		    when s.snsb_hand='B' then 'Both'
+		    else ''
+		    end as 손잡이,
+		    s.snsb_remark as 특이사항,
+		    s.snsb_unum as 'SNSB 고유번호',
+			s.lm_test_date as 'LM_test_date',
+		    s.lm_test_inspector as 'LM_검사자',
+		    s.lm_test_special as 'LM_특이사항',
+		    s.lm_test_i_a as 'LM Ⅰ A',
+		    s.lm_test_i_b as 'LM Ⅰ B',
+		    s.lm_test_ii_a as 'LM Ⅱ A',
+		    s.lm_test_ii_b as 'LM Ⅱ B',
+		    s.lm_test_recog as 'LM Recog',
+			s.snsb_svlt_tirl_01,
+		    s.snsb_svlt_tirl_02,
+		    s.snsb_svlt_tirl_03,
+		    s.snsb_svlt_tirl_total,
+		    s.snsb_svlt_tirl_total_z1,
+		    s.snsb_svlt_tirl_total_z2,
+		    s.snsb_svlt_tdrl,
+		    s.snsb_svlt_tdrl_z1,
+		    s.snsb_svlt_tdrl_z2,
+		    s.snsb_svlt_trcg,
+		    s.snsb_svlt_trcg_z1,
+		    s.snsb_svlt_trcg_z2,
+		    s.snsb_rcft_tirl,
+		    s.snsb_rcft_tirl_z1,
+		    s.snsb_rcft_tirl_z2,
+		    s.snsb_rcft_tdrl,
+		    s.snsb_rcft_tdrl_z1,
+		    s.snsb_rcft_tdrl_z2,
+		    s.snsb_rcft_trcg,
+		    s.snsb_rcft_trcg_z1,
+		    s.snsb_rcft_trcg_z2,
+		    s.snsb_ds_f,
+		    s.snsb_ds_f_z1,
+		    s.snsb_ds_f_z2,
+		    s.snsb_ds_b,
+		    s.snsb_ds_b_z1,
+		    s.snsb_ds_b_z2,
+		    s.snsb_rcft_copy,
+		    s.snsb_rcft_copy_z1,
+		    s.snsb_rcft_copy_z2,
+		    s.snsb_skbnt,
+		    s.snsb_skbnt_z1,
+		    s.snsb_skbnt_z2,
+		    s.snsb_kcwst_stpw_noc,
+		    s.snsb_kcwst_stpw_noe,
+		    s.snsb_kcwst_stp_tpi,
+		    s.snsb_kcwst_stp_tpi_z1,
+		    s.snsb_kcwst_stpc_noc,
+		    s.snsb_kcwst_stpc_noc_z1,
+		    s.snsb_kcwst_stpc_noc_z2,
+		    s.snsb_kcwst_stpc_noe,
+		    s.snsb_cowat,
+		    s.snsb_cowat_z1,
+		    s.snsb_cowat_z2,
+		    s.snsb_tmta,
+		    s.snsb_tmta_t,
+		    s.snsb_tmta_t_z1,
+		    s.snsb_tmta_t_z2,
+		    s.snsb_tmta_e,
+		    s.snsb_tmtb,
+		    s.snsb_tmtb_t,
+		    s.snsb_tmtb_t_z1,
+		    s.snsb_tmtb_t_z2,
+		    s.snsb_tmtb_e,
+		    s.test_day,
+		    s.pdf_path
+		from csbrain2.mb_snsb s
+		inner join csbrain2.mb_object o on o.idx=s.object_idx
+		WHERE s.flag='U' and s.snsb_date >= #{sd} AND s.snsb_date <= #{ed}
+		ORDER BY o.idx
+		${limit_query}
+		 ]]>
+	</select>
+		
+	<select	id = "select_csbr3010_target_search" parameterType="HashMap" resultType="LinkedHashMap" >
+		<![CDATA[
+		select o.idx ID,
+			o.name as name,
+		    case 
+		    when r.selection_num is null then ''
+		    else r.selection_num
+		    end 'selection_num', 
+		    '' as 'resedate',
+		    concat(o.jumin1, '-', o.jumin2,'****') 'jumin',
+		    case 
+		    when o.tel1 is null then ''
+		    when o.tel1='' then ''
+		    else concat(o.tel1, '-', o.tel2, '-', o.tel3) 
+		    end 'tel_no',
+		    case 
+		    when o.mobile1 is null then ''
+		    when o.mobile1='' then ''
+			else concat(o.mobile1, '-', o.mobile2, '-', o.mobile3) 
+		    end 'mobile',
+		    'S' as type
+		from csbrain2.mb_object o 
+			inner join csbrain2.mb_snsb r on r.object_idx = o.idx AND r.Flag = 'U' 
+		where o.name=#{name}
+		union
+		select 
+			o.idx ID,
+			o.name as name,
+			'' as selection_num,
+			p.resedate as 'resedate',
+		    concat(o.jumin1, '-', o.jumin2,'****') 'jumin',
+			case 
+			when o.tel1 is null then ''
+			when o.tel1='' then ''
+			else concat(o.tel1, '-', o.tel2, '-', o.tel3) 
+			end 'tel_no',
+			case 
+			when o.mobile1 is null then ''
+			when o.mobile1='' then ''
+			else concat(o.mobile1, '-', o.mobile2, '-', o.mobile3) 
+			end 'mobile',
+			'R' as type
+        from csbrain2.mb_object o 
+			inner join csbrain2.mb_resesnsb p on p.object_idx=o.idx and p.testyn<>1
+		where o.name=#{name} and STR_TO_DATE(p.resedate, '%Y%m%d')>=curdate()
+		order by ID, selection_num
+		]]>	 
+	</select>
+	
+	<select	id = "select_csbr3010_next_selection_num" parameterType="HashMap" resultType="HashMap" >
+		<![CDATA[
+		select 
+			o.idx, o.name,
+			o.birth2, o.age, o.gender, o.edu, CONCAT(o.birth1,'-',o.birth2,'-', (case when o.birth3 = '' then '01' else o.birth3 end)) rbirth,
+            case 
+			when max(r.selection_num)+1 is null then 1 
+			else max(r.selection_num)+1 
+			end as next_num
+		from csbrain2.mb_snsb r 
+		inner join csbrain2.mb_object o on o.idx=r.object_idx and r.Flag='U'
+		where r.object_idx=#{object_idx} 
+		]]>	 
+	</select>
+	
+	<select	id = "select_csbr3010_snsb" parameterType="HashMap" resultType="HashMap" >
+		<![CDATA[
+		select 
+			a.idx, b.subject_idx, b.object_idx, b.selection_num, a.name, DATE_FORMAT(b.test_day, '%Y-%m-%d') as test_day, b.flag,
+		    a.birth1, a.birth2, a.age, a.gender, a.edu, CONCAT(a.birth1,'-',a.birth2,'-', (case when a.birth3 = '' then '01' else a.birth3 end)) rbirth,
+			DATE_FORMAT(b.snsb_date, '%Y-%m-%d') as snsb_date, timestampdiff(YEAR, date_format(concat(a.birth1, '-', a.birth2, '-', '01'), '%Y-%m-%d'), b.snsb_date) as rage,
+		    b.snsb_hand, b.snsb_remark, b.snsb_svlt_tirl_01, b.snsb_svlt_tirl_02, b.snsb_svlt_tirl_03, b.snsb_svlt_tirl_total, b.snsb_svlt_tirl_total_z1, 
+		    b.snsb_svlt_tirl_total_z2, b.snsb_svlt_tdrl, b.snsb_svlt_tdrl_z1, b.snsb_svlt_tdrl_z2, b.snsb_svlt_trcg, b.snsb_svlt_trcg_z1, 
+		    b.snsb_svlt_trcg_z2, b.snsb_rcft_tirl, b.snsb_rcft_tirl_z1, b.snsb_rcft_tirl_z2, b.snsb_rcft_tdrl, b.snsb_rcft_tdrl_z1, b.snsb_rcft_tdrl_z2, 
+		    b.snsb_rcft_trcg, b.snsb_rcft_trcg_z1, b.snsb_rcft_trcg_z2, b.snsb_ds_f, b.snsb_ds_f_z1, b.snsb_ds_f_z2, b.snsb_ds_b, b.snsb_ds_b_z1, 
+		    b.snsb_ds_b_z2, b.snsb_rcft_copy, b.snsb_rcft_copy_z1, b.snsb_rcft_copy_z2, b.snsb_skbnt, b.snsb_skbnt_z1, b.snsb_skbnt_z2, b.snsb_kcwst_stpw_noc, 
+		    b.snsb_kcwst_stpw_noe, b.snsb_kcwst_stp_tpi, b.snsb_kcwst_stp_tpi_z1, b.snsb_kcwst_stpc_noc, b.snsb_kcwst_stpc_noc_z1, b.snsb_kcwst_stpc_noc_z2, 
+		    b.snsb_kcwst_stpc_noe, b.snsb_cowat, b.snsb_cowat_z1, b.snsb_cowat_z2, b.snsb_tmta, b.snsb_tmta_t, b.snsb_tmta_t_z1, b.snsb_tmta_t_z2, b.snsb_tmta_e, 
+		    b.snsb_tmtb, b.snsb_tmtb_t, b.snsb_tmtb_t_z1, b.snsb_tmtb_t_z2, b.snsb_tmtb_e, b.snsb_unum, b.lm_test_date, b.lm_test_inspector, b.lm_test_special, 
+		    b.lm_test_i_a, b.lm_test_i_b, b.lm_test_ii_a, b.lm_test_ii_b, b.lm_test_recog, 
+			b.snsb_unum,c.Digit_span_Forward,c.Digit_span_Forward_z,c.Digit_span_Forward_p,c.Digit_span_Backward,c.Digit_span_Backward_z,c.Digit_span_Backward_p,
+			c.Rey_CFT_copy_score,c.Rey_CFT_copy_score_z,c.Rey_CFT_copy_score_p,c.SVLT_recall_trial1,c.SVLT_recall_trial2,c.SVLT_recall_trial3,c.SVLT_recall_total_score,
+			c.SVLT_recall_total_score_z,c.SVLT_recall_total_score_p,c.SVLT_Delayed_recall,c.SVLT_Delayed_recall_z,c.SVLT_Delayed_recall_p,c.SVLT_recognition_score,
+			c.SVLT_recognition_score_z,c.SVLT_recognition_score_p,c.RCFT_immediate_recall,c.RCFT_immediate_recall_z,c.RCFT_immediate_recall_p,c.RCFT_delayed_recall,
+			c.RCFT_delayed_recall_z,c.RCFT_delayed_recall_p,c.RCFT_recognition_score,c.RCFT_recognition_score_z,c.RCFT_recognition_score_p,c.COWAT_animal,
+			c.COWAT_animal_z,c.COWAT_animal_p,c.StroopTest_Wordreading_Time_per_item,c.StroopTest_Wordreading_Time_per_item_z,c.StroopTest_Wordreading_Time_per_item_p,
+			c.StroopTest_Colorreading_correct,c.StroopTest_Colorreading_correct_z,c.StroopTest_Colorreading_correct_p,c.K_MMSE_total_score,c.K_MMSE_total_score_z,
+			c.K_MMSE_total_score_p,c.Naming_S_K_BNT,c.Naming_S_K_BNT_z,c.Naming_S_K_BNT_p,d.DSC_correct,d.DSC_correct_z,d.DSC_correct_p,d.K_TMT_E_A_success,
+			d.K_TMT_E_A_time,d.K_TMT_E_A_time_z,d.K_TMT_E_A_time_p,d.K_TMT_E_B_success,d.K_TMT_E_B_time,d.K_TMT_E_B_time_z,
+			d.K_TMT_E_B_time_p,d.SNSB_II_Domain_Attention,d.SNSB_II_Domain_Attention_z,d.SNSB_II_Domain_Attention_p,d.SNSB_II_Domain_Language,d.SNSB_II_Domain_Language_z,
+			d.SNSB_II_Domain_Language_p,d.SNSB_II_Domain_Visuospatial,d.SNSB_II_Domain_Visuospatial_z,d.SNSB_II_Domain_Visuospatial_p,d.SNSB_II_Domain_Memory,
+			d.SNSB_II_Domain_Memory_z,d.SNSB_II_Domain_Memory_p,d.SNSB_II_Domain_Frontal,d.SNSB_II_Domain_Frontal_z,d.SNSB_II_Domain_Frontal_p			
+		from csbrain2.mb_snsb b 
+		inner join csbrain2.mb_object a on a.idx=b.object_idx and b.Flag='U'
+		LEFT JOIN mb_snsb2data_excel1 c ON b.snsb_unum = c.unum 
+		LEFT JOIN mb_snsb2data_excel2 d ON b.snsb_unum = d.unum 
+		where b.object_idx=#{object_idx} and b.selection_num=#{selection_num} 
+		]]>	 
+	</select>
+	
+	<insert id="insert_csbr3010_snsb" parameterType="HashMap">
+		insert into csbrain2.mb_snsb(
+			subject_idx, object_idx, selection_num, Flag, snsb_date, snsb_hand, snsb_remark, test_day, snsb_unum, 
+			lm_test_date,lm_test_inspector,lm_test_special,lm_test_i_a,lm_test_i_b,lm_test_ii_a,lm_test_ii_b,lm_test_recog
+		) values(
+			#{subject_idx},#{object_idx},#{selection_num},'U',#{snsb_date},#{snsb_hand},#{snsb_remark},sysdate(),#{snsb_unum},
+			#{lm_test_date},#{lm_test_inspector},#{lm_test_special},#{lm_test_i_a},#{lm_test_i_b},#{lm_test_ii_a},#{lm_test_ii_b},#{lm_test_recog}
+		)
+	</insert>
+	
+	<update id="update_csbr3010_snsb" parameterType="HashMap">
+		update csbrain2.mb_snsb set subject_idx=#{subject_idx}, snsb_date=#{snsb_date}, snsb_hand=#{snsb_hand}, 
+			snsb_remark=#{snsb_remark}, snsb_unum=#{snsb_unum}, lm_test_date=#{lm_test_date},
+			lm_test_inspector=#{lm_test_inspector},lm_test_special=#{lm_test_special}, lm_test_i_a=#{lm_test_i_a},
+			lm_test_i_b=#{lm_test_i_b},lm_test_ii_a=#{lm_test_ii_a},lm_test_ii_b=#{lm_test_ii_b},lm_test_recog=#{lm_test_recog}
+		where object_idx=#{object_idx} and selection_num=#{selection_num} and Flag='U'
+	</update>
+	
+	<update id="update_csbr3010_resesnsb" parameterType="HashMap">
+		update csbrain2.mb_resesnsb set testyn=1 
+		where object_idx=#{object_idx} and resedate=#{resedate}
+	</update>
+	
+	<delete id="delete_mb_snsb2data_excel1" parameterType="String">
+		delete from mb_snsb2data_excel1 where Unum=#{unum} and 1=1
+	</delete>
+
+	<insert id="insert_mb_snsb2data_excel1" parameterType="HashMap">
+		insert into mb_snsb2data_excel1 values (${d_query},now(),#{userId},now(),#{userId})
+	</insert>
+
+<!-- csbr 3020 pet 검사관리-->
+	<select id="select_count_mb_rctu_object_respet_suvr" parameterType="HashMap" resultType="int">
+		<![CDATA[
+		select count(*)
+		from csbrain2.mb_rctu 
+		as r join mb_object o 
+			on r.object_idx = o.idx AND Flag = 'U' 
+		join mb_resepet p 
+			on o.idx = p.object_idx 
+		join nrcd.PET_SUVR ps 
+			on p.petid = ps.ID
+			WHERE r.test_day >= #{sd} AND r.test_day <= #{ed}
+		]]>
+	</select>
+
+	<select	id = "select_csbr3020_search" parameterType="HashMap" resultType="LinkedHashMap" >
+		<![CDATA[
+		select distinct r.object_idx ID,
+			p.petid PETID,
+	        o.name 이름,
+	        r.selection_num '차수', 
+	    	case when r.rctu_01=0 then 'Negative (-)'
+	    		 when r.rctu_01=0.5 then 'Negative (0.5)'
+	    		 when r.rctu_01=1 then 'Postive (+)'
+	    		 else 'N/A' 
+	    	end as '아밀로이드 베타',
+	        r.rctu_03l '외측두엽우(좌)',
+	        r.rctu_03r '외측두엽우(우)',
+	        r.rctu_04l  '전두엽(좌)',
+	        r.rctu_04r  '전두엽(우)', 
+	        r.rctu_05l  '두정엽(좌)',
+	        r.rctu_05R  '두정엽(우)',
+	        r.rctu_06l   '후 대상피질/쐐기앞소엽(좌)',
+	        r.rctu_06r   '후 대상피질/쐐기앞소엽(우)',
+	        ps.`SUV_threshold_1.11` SUVR,
+	        r.rctu_remark 비고
+		from csbrain2.mb_rctu as r 
+		left join mb_object o on r.object_idx = o.idx AND Flag = 'U'
+		left join mb_resepet p on o.idx = p.object_idx and r.selection_num=p.selection_num
+		left join nrcd.PET_SUVR ps on p.petid = ps.ID
+		WHERE r.test_day >= #{sd} AND r.test_day <= #{ed}
+		ORDER BY r.object_idx
+		${limit_query}
+		]]>	 
+	</select>
+	
+	<select	id = "select_csbr3020_target_search" parameterType="HashMap" resultType="LinkedHashMap" >
+		<![CDATA[
+		select o.idx ID,
+				o.name as name,
+			    case 
+			    when r.selection_num is null then ''
+			    else r.selection_num
+			    end 'selection_num', 
+	            IFNULL(p.resedate,'') as 'resedate',
+			    concat(o.jumin1, '-', o.jumin2,'****') 'jumin',
+			    case 
+			    when o.tel1 is null then ''
+			    when o.tel1='' then ''
+			    else concat(o.tel1, '-', o.tel2, '-', o.tel3) 
+			    end 'tel_no',
+			    case 
+			    when o.mobile1 is null then ''
+			    when o.mobile1='' then ''
+				else concat(o.mobile1, '-', o.mobile2, '-', o.mobile3) 
+			    end 'mobile',
+	            'S' type
+			from csbrain2.mb_object o 
+			inner join csbrain2.mb_rctu r on r.object_idx = o.idx AND r.Flag = 'U'
+	        left join csbrain2.mb_resepet p on p.object_idx=r.object_idx and r.selection_num=p.selection_num and p.testyn=1
+	        where o.name=#{name}
+		union
+		select o.idx ID,
+				o.name as name,
+			    '' as 'selection_num',
+			    IFNULL(p.resedate,'') as 'resedate',
+			    concat(o.jumin1, '-', o.jumin2,'****') 'jumin',
+			    case 
+			    when o.tel1 is null then ''
+			    when o.tel1='' then ''
+			    else concat(o.tel1, '-', o.tel2, '-', o.tel3) 
+			    end 'tel_no',
+			    case 
+			    when o.mobile1 is null then ''
+			    when o.mobile1='' then ''
+				else concat(o.mobile1, '-', o.mobile2, '-', o.mobile3) 
+			    end 'mobile',
+	            'R' as type
+			from csbrain2.mb_object o 
+			inner join csbrain2.mb_resepet p on p.object_idx=o.idx and p.testyn<>1
+			where o.name=#{name} and STR_TO_DATE(p.resedate, '%Y%m%d')>=curdate()
+		order by id, selection_num
+		]]>	 
+	</select>
+	
+	<select	id = "select_csbr3020_next_selection_num" parameterType="HashMap" resultType="HashMap" >
+		<![CDATA[
+		select 
+			o.name,
+			case 
+			when max(r.selection_num)+1 is null then 1 
+			else max(r.selection_num)+1 
+			end as next_num
+		from csbrain2.mb_rctu r 
+		inner join csbrain2.mb_object o on o.idx=r.object_idx and r.Flag='U'
+		where r.object_idx=#{object_idx} 
+		]]>	 
+	</select>
+	
+	<select	id = "select_csbr3020_pet" parameterType="HashMap" resultType="HashMap" >
+		<![CDATA[
+		select 
+			r.idx, r.subject_idx, r.object_idx, r.selection_num, o.name, 
+			r.rctu_01, r.rctu_remark, r.rctu_03l, r.rctu_03r, r.rctu_04l, r.rctu_04r, 
+			r.rctu_05l, r.rctu_05r, r.rctu_06l, r.rctu_06r, r.rctu_bapl, DATE_FORMAT(r.test_day, '%Y-%m-%d') as test_day, r.flag 
+		from csbrain2.mb_rctu r 
+		inner join csbrain2.mb_object o on o.idx=r.object_idx and r.Flag='U'
+		where r.object_idx=#{object_idx} and r.selection_num=#{selection_num} 
+		]]>	 
+	</select>
+	
+	<insert id="insert_csbr3020_pet" parameterType="HashMap">
+		insert into csbrain2.mb_rctu(subject_idx,object_idx,selection_num,rctu_01,rctu_remark,rctu_03l,rctu_03r,rctu_04l,rctu_04r,rctu_05l,rctu_05r,rctu_06l,rctu_06r,rctu_bapl,test_day,flag,insert_date,insert_userid) 
+		values(#{subject_idx},#{object_idx},#{selection_num},#{rctu_01},#{rctu_remark},#{rctu_03l},#{rctu_03r},#{rctu_04l},#{rctu_04r},#{rctu_05l},#{rctu_05r},#{rctu_06l},#{rctu_06r},#{rctu_bapl},#{test_day},'U',sysdate(),#{subject_idx})
+	</insert>
+	
+	<update id="update_csbr3020_pet" parameterType="HashMap">
+		update csbrain2.mb_rctu set 
+			subject_idx=#{subject_idx},rctu_01=#{rctu_01},rctu_remark=#{rctu_remark},
+			rctu_03l=#{rctu_03l},rctu_03r=#{rctu_03r},rctu_04l=#{rctu_04l},rctu_04r=#{rctu_04r},
+			rctu_05l=#{rctu_05l},rctu_05r=#{rctu_05r},rctu_06l=#{rctu_06l},rctu_06r=#{rctu_06r},rctu_bapl=#{rctu_bapl},
+			test_day=#{test_day},update_date=sysdate(),update_userid=#{subject_idx}
+		where object_idx=#{object_idx} and selection_num=#{selection_num} and Flag='U'
+	</update>
+	
+	<update id="update_csbr3020_resepet" parameterType="HashMap">
+		update csbrain2.mb_resepet set 
+			testyn=1, selection_num=#{selection_num}
+		where object_idx=#{object_idx} and resersno=#{reservno}
+	</update>
+	
+	<delete id="delete_mb_rctu_object_respet_suvr" parameterType="String">
+		delete from mb_snsb2data_excel1 where petid=#{petid} and 1=1
+	</delete>
+
+	<insert id="insert_mb_mb_rctu_object_respet_suvr" parameterType="HashMap">
+		insert into mb_snsb2data_excel1 values (${d_query},now(),#{userId},now(),#{userId})
+	</insert>
+	
+	<select id="select_count_csbr3060_inbody1" parameterType="HashMap" resultType="int">
+	<![CDATA[
+	SELECT COUNT(*) AS TOTAL
+	FROM(
+		SELECT I.ID, I.DATETIME
+		FROM csbrain2.mb_inbody1 I
+	) X
+	WHERE X.DATETIME >= #{sd} AND X.DATETIME <= #{ed}
+    ORDER BY X.DATETIME  DESC	
+	]]>
+	</select>
+	<select id="select_count_csbr3060_inbody2" parameterType="HashMap" resultType="int">
+	<![CDATA[
+	SELECT COUNT(*) AS TOTAL
+	FROM(
+		SELECT I.ID, I.DIAG_DATETM
+		FROM csbrain2.mb_inbody2 I
+		LEFT OUTER JOIN	csbrain2.mb_object H ON H.IDX=I.ID
+	) X
+	WHERE X.DIAG_DATETM >= #{sd} AND X.DIAG_DATETM <= #{ed}
+    ]]>
+	</select>
+	
+	<select id="select_csbr3060_search1" parameterType="HashMap" resultType="LinkedHashMap">
+	<![CDATA[
+	SELECT 
+		X.DATETIME as `DATE&TIMES`, X.AGE as `AGE`, X.HEIGHT as `HEIGHT`, X.GENDER as `GENDER`, X.WEIGHT as `WEIGHT`, X.WEIGHT_MIN as `WEIGHT_MIN`, X.WEIGHT_MAX as `WEIGHT_MAX`, X.ICW as `ICW(Intracellular Water)`, X.ICW_MIN as `ICW_MIN`, X.ICW_MAX as `ICW_MAX`, X.ECW as `ECW(Extracellular Water)`, X.ECW_MIN as `ECW_MIN`, X.ECW_MAX as `ECW_MAX`, X.TBW as `TBW(Total Body Water)`, X.TBW_MIN as `TBW_MIN`, X.TBW_MAX as `TBW_MAX`, X.PROTEIN as `Protein`, X.PROTEIN_MIN as `Protein_MIN`, X.PROTEIN_MAX as `Protein_MAX`, X.MINERAL as `Mineral`, X.MINERAL_MIN as `Mineral_MIN`, X.MINDERAL_MAX as `Mineral_MAX`, X.FAT as `FAT`, X.FAT_MIN as `FAT_MIN`, X.FAT_MAX as `FAT_MAX`, X.SLM as `SLM(Soft Lean Mass)`, X.SLM_MIN as `SLM_MIN`, X.SLM_MAX as `SLM_MAX`, X.FFM as `FFM(Fat Free Mass)`, X.FFM_MIN as `FFM_MIN`, X.FFM_MAX as `FFM_MAX`, X.SMM as `SMM(Skeletal Muscle Mass)`, X.SMM_MIN as `SMM_MIN`, X.SMM_MAX as `SMM_MAX`, X.PBF as `PBF(Percent Body Fat)`, X.PBF_MIN as `PBF_MIN`, X.PBF_MAX as `PBF_MAX`, X.BMI as `BMI`, X.BMI_MIN as `BMI_MIN`, X.BMI_MAX as `BMI_MAX`, X.WHR as `WHR`, X.WHR_MIN as `WHR_MIN`, X.WHR_MAX as `WHR_MAX`, X.SEGWATER_RA as `Segmental Water(RA)`, X.SEGWATER_RA_MIN as `Segmental Water(RA)_MIN`, X.SEGWATER_RA_MAX as `Segmental Water(RA)_MAX`, X.SEGWATER_LA as `Segmental Water(LA)`, X.SEGWATER_LA_MIN as `Segmental Water(LA)_MIN`, X.SEGWATER_LA_MAX as `Segmental Water(LA)_MAX`, X.SEGWATER_TR as `Segmental Water(TR)`, X.SEGWATER_TR_MIN as `Segmental Water(TR)_MIN`, X.SEGWATER_TR_MAX as `Segmental Water(TR)_MAX`, X.SEGWATER_RL as `Segmental Water(RL)`, X.SEGWATER_RL_MIN as `Segmental Water(RL)_MIN`, X.SEGWATER_RL_MAX as `Segmental Water(RL)_MAX`, X.SEGWATER_LL as `Segmental Water(LL)`, X.SEGWATER_LL_MIN as `Segmental Water(LL)_M`, X.SEGWATER_LL_MAX as `Segmental Water(LL)_MAX`, X.ECWTBW_TOTAL as `ECW/TBW(Total)`, X.ECWTBW_RA as `ECW/TBW(RA)`, X.ECWTBW_LA as `ECW/TBW(LA)`, X.ECWTBW_TR as `ECW/TBW(TR)`, X.ECWTBW_RL as `ECW/TBW(RL)`, X.ECWTBW_LL as `ECW/TBW(LL)`, X.SEGLEAN_RA as `Segmental Lean(RA)`, X.SEGLEAN_RA_MIN as `Segmental Lean(RA)_MIN`, X.SEGLEAN_RA_MAX as `Segmental Lean(RA)_MAX`, X.SEGLEAN_LA as `Segmental Lean(LA)`, X.SEGLEAN_LA_MIN as `Segmental Lean(LA)_MIN`, X.SEGLEAN_LA_MAX as `Segmental Lean(LA)_MAX`, X.SEGLEAN_TR as `Segmental Lean(TR)`, X.SEGLEAN_TR_MIN as `Segmental Lean(TR)_MIN`, X.SEGLEAN_TR_MAX as `Segmental Lean(TR)_MAX`, X.SEGLEAN_RL as `Segmental Lean(RL)`, X.SEGLEAN_RL_MIN as `Segmental Lean(RL)_MIN`, X.SEGLEAN_RL_MAX as `Segmental Lean(RL)_MAX`, X.SEGLEAN_LL as `Segmental Lean(LL)`, X.SEGLEAN_LL_MIN as `Segmental Lean(LL)_MIN`, X.SEGLEAN_LL_MAX as `Segmental Lean(LL)_MAX`, X.BFMCTR as `BFM Control`, X.FFMCTR as `FFM Control`, X.BODYCELLMASS as `Body Cell Mass`, X.BCM_MIN as `BCM_MIN`, X.BCM_MAX as `BCM_MAX`, X.BONEMINERAL as `Bone Mineral Content`, X.BMC_MIN as `BMC_MIN`, X.BMC_MAX as `BMC_MIN`, X.AC as `AC`, X.AMC as `AMC`, X.VFA as `VFA`, X.BMR as `BMR`, X.TBWFFM as `TBW/FFM`, X.IMPED_RA1K as `1khz-RA Impedance`, X.IMPED_LA1K as `1khz-LA Impedance`, X.IMPED_TR1K as `1khz-TR Impedance`, X.IMPED_RL1K as `1khz-RL Impedance`, X.IMPED_LL1K as `1khz-LL Impedance`, X.IMPED_RA5K as `5khz-RA Impedance`, X.IMPED_LA5K as `5khz-LA Impedance`, X.IMPED_TR5K as `5khz-TR Impedance`, X.IMPED_RL5K as `5khz-RL Impedance`, X.IMPED_LL5K as `5khz-LL Impedance`, X.IMPED_RA50K as `50khz-RA Impedance`, X.IMPED_LA50K as `50khz-LA Impedance`, X.IMPED_TR50K as `50khz-TR Impedance`, X.IMPED_RL50K as `50khz-RL Impedance`, X.IMPED_LL50K as `50khz-LL Impedance`, X.IMPED_RA250K as `250khz-RA Impedance`, X.IMPED_LA250K as `250khz-LA Impedance`, X.IMPED_TR250K as `250khz-TR Impedance`, X.IMPED_RL250K as `250khz-RL Impedance`, X.IMPED_LL250K as `250khz-LL Impedance`, X.IMPED_RA500K as `500khz-RA Impedance`, X.IMPED_LA500K as `500khz-LA Impedance`, X.IMPED_TR500K as `500khz-TR Impedance`, X.IMPED_RL500K as `500khz-RL Impedance`, X.IMPED_LL500K as `500khz-LL Impedance`, X.IMPED_RA1M as `1Mhz-RA Impedance`, X.IMPED_LA1M as `1Mhz-LA Impedance`, X.IMPED_TR1M as `1Mhz-TR Impedance`, X.IMPED_RL1M as `1Mhz-RL Impedance`, X.IMPED_LL1M as `1Mhz-LL Impedance`, X.REACT_RA5K as `5khz-RA Reactance`, X.REACT_LA5K as `5khz-LA Reactance`, X.REACT_TR5K as `5khz-TR Reactance`, X.REACT_RL5K as `5khz-RL Reactance`, X.REACT_LL5K as `5khz-LL Reactance`, X.REACT_RA50K as `50khz-RA Reactance`, X.REACT_LA50K as `50khz-LA Reactance`, X.REACT_TR50K as `50khz-TR Reactance`, X.REACT_RL50K as `50khz-RL Reactance`, X.REACT_LL50K as `50khz-LL Reactance`, X.REACT_RA250K as `250khz-RA Reactance`, X.REACT_LA250K as `250khz-LA Reactance`, X.REACT_TR250K as `250khz-TR Reactance`, X.REACT_RL250K as `250khz-RL Reactance`, X.REACT_LL250K as `250khz-LL Reactance`, X.PA_RA5K as `5khz-RA Phase Angle`, X.PA_LA5K as `5khz-LA Phase Angle`, X.PA_TR5K as `5khz-TR Phase Angle`, X.PA_RL5K as `5khz-RL Phase Angle`, X.PA_LL5K as `5khz-LL Phase Angle`, X.PA_RA50K as `50khz-RA Phase Angle`, X.PA_LA50K as `50khz-LA Phase Angle`, X.PA_TR50K as `50khz-TR Phase Angle`, X.PA_RL50K as `50khz-RL Phase Angle`, X.PA_LL50K as `50khz-LL Phase Angle`, X.PA_RA250K as `250khz-RA Phase Angle`, X.PA_LA250K as `250khz-LA Phase Angle`, X.PA_TR250K as `250khz-TR Phase Angle`, X.PA_RL250K as `250khz-RL Phase Angle`, X.PA_LL250K as `250khz-LL Phase Angle`, X.WB_PA as `50kHz-Whole Body Phase Angle`, X.SYSTOLIC as `Systolic`, X.DIASTOLIC as `Diastolic`, X.HEART_RATE as `Heart Rate`, X.ELECTRODE as `Electrode`, X.POSTURE as `Posture`, X.ACCESS as `Access`, X.DIALYSIS as `Dialysis`, X.PARALYSIS as `Paralysis`, X.SMI as `SMI`, X.TARGET_WEIGHT as `Target Weight`
+	FROM (
+		SELECT I.*  
+		FROM csbrain2.mb_inbody1 I
+	)X
+    WHERE X.DATETIME  >= #{sd} AND X.DATETIME <= #{ed}
+    ORDER BY X.DATETIME  DESC	
+    ${limit_query}
+	]]>	
+	</select>
+	<select id="select_csbr3060_search2" parameterType="HashMap" resultType="LinkedHashMap">
+	<![CDATA[
+	SELECT 
+		X.NAME as `성명`, X.HEIGHT as `신장`, X.BIRTH as `생년월일`, X.SEX as `성별`, X.AGE as `연령`, X.MOBILE as `휴대전화번호`, X.TELNO as `전화번호`, X.ZIPCODE as `우편번호`, X.ADDRESS as `상세주소`, X.EMAIL as `이메일`, X.REG_DATE as `회원 등록일`, X.MEMO as `메모`, X.DIAG_DATETM as `검사일시`, X.WEIGHT as `체중`, X.WEIGHT_MIN as `체중 표준범위 하한값`, X.WEIGHT_MAX as `체중 표준범위 상한값`, X.TBW as `체수분`, X.TBW_MIN as `체수분 표준범위 하한값`, X.TBW_MAX as `체수분 표준범위 상한값`, X.PROTEIN as `단백질`, X.PROTEIN_MIN as `단백질 표준범위 하한값`, X.PROTEIN_MAX as `단백질 표준범위 상한값`, X.MINERAL as `무기질`, X.MINERAL_MIN as `무기질 표준범위 하한값`, X.MINERAL_MAX as `무기질 표준범위 상한값`, X.FAT as `체지방`, X.FAT_MIN as `체지방 표준범위 하한값`, X.FAT_MAX as `체지방 표준범위 상한값`, X.LBM as `제지방량`, X.LBM_MIN as `제지방량 표준범위 하한값`, X.LBM_MAX as `제지방량 표준범위 상한값`, X.SMM as `골격근량`, X.SMM_MIN as `골격근량 표준범위 하한값`, X.SMM_MAX as `골격근량 표준범위 상한값`, X.BMI as `BMI`, X.BMI_MIN as `BMI 표준범위 하한값`, X.BMI_MAX as `BMI 표준범위 상한값`, X.BFP as `체지방률`, X.BFP_MIN as `체지방률 표준범위 하한값`, X.BFP_MAX as `체지방률 표준범위 상한값`, X.INBODY_SCORE as `인바디점수`, X.PROPER_WEIGHT as `적정체중`, X.WEIGHT_CTRL as `체중조절`, X.FAT_CTRL as `지방조절`, X.MSCL_CTRL as `근육조절`, X.BMR as `기초대사량`, X.AFP as `복부지방률`, X.AFP_MIN as `복부지방률 표준범위 하한값`, X.AFP_MAX as `복부지방률 표준범위 상한값`, X.VFL as `내장지방레벨`, X.OBESITY as `비만도`, X.OBESITY_MIN as `비만도 표준범위 하한값`, X.OBESITY_MAX as `비만도 표준범위 상한값`, X.IMPED_RA20K as `20kHz-RA Impedance`, X.IMPED_LA20K as `20kHz-LA Impedance`, X.IMPED_TR20K as `20kHz-TR Impedance`, X.IMPED_RL20K as `20kHz-RL Impedance`, X.IMPED_LL20K as `20kHz-LL Impedance`, X.IMPED_RA100K as `100kHz-RA Impedance`, X.IMPED_LA100K as `100kHz-LA Impedance`, X.IMPED_TR100K as `100kHz-TR Impedance`, X.IMPED_RL100K as `100kHz-RL Impedance`, X.IMPED_LL100K as `100kHz-LL Impedance`, X.AOC as `복부 바깥둘레`, X.CHG_SCORE as `소아 성장점수`, X.CHO as `소아비만도`, X.CHO_MIN as `소아비만도 표준범위 하한값`, X.CHO_MAX as `소아비만도 표준범위 상한값`, X.HIGH_BP as `최고혈압`, X.LOW_BP as `최저혈압`, X.PULSE_RATE as `맥박수`, X.AVG_BP as `평균혈압`, X.PULSE_PRES as `맥압`, X.HEART_BURDEN as `심부담도`, X.INBODY as `인바디`, X.PROG_ID as `프로그램 아이디`, X.SMI as `SMI (Skeletal Muscle Index)`, X.MED_HISTORY as `병력사항`, X.GROUP as `그룹`, X.RCI as `권장섭취열랑`, X.BMR_MIN as `기초대사량 표준범위 하한값`, X.BMR_MAX as `기초대사량 표준범위 상한값`
+	FROM (
+		SELECT I.* 
+		FROM csbrain2.mb_inbody2 I
+	)X
+    WHERE X.DIAG_DATETM  >= #{sd} AND X.DIAG_DATETM <= #{ed}
+    ORDER BY X.DIAG_DATETM  DESC	
+    ${limit_query}
+	]]>	
+	</select>
+	<!-- csbr 3080 pet 검사관리-->
+
+	
+	<insert id="update_csbr3020_suvr" parameterType="HashMap" >
+		INSERT INTO nrcd.PET_SUVR (ID, `SUV_threshold_1.11`)
+		VALUES
+		<foreach collection="list" index="index" separator="," item="item">
+			(
+				#{item.ID},
+				#{item.SUVR_SCORE}
+			)
+		</foreach>
+		ON DUPLICATE KEY UPDATE `SUV_threshold_1.11`=VALUES(`SUV_threshold_1.11`)
+	</insert>
+	
+	<select id="select_count_csbr3030_csf" parameterType="HashMap" resultType="int">
+	<![CDATA[
+	SELECT COUNT(*) AS TOTAL
+	FROM(
+		SELECT *
+		FROM csbrain2.mb_csf
+	)X
+	WHERE X.DIAG_DATETM >= #{sd} AND X.DIAG_DATETM <= #{ed}
+    ]]>
+	</select>
+	
+	<select id="select_csbr3030_search" parameterType="HashMap" resultType="LinkedHashMap">
+	<![CDATA[
+	SELECT X.*
+	FROM (
+		SELECT ID, CSFID, NAME, format(IT_AB42,3) as IT_AB42, format(IT_AB40,3) as IT_AB40, format(IT_TTAU,3) as IT_TTAU, 
+			format(IT_PTAU,3) as IT_PTAU, format(IB_AB42,3) as IB_AB42, format(IB_TTAU,3) as IB_TTAU, format(IB_PTAU,3) as IB_PTAU, 
+			format(PT_PTAU,3) as PT_PTAU, format(PT_NFH,3) as PT_NFH, format(PT_NRGN,3) as PT_NRGN, format(PT_TNFA,3) as PT_TNFA, 
+			format(PT_IL1B,3) as PT_IL1B, str_to_date(DIAG_DATETM,'%Y-%m-%d') DIAG_DATETM
+		FROM csbrain2.mb_csf
+	)X
+    WHERE X.DIAG_DATETM  >= #{sd} AND X.DIAG_DATETM <= #{ed}
+    ORDER BY X.DIAG_DATETM  DESC	
+    ${limit_query}
+	]]>	
+	</select>
+	
+	<insert id="update_csbr3030_csf" parameterType="HashMap" >
+		INSERT INTO csbrain2.mb_csf (ID, CSFID, NAME, IT_AB42, IT_AB40, IT_TTAU, IT_PTAU, IB_AB42, IB_TTAU, IB_PTAU, PT_PTAU, PT_NFH, PT_NRGN, PT_TNFA, PT_IL1B, DIAG_DATETM)
+		VALUES
+		<foreach collection="list" index="index" separator="," item="item">
+			(
+				#{item.ID},
+				#{item.CSFID},
+				#{item.NAME},
+				#{item.IT_AB42},
+				#{item.IT_AB40},
+				#{item.IT_TTAU},
+				#{item.IT_PTAU},
+				#{item.IB_AB42},
+				#{item.IB_TTAU},
+				#{item.IB_PTAU},
+				#{item.PT_PTAU},
+				#{item.PT_NFH},
+				#{item.PT_NRGN},
+				#{item.PT_TNFA},
+				#{item.PT_IL1B},
+				STR_TO_DATE(#{item.DIAG_DATETM}, '%m/%d/%Y')
+			)
+		</foreach>
+		ON DUPLICATE KEY UPDATE 
+		CSFID=VALUES(CSFID),
+		NAME=VALUES(NAME),
+		IT_AB42=VALUES(IT_AB42),
+		IT_AB40=VALUES(IT_AB40),
+		IT_TTAU=VALUES(IT_TTAU),
+		IT_PTAU=VALUES(IT_PTAU),
+		IB_AB42=VALUES(IB_AB42),
+		IB_TTAU=VALUES(IB_TTAU),
+		IB_PTAU=VALUES(IB_PTAU),
+		PT_PTAU=VALUES(PT_PTAU),
+		PT_NFH=VALUES(PT_NFH),
+		PT_NRGN=VALUES(PT_NRGN),
+		PT_TNFA=VALUES(PT_TNFA),
+		PT_IL1B=VALUES(PT_IL1B),
+		DIAG_DATETM=VALUES(DIAG_DATETM)
+	</insert>
+	
+	<insert id="update_csbr3060_inbody1" parameterType="HashMap" >
+		INSERT INTO csbrain2.mb_inbody1(
+			DATETIME,ID,AGE,HEIGHT,GENDER,WEIGHT,WEIGHT_MIN,WEIGHT_MAX,ICW,ICW_MIN,ICW_MAX,ECW,ECW_MIN,ECW_MAX,TBW,TBW_MIN,TBW_MAX,
+			PROTEIN,PROTEIN_MIN,PROTEIN_MAX,MINERAL,MINERAL_MIN,MINDERAL_MAX,FAT,FAT_MIN,FAT_MAX,SLM,SLM_MIN,SLM_MAX,FFM,FFM_MIN,
+			FFM_MAX,SMM,SMM_MIN,SMM_MAX,PBF,PBF_MIN,PBF_MAX,BMI,BMI_MIN,BMI_MAX,WHR,WHR_MIN,WHR_MAX,SEGWATER_RA,SEGWATER_RA_MIN,
+			SEGWATER_RA_MAX,SEGWATER_LA,SEGWATER_LA_MIN,SEGWATER_LA_MAX,SEGWATER_TR,SEGWATER_TR_MIN,SEGWATER_TR_MAX,SEGWATER_RL,
+			SEGWATER_RL_MIN,SEGWATER_RL_MAX,SEGWATER_LL,SEGWATER_LL_MIN,SEGWATER_LL_MAX,ECWTBW_TOTAL,ECWTBW_RA,ECWTBW_LA,ECWTBW_TR,
+			ECWTBW_RL,ECWTBW_LL,SEGLEAN_RA,SEGLEAN_RA_MIN,SEGLEAN_RA_MAX,SEGLEAN_LA,SEGLEAN_LA_MIN,SEGLEAN_LA_MAX,SEGLEAN_TR,SEGLEAN_TR_MIN,
+			SEGLEAN_TR_MAX,SEGLEAN_RL,SEGLEAN_RL_MIN,SEGLEAN_RL_MAX,SEGLEAN_LL,SEGLEAN_LL_MIN,SEGLEAN_LL_MAX,BFMCTR,FFMCTR,BODYCELLMASS,
+			BCM_MIN,BCM_MAX,BONEMINERAL,BMC_MIN,BMC_MAX,AC,AMC,VFA,BMR,TBWFFM,IMPED_RA1K,IMPED_LA1K,IMPED_TR1K,IMPED_RL1K,IMPED_LL1K,
+			IMPED_RA5K,IMPED_LA5K,IMPED_TR5K,IMPED_RL5K,IMPED_LL5K,IMPED_RA50K,IMPED_LA50K,IMPED_TR50K,IMPED_RL50K,IMPED_LL50K,IMPED_RA250K,
+			IMPED_LA250K,IMPED_TR250K,IMPED_RL250K,IMPED_LL250K,IMPED_RA500K,IMPED_LA500K,IMPED_TR500K,IMPED_RL500K,IMPED_LL500K,IMPED_RA1M,
+			IMPED_LA1M,IMPED_TR1M,IMPED_RL1M,IMPED_LL1M,REACT_RA5K,REACT_LA5K,REACT_TR5K,REACT_RL5K,REACT_LL5K,REACT_RA50K,REACT_LA50K,
+			REACT_TR50K,REACT_RL50K,REACT_LL50K,REACT_RA250K,REACT_LA250K,REACT_TR250K,REACT_RL250K,REACT_LL250K,PA_RA5K,PA_LA5K,PA_TR5K,
+			PA_RL5K,PA_LL5K,PA_RA50K,PA_LA50K,PA_TR50K,PA_RL50K,PA_LL50K,PA_RA250K,PA_LA250K,PA_TR250K,PA_RL250K,PA_LL250K,WB_PA,SYSTOLIC,
+			DIASTOLIC,HEART_RATE,ELECTRODE,POSTURE,ACCESS,DIALYSIS,PARALYSIS,SMI,TARGET_WEIGHT
+		) VALUES
+		<foreach collection="list" index="index" separator="," item="item">
+		(
+			#{item.DATETIME},#{item.ID},#{item.AGE},#{item.HEIGHT},#{item.GENDER},#{item.WEIGHT},#{item.WEIGHT_MIN},#{item.WEIGHT_MAX},
+			#{item.ICW},#{item.ICW_MIN},#{item.ICW_MAX},#{item.ECW},#{item.ECW_MIN},#{item.ECW_MAX},#{item.TBW},#{item.TBW_MIN},#{item.TBW_MAX},
+			#{item.PROTEIN},#{item.PROTEIN_MIN},#{item.PROTEIN_MAX},#{item.MINERAL},#{item.MINERAL_MIN},#{item.MINDERAL_MAX},#{item.FAT},
+			#{item.FAT_MIN},#{item.FAT_MAX},#{item.SLM},#{item.SLM_MIN},#{item.SLM_MAX},#{item.FFM},#{item.FFM_MIN},#{item.FFM_MAX},#{item.SMM},
+			#{item.SMM_MIN},#{item.SMM_MAX},#{item.PBF},#{item.PBF_MIN},#{item.PBF_MAX},#{item.BMI},#{item.BMI_MIN},#{item.BMI_MAX},#{item.WHR},
+			#{item.WHR_MIN},#{item.WHR_MAX},#{item.SEGWATER_RA},#{item.SEGWATER_RA_MIN},#{item.SEGWATER_RA_MAX},#{item.SEGWATER_LA},
+			#{item.SEGWATER_LA_MIN},#{item.SEGWATER_LA_MAX},#{item.SEGWATER_TR},#{item.SEGWATER_TR_MIN},#{item.SEGWATER_TR_MAX},#{item.SEGWATER_RL},
+			#{item.SEGWATER_RL_MIN},#{item.SEGWATER_RL_MAX},#{item.SEGWATER_LL},#{item.SEGWATER_LL_MIN},#{item.SEGWATER_LL_MAX},#{item.ECWTBW_TOTAL},
+			#{item.ECWTBW_RA},#{item.ECWTBW_LA},#{item.ECWTBW_TR},#{item.ECWTBW_RL},#{item.ECWTBW_LL},#{item.SEGLEAN_RA},#{item.SEGLEAN_RA_MIN},
+			#{item.SEGLEAN_RA_MAX},#{item.SEGLEAN_LA},#{item.SEGLEAN_LA_MIN},#{item.SEGLEAN_LA_MAX},#{item.SEGLEAN_TR},#{item.SEGLEAN_TR_MIN},
+			#{item.SEGLEAN_TR_MAX},#{item.SEGLEAN_RL},#{item.SEGLEAN_RL_MIN},#{item.SEGLEAN_RL_MAX},#{item.SEGLEAN_LL},#{item.SEGLEAN_LL_MIN},
+			#{item.SEGLEAN_LL_MAX},#{item.BFMCTR},#{item.FFMCTR},#{item.BODYCELLMASS},#{item.BCM_MIN},#{item.BCM_MAX},#{item.BONEMINERAL},
+			#{item.BMC_MIN},#{item.BMC_MAX},#{item.AC},#{item.AMC},#{item.VFA},#{item.BMR},#{item.TBWFFM},#{item.IMPED_RA1K},#{item.IMPED_LA1K},
+			#{item.IMPED_TR1K},#{item.IMPED_RL1K},#{item.IMPED_LL1K},#{item.IMPED_RA5K},#{item.IMPED_LA5K},#{item.IMPED_TR5K},#{item.IMPED_RL5K},
+			#{item.IMPED_LL5K},#{item.IMPED_RA50K},#{item.IMPED_LA50K},#{item.IMPED_TR50K},#{item.IMPED_RL50K},#{item.IMPED_LL50K},#{item.IMPED_RA250K},
+			#{item.IMPED_LA250K},#{item.IMPED_TR250K},#{item.IMPED_RL250K},#{item.IMPED_LL250K},#{item.IMPED_RA500K},#{item.IMPED_LA500K},#{item.IMPED_TR500K},
+			#{item.IMPED_RL500K},#{item.IMPED_LL500K},#{item.IMPED_RA1M},#{item.IMPED_LA1M},#{item.IMPED_TR1M},#{item.IMPED_RL1M},#{item.IMPED_LL1M},
+			#{item.REACT_RA5K},#{item.REACT_LA5K},#{item.REACT_TR5K},#{item.REACT_RL5K},#{item.REACT_LL5K},#{item.REACT_RA50K},#{item.REACT_LA50K},
+			#{item.REACT_TR50K},#{item.REACT_RL50K},#{item.REACT_LL50K},#{item.REACT_RA250K},#{item.REACT_LA250K},#{item.REACT_TR250K},#{item.REACT_RL250K},
+			#{item.REACT_LL250K},#{item.PA_RA5K},#{item.PA_LA5K},#{item.PA_TR5K},#{item.PA_RL5K},#{item.PA_LL5K},#{item.PA_RA50K},#{item.PA_LA50K},
+			#{item.PA_TR50K},#{item.PA_RL50K},#{item.PA_LL50K},#{item.PA_RA250K},#{item.PA_LA250K},#{item.PA_TR250K},#{item.PA_RL250K},#{item.PA_LL250K},
+			#{item.WB_PA},#{item.SYSTOLIC},#{item.DIASTOLIC},#{item.HEART_RATE},#{item.ELECTRODE},#{item.POSTURE},#{item.ACCESS},#{item.DIALYSIS},
+			#{item.PARALYSIS},#{item.SMI},#{item.TARGET_WEIGHT}			
+		)
+		</foreach>
+		ON DUPLICATE KEY UPDATE 
+		DATETIME=VALUES(DATETIME),AGE=VALUES(AGE),HEIGHT=VALUES(HEIGHT),GENDER=VALUES(GENDER),WEIGHT=VALUES(WEIGHT),WEIGHT_MIN=VALUES(WEIGHT_MIN),
+		WEIGHT_MAX=VALUES(WEIGHT_MAX),ICW=VALUES(ICW),ICW_MIN=VALUES(ICW_MIN),ICW_MAX=VALUES(ICW_MAX),ECW=VALUES(ECW),ECW_MIN=VALUES(ECW_MIN),ECW_MAX=VALUES(ECW_MAX),
+		TBW=VALUES(TBW),TBW_MIN=VALUES(TBW_MIN),TBW_MAX=VALUES(TBW_MAX),PROTEIN=VALUES(PROTEIN),PROTEIN_MIN=VALUES(PROTEIN_MIN),PROTEIN_MAX=VALUES(PROTEIN_MAX),
+		MINERAL=VALUES(MINERAL),MINERAL_MIN=VALUES(MINERAL_MIN),MINDERAL_MAX=VALUES(MINDERAL_MAX),FAT=VALUES(FAT),FAT_MIN=VALUES(FAT_MIN),FAT_MAX=VALUES(FAT_MAX),
+		SLM=VALUES(SLM),SLM_MIN=VALUES(SLM_MIN),SLM_MAX=VALUES(SLM_MAX),FFM=VALUES(FFM),FFM_MIN=VALUES(FFM_MIN),FFM_MAX=VALUES(FFM_MAX),SMM=VALUES(SMM),
+		SMM_MIN=VALUES(SMM_MIN),SMM_MAX=VALUES(SMM_MAX),PBF=VALUES(PBF),PBF_MIN=VALUES(PBF_MIN),PBF_MAX=VALUES(PBF_MAX),BMI=VALUES(BMI),BMI_MIN=VALUES(BMI_MIN),
+		BMI_MAX=VALUES(BMI_MAX),WHR=VALUES(WHR),WHR_MIN=VALUES(WHR_MIN),WHR_MAX=VALUES(WHR_MAX),SEGWATER_RA=VALUES(SEGWATER_RA),SEGWATER_RA_MIN=VALUES(SEGWATER_RA_MIN),
+		SEGWATER_RA_MAX=VALUES(SEGWATER_RA_MAX),SEGWATER_LA=VALUES(SEGWATER_LA),SEGWATER_LA_MIN=VALUES(SEGWATER_LA_MIN),SEGWATER_LA_MAX=VALUES(SEGWATER_LA_MAX),
+		SEGWATER_TR=VALUES(SEGWATER_TR),SEGWATER_TR_MIN=VALUES(SEGWATER_TR_MIN),SEGWATER_TR_MAX=VALUES(SEGWATER_TR_MAX),SEGWATER_RL=VALUES(SEGWATER_RL),
+		SEGWATER_RL_MIN=VALUES(SEGWATER_RL_MIN),SEGWATER_RL_MAX=VALUES(SEGWATER_RL_MAX),SEGWATER_LL=VALUES(SEGWATER_LL),SEGWATER_LL_MIN=VALUES(SEGWATER_LL_MIN),
+		SEGWATER_LL_MAX=VALUES(SEGWATER_LL_MAX),ECWTBW_TOTAL=VALUES(ECWTBW_TOTAL),ECWTBW_RA=VALUES(ECWTBW_RA),ECWTBW_LA=VALUES(ECWTBW_LA),ECWTBW_TR=VALUES(ECWTBW_TR),
+		ECWTBW_RL=VALUES(ECWTBW_RL),ECWTBW_LL=VALUES(ECWTBW_LL),SEGLEAN_RA=VALUES(SEGLEAN_RA),SEGLEAN_RA_MIN=VALUES(SEGLEAN_RA_MIN),SEGLEAN_RA_MAX=VALUES(SEGLEAN_RA_MAX),
+		SEGLEAN_LA=VALUES(SEGLEAN_LA),SEGLEAN_LA_MIN=VALUES(SEGLEAN_LA_MIN),SEGLEAN_LA_MAX=VALUES(SEGLEAN_LA_MAX),SEGLEAN_TR=VALUES(SEGLEAN_TR),SEGLEAN_TR_MIN=VALUES(SEGLEAN_TR_MIN),
+		SEGLEAN_TR_MAX=VALUES(SEGLEAN_TR_MAX),SEGLEAN_RL=VALUES(SEGLEAN_RL),SEGLEAN_RL_MIN=VALUES(SEGLEAN_RL_MIN),SEGLEAN_RL_MAX=VALUES(SEGLEAN_RL_MAX),SEGLEAN_LL=VALUES(SEGLEAN_LL),
+		SEGLEAN_LL_MIN=VALUES(SEGLEAN_LL_MIN),SEGLEAN_LL_MAX=VALUES(SEGLEAN_LL_MAX),BFMCTR=VALUES(BFMCTR),FFMCTR=VALUES(FFMCTR),BODYCELLMASS=VALUES(BODYCELLMASS),BCM_MIN=VALUES(BCM_MIN),
+		BCM_MAX=VALUES(BCM_MAX),BONEMINERAL=VALUES(BONEMINERAL),BMC_MIN=VALUES(BMC_MIN),BMC_MAX=VALUES(BMC_MAX),AC=VALUES(AC),AMC=VALUES(AMC),VFA=VALUES(VFA),BMR=VALUES(BMR),
+		TBWFFM=VALUES(TBWFFM),IMPED_RA1K=VALUES(IMPED_RA1K),IMPED_LA1K=VALUES(IMPED_LA1K),IMPED_TR1K=VALUES(IMPED_TR1K),IMPED_RL1K=VALUES(IMPED_RL1K),IMPED_LL1K=VALUES(IMPED_LL1K),
+		IMPED_RA5K=VALUES(IMPED_RA5K),IMPED_LA5K=VALUES(IMPED_LA5K),IMPED_TR5K=VALUES(IMPED_TR5K),IMPED_RL5K=VALUES(IMPED_RL5K),IMPED_LL5K=VALUES(IMPED_LL5K),IMPED_RA50K=VALUES(IMPED_RA50K),
+		IMPED_LA50K=VALUES(IMPED_LA50K),IMPED_TR50K=VALUES(IMPED_TR50K),IMPED_RL50K=VALUES(IMPED_RL50K),IMPED_LL50K=VALUES(IMPED_LL50K),IMPED_RA250K=VALUES(IMPED_RA250K),
+		IMPED_LA250K=VALUES(IMPED_LA250K),IMPED_TR250K=VALUES(IMPED_TR250K),IMPED_RL250K=VALUES(IMPED_RL250K),IMPED_LL250K=VALUES(IMPED_LL250K),IMPED_RA500K=VALUES(IMPED_RA500K),
+		IMPED_LA500K=VALUES(IMPED_LA500K),IMPED_TR500K=VALUES(IMPED_TR500K),IMPED_RL500K=VALUES(IMPED_RL500K),IMPED_LL500K=VALUES(IMPED_LL500K),IMPED_RA1M=VALUES(IMPED_RA1M),
+		IMPED_LA1M=VALUES(IMPED_LA1M),IMPED_TR1M=VALUES(IMPED_TR1M),IMPED_RL1M=VALUES(IMPED_RL1M),IMPED_LL1M=VALUES(IMPED_LL1M),REACT_RA5K=VALUES(REACT_RA5K),REACT_LA5K=VALUES(REACT_LA5K),
+		REACT_TR5K=VALUES(REACT_TR5K),REACT_RL5K=VALUES(REACT_RL5K),REACT_LL5K=VALUES(REACT_LL5K),REACT_RA50K=VALUES(REACT_RA50K),REACT_LA50K=VALUES(REACT_LA50K),REACT_TR50K=VALUES(REACT_TR50K),
+		REACT_RL50K=VALUES(REACT_RL50K),REACT_LL50K=VALUES(REACT_LL50K),REACT_RA250K=VALUES(REACT_RA250K),REACT_LA250K=VALUES(REACT_LA250K),REACT_TR250K=VALUES(REACT_TR250K),
+		REACT_RL250K=VALUES(REACT_RL250K),REACT_LL250K=VALUES(REACT_LL250K),PA_RA5K=VALUES(PA_RA5K),PA_LA5K=VALUES(PA_LA5K),PA_TR5K=VALUES(PA_TR5K),PA_RL5K=VALUES(PA_RL5K),PA_LL5K=VALUES(PA_LL5K),
+		PA_RA50K=VALUES(PA_RA50K),PA_LA50K=VALUES(PA_LA50K),PA_TR50K=VALUES(PA_TR50K),PA_RL50K=VALUES(PA_RL50K),PA_LL50K=VALUES(PA_LL50K),PA_RA250K=VALUES(PA_RA250K),PA_LA250K=VALUES(PA_LA250K),
+		PA_TR250K=VALUES(PA_TR250K),PA_RL250K=VALUES(PA_RL250K),PA_LL250K=VALUES(PA_LL250K),WB_PA=VALUES(WB_PA),SYSTOLIC=VALUES(SYSTOLIC),DIASTOLIC=VALUES(DIASTOLIC),HEART_RATE=VALUES(HEART_RATE),
+		ELECTRODE=VALUES(ELECTRODE),POSTURE=VALUES(POSTURE),ACCESS=VALUES(ACCESS),DIALYSIS=VALUES(DIALYSIS),PARALYSIS=VALUES(PARALYSIS),SMI=VALUES(SMI),TARGET_WEIGHT=VALUES(TARGET_WEIGHT)
+	</insert>
+	
+	<insert id="update_csbr3060_inbody2" parameterType="HashMap" >
+		INSERT INTO csbrain2.mb_inbody2(
+			NAME,ID,HEIGHT,BIRTH,SEX,AGE,MOBILE,TELNO,ZIPCODE,ADDRESS,EMAIL,REG_DATE,MEMO,DIAG_DATETM,WEIGHT,WEIGHT_MIN,WEIGHT_MAX,TBW,TBW_MIN,TBW_MAX,PROTEIN,PROTEIN_MIN,
+			PROTEIN_MAX,MINERAL,MINERAL_MIN,MINERAL_MAX,FAT,FAT_MIN,FAT_MAX,LBM,LBM_MIN,LBM_MAX,SMM,SMM_MIN,SMM_MAX,BMI,BMI_MIN,BMI_MAX,BFP,BFP_MIN,BFP_MAX,INBODY_SCORE,
+			PROPER_WEIGHT,WEIGHT_CTRL,FAT_CTRL,MSCL_CTRL,BMR,AFP,AFP_MIN,AFP_MAX,VFL,OBESITY,OBESITY_MIN,OBESITY_MAX,IMPED_RA20K,IMPED_LA20K,IMPED_TR20K,IMPED_RL20K,IMPED_LL20K,
+			IMPED_RA100K,IMPED_LA100K,IMPED_TR100K,IMPED_RL100K,IMPED_LL100K,AOC,CHG_SCORE,CHO,CHO_MIN,CHO_MAX,HIGH_BP,LOW_BP,PULSE_RATE,AVG_BP,PULSE_PRES,HEART_BURDEN,INBODY,
+			PROG_ID,SMI,MED_HISTORY,`GROUP`,RCI,BMR_MIN,BMR_MAX
+		) VALUES
+		<foreach collection="list" index="index" separator="," item="item">
+		(
+			#{item.NAME},#{item.ID},#{item.HEIGHT},#{item.BIRTH},#{item.SEX},#{item.AGE},#{item.MOBILE},#{item.TELNO},#{item.ZIPCODE},#{item.ADDRESS},#{item.EMAIL},#{item.REG_DATE},
+			#{item.MEMO},#{item.DIAG_DATETM},#{item.WEIGHT},#{item.WEIGHT_MIN},#{item.WEIGHT_MAX},#{item.TBW},#{item.TBW_MIN},#{item.TBW_MAX},#{item.PROTEIN},#{item.PROTEIN_MIN},
+			#{item.PROTEIN_MAX},#{item.MINERAL},#{item.MINERAL_MIN},#{item.MINERAL_MAX},#{item.FAT},#{item.FAT_MIN},#{item.FAT_MAX},#{item.LBM},#{item.LBM_MIN},#{item.LBM_MAX},
+			#{item.SMM},#{item.SMM_MIN},#{item.SMM_MAX},#{item.BMI},#{item.BMI_MIN},#{item.BMI_MAX},#{item.BFP},#{item.BFP_MIN},#{item.BFP_MAX},#{item.INBODY_SCORE},#{item.PROPER_WEIGHT},
+			#{item.WEIGHT_CTRL},#{item.FAT_CTRL},#{item.MSCL_CTRL},#{item.BMR},#{item.AFP},#{item.AFP_MIN},#{item.AFP_MAX},#{item.VFL},#{item.OBESITY},#{item.OBESITY_MIN},
+			#{item.OBESITY_MAX},#{item.IMPED_RA20K},#{item.IMPED_LA20K},#{item.IMPED_TR20K},#{item.IMPED_RL20K},#{item.IMPED_LL20K},#{item.IMPED_RA100K},#{item.IMPED_LA100K},
+			#{item.IMPED_TR100K},#{item.IMPED_RL100K},#{item.IMPED_LL100K},#{item.AOC},#{item.CHG_SCORE},#{item.CHO},#{item.CHO_MIN},#{item.CHO_MAX},#{item.HIGH_BP},#{item.LOW_BP},
+			#{item.PULSE_RATE},#{item.AVG_BP},#{item.PULSE_PRES},#{item.HEART_BURDEN},#{item.INBODY},#{item.PROG_ID},#{item.SMI},#{item.MED_HISTORY},#{item.GROUP},#{item.RCI},#{item.BMR_MIN},#{item.BMR_MAX}
+		)
+		</foreach>
+		ON DUPLICATE KEY UPDATE 
+		NAME=VALUES(NAME),HEIGHT=VALUES(HEIGHT),BIRTH=VALUES(BIRTH),SEX=VALUES(SEX),AGE=VALUES(AGE),MOBILE=VALUES(MOBILE),TELNO=VALUES(TELNO),ZIPCODE=VALUES(ZIPCODE),ADDRESS=VALUES(ADDRESS),
+		EMAIL=VALUES(EMAIL),REG_DATE=VALUES(REG_DATE),MEMO=VALUES(MEMO),DIAG_DATETM=VALUES(DIAG_DATETM),WEIGHT=VALUES(WEIGHT),WEIGHT_MIN=VALUES(WEIGHT_MIN),WEIGHT_MAX=VALUES(WEIGHT_MAX),
+		TBW=VALUES(TBW),TBW_MIN=VALUES(TBW_MIN),TBW_MAX=VALUES(TBW_MAX),PROTEIN=VALUES(PROTEIN),PROTEIN_MIN=VALUES(PROTEIN_MIN),PROTEIN_MAX=VALUES(PROTEIN_MAX),MINERAL=VALUES(MINERAL),
+		MINERAL_MIN=VALUES(MINERAL_MIN),MINERAL_MAX=VALUES(MINERAL_MAX),FAT=VALUES(FAT),FAT_MIN=VALUES(FAT_MIN),FAT_MAX=VALUES(FAT_MAX),LBM=VALUES(LBM),LBM_MIN=VALUES(LBM_MIN),
+		LBM_MAX=VALUES(LBM_MAX),SMM=VALUES(SMM),SMM_MIN=VALUES(SMM_MIN),SMM_MAX=VALUES(SMM_MAX),BMI=VALUES(BMI),BMI_MIN=VALUES(BMI_MIN),BMI_MAX=VALUES(BMI_MAX),BFP=VALUES(BFP),
+		BFP_MIN=VALUES(BFP_MIN),BFP_MAX=VALUES(BFP_MAX),INBODY_SCORE=VALUES(INBODY_SCORE),PROPER_WEIGHT=VALUES(PROPER_WEIGHT),WEIGHT_CTRL=VALUES(WEIGHT_CTRL),FAT_CTRL=VALUES(FAT_CTRL),
+		MSCL_CTRL=VALUES(MSCL_CTRL),BMR=VALUES(BMR),AFP=VALUES(AFP),AFP_MIN=VALUES(AFP_MIN),AFP_MAX=VALUES(AFP_MAX),VFL=VALUES(VFL),OBESITY=VALUES(OBESITY),OBESITY_MIN=VALUES(OBESITY_MIN),
+		OBESITY_MAX=VALUES(OBESITY_MAX),IMPED_RA20K=VALUES(IMPED_RA20K),IMPED_LA20K=VALUES(IMPED_LA20K),IMPED_TR20K=VALUES(IMPED_TR20K),IMPED_RL20K=VALUES(IMPED_RL20K),IMPED_LL20K=VALUES(IMPED_LL20K),
+		IMPED_RA100K=VALUES(IMPED_RA100K),IMPED_LA100K=VALUES(IMPED_LA100K),IMPED_TR100K=VALUES(IMPED_TR100K),IMPED_RL100K=VALUES(IMPED_RL100K),IMPED_LL100K=VALUES(IMPED_LL100K),AOC=VALUES(AOC),
+		CHG_SCORE=VALUES(CHG_SCORE),CHO=VALUES(CHO),CHO_MIN=VALUES(CHO_MIN),CHO_MAX=VALUES(CHO_MAX),HIGH_BP=VALUES(HIGH_BP),LOW_BP=VALUES(LOW_BP),PULSE_RATE=VALUES(PULSE_RATE),AVG_BP=VALUES(AVG_BP),
+		PULSE_PRES=VALUES(PULSE_PRES),HEART_BURDEN=VALUES(HEART_BURDEN),INBODY=VALUES(INBODY),PROG_ID=VALUES(PROG_ID),SMI=VALUES(SMI),MED_HISTORY=VALUES(MED_HISTORY),`GROUP`=VALUES(`GROUP`),
+		RCI=VALUES(RCI),BMR_MIN=VALUES(BMR_MIN),BMR_MAX=VALUES(BMR_MAX)
+	</insert>
+	
+	<!-- csbr 3080 pet 검사관리-->	
+	<select id="select_count_csbr3080_apoe" parameterType="HashMap" resultType="int">
+	<![CDATA[
+	SELECT COUNT(*) AS TOTAL
+	FROM(
+		SELECT I.OBJECT_ID, H.name, I.APOE_CD, I.DIAG_DATETM, I.APOE_PL, I.CREATE_DATE 
+		FROM nrcd.RD_APOE I
+		LEFT OUTER JOIN	csbrain2.mb_object H ON H.IDX=I.OBJECT_ID
+	)X
+	WHERE X.DIAG_DATETM >= #{sd} AND X.DIAG_DATETM <= #{ed}
+    ]]>
+	</select>
+	
+	<select id="select_csbr3080_search" parameterType="HashMap" resultType="LinkedHashMap">
+	<![CDATA[
+	SELECT X.OBJECT_ID AS ID, X.NAME AS 이름, X.APOE_CD AS APOE, X.APOE_PL AS 'APOE+'
+	FROM (
+		SELECT I.OBJECT_ID, H.name, I.APOE_CD, I.DIAG_DATETM, I.APOE_PL, I.CREATE_DATE 
+		FROM nrcd.RD_APOE I
+		LEFT OUTER JOIN	csbrain2.mb_object H ON H.IDX=I.OBJECT_ID
+	)X
+    WHERE X.DIAG_DATETM  >= #{sd} AND X.DIAG_DATETM <= #{ed}
+    ORDER BY X.DIAG_DATETM  DESC	
+    ${limit_query}
+	]]>	
+	</select>
+	
+	<insert id="update_csbr3080_apoe" parameterType="HashMap" >
+		INSERT INTO nrcd.RD_APOE (OBJECT_ID, APOE_CD, APOE_PL, DIAG_DATETM, CREATE_DATE, CREATE_BY)
+		VALUES
+		<foreach collection="list" index="index" separator="," item="item">
+			(
+				#{item.ID},
+				#{item.APOE_CD},
+				#{item.APOE_PL},
+				#{item.DIAG_DATETM},
+				CURRENT_TIMESTAMP,
+				#{item.USER_ID}
+			)
+		</foreach>
+		ON DUPLICATE KEY UPDATE 
+		APOE_CD=VALUES(APOE_CD),
+		APOE_PL=VALUES(APOE_PL),
+		DIAG_DATETM=VALUES(DIAG_DATETM),
+		UPDATE_DATE=VALUES(CREATE_DATE),
+		UPDATE_BY=VALUES(CREATE_BY)
+	</insert>
+	
+</mapper>
+

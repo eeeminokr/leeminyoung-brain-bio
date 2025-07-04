@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+    	<setting name="mapUnderscoreToCamelCase" value="true"/>
+    	<setting name="useGeneratedKeys" value="true"/>
+    	<setting name="callSettersOnNulls" value="true"/>
+ 	</settings>
+    <typeAliases>
+        <typeAlias alias="LinkedHashMap" type="java.util.LinkedHashMap" />
+        <typeAlias alias="CamelCaseMap" type="csbrain.common.util.CamelCaseMap" />
+        <typeAlias alias="LinkedCamelCaseMap" type="csbrain.common.util.LinkedCamelCaseMap" />
+        <typeAlias alias="MemberVO" type="csbrain.main.service.MemberVO" />
+        <typeAlias alias="MemberUseProgramVO" type="csbrain.main.service.MemberUseProgramVO" />
+        <typeAlias alias="MemberProgramListVO" type="csbrain.main.service.MemberProgramListVO" />
+        <typeAlias alias="MbReseselVO" type="csbrain.data.service.MbReseselVO" />
+        <typeAlias alias="MbResesnsbVO" type="csbrain.data.service.MbResesnsbVO" />
+        <typeAlias alias="MbObjectVO" type="csbrain.data.service.MbObjectVO" />
+        <typeAlias alias="MbResemriVO" type="csbrain.data.service.MbResemriVO" />
+        <typeAlias alias="MbResecstVO" type="csbrain.data.service.MbResecstVO" />
+        <typeAlias alias="MbResepetVO" type="csbrain.data.service.MbResepetVO" />
+        <typeAlias alias="MbResecsfVO" type="csbrain.data.service.MbResecsfVO" />
+        <typeAlias alias="MbEtcCdVO" type="csbrain.common.service.MbEtcCdVO" />
+        <typeAlias alias="MbOpinionVO" type="csbrain.data.service.MbOpinionVO" />
+        <typeAlias alias="MbMmseVO" type="csbrain.common.service.MbMmseVO" />
+        <typeAlias alias="MbSJVO" type="csbrain.common.service.MbSJVO" />
+        
+        <typeAlias alias="MbKmmse2VO" type="csbrain.common.service.MbKmmse2VO" />
+        <typeAlias alias="MbEqVO" type="csbrain.common.service.MbEqVO" />
+        <typeAlias alias="MbPeVO" type="csbrain.common.service.MbPeVO" />
+        <typeAlias alias="MbIcVO" type="csbrain.common.service.MbIcVO" />
+        <typeAlias alias="MbDmVO" type="csbrain.common.service.MbDmVO" />
+        <typeAlias alias="MbSmVO" type="csbrain.common.service.MbSmVO" />
+        <typeAlias alias="MbDrVO" type="csbrain.common.service.MbDrVO" />
+        <typeAlias alias="MbPhaVO" type="csbrain.common.service.MbPhaVO" />
+       <typeAlias alias="MbSpVO" type="csbrain.common.service.MbSpVO" />
+        <typeAlias alias="MbMbVO" type="csbrain.common.service.MbMbVO" />
+        <typeAlias alias="MbFhVO" type="csbrain.common.service.MbFhVO" />
+        <typeAlias alias="MbFmhVO" type="csbrain.common.service.MbFmhVO" />
+        <typeAlias alias="MbTestblodVO" type="csbrain.common.service.MbTestblodVO" />
+        <typeAlias alias="MbCdr1VO" type="csbrain.common.service.MbCdr1VO" />
+        <typeAlias alias="MbCdr2VO" type="csbrain.common.service.MbCdr2VO" />
+        <typeAlias alias="MbC1VO" type="csbrain.common.service.MbC1VO" />
+        <typeAlias alias="MbC2VO" type="csbrain.common.service.MbC2VO" />
+        <typeAlias alias="MbC3VO" type="csbrain.common.service.MbC3VO" />
+        <typeAlias alias="MbDgVO" type="csbrain.common.service.MbDgVO" />
+        <typeAlias alias="MbAhVO" type="csbrain.common.service.MbAhVO" />
+        <typeAlias alias="MbShVO" type="csbrain.common.service.MbShVO" />
+        <typeAlias alias="MbGdsVO" type="csbrain.common.service.MbGdsVO" />
+        <typeAlias alias="MbHrsdVO" type="csbrain.common.service.MbHrsdVO" />
+        <typeAlias alias="MbKdsqVO" type="csbrain.common.service.MbKdsqVO" />
+        <typeAlias alias="MbKdsqvVO" type="csbrain.common.service.MbKdsqvVO" />
+        <typeAlias alias="MbKiadlVO" type="csbrain.common.service.MbKiadlVO" />
+        <typeAlias alias="MbLabVO" type="csbrain.common.service.MbLabVO" />
+        <typeAlias alias="MbDiaVO" type="csbrain.common.service.MbDiaVO" />
+        <typeAlias alias="MbMhVO" type="csbrain.common.service.MbMhVO" />
+        <typeAlias alias="MbSmcqVO" type="csbrain.common.service.MbSmcqVO" />
+        <typeAlias alias="CommonVO" type="csbrain.common.service.CommonVO" />
+        <typeAlias alias="MbNrcdVO" type="csbrain.data.service.MbNrcdVO" />
+        <typeAlias alias="MbMriTestblodVO" type="csbrain.data.service.MbMriTestblodVO" />
+        <typeAlias alias="MbSpecimdtMbCsfdtVO" type="csbrain.data.service.MbSpecimdtMbCsfdtVO" />
+        <typeAlias alias="MbSpecimhdVO" type="csbrain.data.service.MbSpecimhdVO" />
+        <typeAlias alias="MbCsfhdVO" type="csbrain.data.service.MbCsfhdVO" />
+        <typeAlias alias="MbResebwVO" type="csbrain.data.service.MbResebwVO" />
+        <typeAlias alias="MbResebsVO" type="csbrain.data.service.MbResebsVO" />
+        <typeAlias alias="MbReseibVO" type="csbrain.data.service.MbReseibVO" />
+        <typeAlias alias="MbReseckVO" type="csbrain.data.service.MbReseckVO" />
+        <typeAlias alias="Csbr1031SearchVO" type="csbrain.data.service.Csbr1031SearchVO" />
+        <typeAlias alias="TargetVO" type="csbrain.target.service.TargetVO" />
+    </typeAliases>
+</configuration>
